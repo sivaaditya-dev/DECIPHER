@@ -8,6 +8,9 @@ const { YoutubeTranscript } = require('youtube-transcript');
 const path = require('path');
 const { GoogleGenAI } = require('@google/genai');
 const admin = require('firebase-admin');
+const { Resend } = require('resend');
+const cron = require('node-cron');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -401,7 +404,7 @@ app.post('/api/youtube-transcript', async (req, res) => {
   }
 });
 
-// --- SOCRATIC TUTOR CHAT ---
+// --- DECIPHER TUTOR CHAT ---
 app.post('/api/chat', async (req, res) => {
   const { messages, passage, vocabList } = req.body;
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -409,16 +412,52 @@ app.post('/api/chat', async (req, res) => {
   }
   const contextWords = vocabList ? vocabList.map(v => `"${v.term}" (${v.def})`).join('; ') : 'None';
   const passageSnippet = passage ? passage.substring(0, 1000) : 'No passage loaded.';
-  const systemPrompt = `You are a Socratic Tutor for a vocabulary learning app called Decipher.
+
+  const systemPrompt = `You are "Decipher Tutor", the intelligent assistant built into Decipher — an AI vocabulary learning app.
+
+You have two abilities:
+1. ANSWER vocabulary and comprehension questions.
+2. NAVIGATE/TRIGGER app features on behalf of the user.
+
+== AVAILABLE ACTIONS ==
+When you detect ANY navigational or feature-triggering intent, prepend the EXACT action tag at the very start of your reply (before anything else). Choose the single most relevant action:
+
+[ACTION:navStudio]    — User wants to go to Studio (analyzer, input text, reading passage)
+[ACTION:navQuiz]      — User wants to go to the Quiz page/tab
+[ACTION:navLibrary]   — User wants to go to the Library (saved sessions)
+[ACTION:navHome]      — User wants to go to the home/landing page
+[ACTION:memoryHooks]  — User wants memory hooks, mnemonics, memory aids for words
+[ACTION:quiz]         — User wants to start/take/begin the quiz immediately
+[ACTION:translate]    — User wants to translate vocabulary words
+[ACTION:story]        — User wants to generate a vocabulary story
+[ACTION:simplify]     — User wants to simplify/rewrite the passage (ELI5, plain English)
+[ACTION:oppositeDay]  — User wants antonyms or the Opposite Day feature
+
+== CRITICAL RULES FOR ACTIONS ==
+- Detect intent from ANY language (Tamil, Hindi, Spanish, French, Arabic, etc.) and ANY accent or phrasing variation.
+- Examples of what to recognize:
+  * "memory hooks" / "mnemonic" / "yaad karne ka tarika" / "moyens mnémotechniques" / "aide-mémoire" / "ways to remember" → [ACTION:memoryHooks]
+  * "quiz" / "test me" / "pariksha" / "quiz karo" / "interrogation" / "practise" → [ACTION:quiz]
+  * "translate" / "anuvad" / "traduire" / "traducir" → [ACTION:translate]
+  * "library" / "saved" / "meri library" / "bibliothèque" → [ACTION:navLibrary]
+  * "studio" / "analyzer" / "go back" / "input" → [ACTION:navStudio]
+  * "simplify" / "ELI5" / "explain simple" / "aasaan bhasha" / "simple karo" → [ACTION:simplify]
+  * "story" / "generate story" / "kahani" / "histoire" → [ACTION:story]
+- If NO action is needed (user just asking a vocabulary question), do NOT include any [ACTION:...] tag.
+- NEVER make up action tags. Only use the ones listed above.
+- After the action tag, give a SHORT confirmation (1 sentence) + helpful tip if needed.
+  Example: "[ACTION:memoryHooks] ✅ Navigating to Studio and generating Memory Hooks for your words!"
+
+== CONTEXT ==
 Active reading passage (first 1000 chars): "${passageSnippet}"
 Vocabulary words being studied: ${contextWords}
 
-Your role:
-- Help students understand complex words and concepts from this specific passage
-- Use vivid analogies and real-world examples
-- Ask occasional follow-up questions to deepen understanding (Socratic method)
-- Keep responses friendly, encouraging, and concise (2-4 sentences for simple questions)
-- If asked about a word in the vocab list, always connect it back to the passage context`;
+== AS A TUTOR ==
+- Help students understand words with vivid analogies and real-world examples.
+- Use the Socratic method — ask occasional follow-up questions.
+- Keep responses concise (2-4 sentences for simple questions).
+- Always connect word explanations back to the passage context.
+- Respond warmly and encouragingly.`;
 
   try {
     const history = messages.slice(0, -1).map(m => ({
@@ -426,7 +465,7 @@ Your role:
       parts: [{ text: m.content }]
     }));
     const lastMessage = messages[messages.length - 1].content;
-    const fullPrompt = `${systemPrompt}\n\nStudent asks: ${lastMessage}`;
+    const fullPrompt = `${systemPrompt}\n\nStudent says: ${lastMessage}`;
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: history.length > 0
@@ -439,6 +478,7 @@ Your role:
     res.status(500).json({ error: 'Tutor is unavailable. Please try again.' });
   }
 });
+
 
 // --- OPPOSITE DAY GENERATOR ---
 app.post('/api/opposite-day', async (req, res) => {
@@ -575,5 +615,197 @@ app.delete('/api/history', verifyToken, async (req, res) => {
     res.status(500).json({ error: "Failed to clear library. Please check the server logs." });
   }
 });
+
+// ═══════════════════════════════════════════════════════════════
+// EMAIL SYSTEM — Resend + node-cron
+// ═══════════════════════════════════════════════════════════════
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const APP_URL = process.env.APP_URL || 'http://localhost:3000';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Decipher <onboarding@resend.dev>';
+
+// ── EMAIL TEMPLATES ────────────────────────────────────────────
+function welcomeEmailHTML(name) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Decipher</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:Arial,sans-serif;background:#05101e;color:#fff;}
+    .wrap{max-width:600px;margin:0 auto;padding:40px 24px;}
+    .logo{font-size:26px;font-weight:700;font-style:italic;margin-bottom:32px;letter-spacing:-0.5px;}
+    .hero-text{font-size:34px;font-weight:700;line-height:1.2;margin-bottom:16px;letter-spacing:-0.5px;}
+    .intro{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:32px;}
+    .step{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px 22px;margin-bottom:12px;display:flex;align-items:flex-start;gap:16px;}
+    .step-icon{font-size:24px;flex-shrink:0;margin-top:2px;}
+    .step-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+    .step-desc{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;}
+    .cta{display:inline-block;background:#fff;color:#000;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;margin-top:28px;}
+    .divider{height:1px;background:rgba(255,255,255,0.08);margin:32px 0;}
+    .footer{font-size:12px;color:rgba(255,255,255,0.3);line-height:1.6;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">Decipher<sup style="font-size:9px;">®</sup></div>
+    <h1 class="hero-text">Welcome, ${name}! 🎉<br>Let's unlock some words.</h1>
+    <p class="intro">You've just gained access to an AI-powered vocabulary engine. Here are the 3 most powerful things you can do right now:</p>
+
+    <div class="step">
+      <div class="step-icon">✍️</div>
+      <div>
+        <div class="step-title">1. Open Studio and paste any text</div>
+        <div class="step-desc">Upload a PDF, paste an article, or use the YouTube transcript feature. Gemini AI will extract and define all key vocabulary in seconds.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-icon">💡</div>
+      <div>
+        <div class="step-title">2. Generate AI Memory Hooks</div>
+        <div class="step-desc">After analyzing text, click "Memory Hooks" in Studio. Gemini creates a vivid mnemonic for every word — making them impossible to forget.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-icon">🎯</div>
+      <div>
+        <div class="step-title">3. Head to the Quiz tab</div>
+        <div class="step-desc">Test yourself across 3 quiz modes: Standard (multiple choice), Reverse (translation to English), and Smart Quiz (AI fill-in-the-blank sentences).</div>
+      </div>
+    </div>
+
+    <a href="${APP_URL}" class="cta">Start Learning Now →</a>
+
+    <div class="divider"></div>
+    <div class="footer">
+      <p>You received this because you signed up for Decipher with your Google account.</p>
+      <p style="margin-top:8px;">© 2025 Decipher. AI Vocabulary Intelligence.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+function weeklyReportHTML(name, stats) {
+  const { sessions, words, quizzes, topLang } = stats;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Weekly Decipher Report</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:Arial,sans-serif;background:#05101e;color:#fff;}
+    .wrap{max-width:600px;margin:0 auto;padding:40px 24px;}
+    .logo{font-size:26px;font-weight:700;font-style:italic;margin-bottom:32px;}
+    .hero-text{font-size:28px;font-weight:700;line-height:1.25;margin-bottom:12px;}
+    .intro{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:32px;}
+    .stats-grid{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+    .stat{flex:1;min-width:120px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px 18px;text-align:center;}
+    .stat-n{font-size:36px;font-weight:700;line-height:1;margin-bottom:6px;}
+    .stat-l{font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;}
+    .tip{background:rgba(255,255,255,0.04);border-left:3px solid rgba(255,255,255,0.3);border-radius:0 10px 10px 0;padding:16px 18px;margin-bottom:20px;font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;}
+    .cta{display:inline-block;background:#fff;color:#000;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;}
+    .divider{height:1px;background:rgba(255,255,255,0.08);margin:28px 0;}
+    .footer{font-size:12px;color:rgba(255,255,255,0.3);line-height:1.6;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">Decipher<sup style="font-size:9px;">®</sup></div>
+    <h1 class="hero-text">Your Week in Review, ${name} 📊</h1>
+    <p class="intro">Here's what you accomplished on Decipher this week. Keep going — every word you master is a door you unlock.</p>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-n">${sessions}</div><div class="stat-l">Sessions</div></div>
+      <div class="stat"><div class="stat-n">${words}</div><div class="stat-l">Words Deciphered</div></div>
+      <div class="stat"><div class="stat-n">${quizzes}</div><div class="stat-l">Quizzes Saved</div></div>
+      <div class="stat"><div class="stat-n">${topLang || '—'}</div><div class="stat-l">Top Language</div></div>
+    </div>
+
+    <div class="tip">💡 <strong>Pro tip:</strong> Try the Smart Quiz mode this week — Gemini creates unique fill-in-the-blank sentences so every session is different.</div>
+
+    <a href="${APP_URL}" class="cta">Continue Learning →</a>
+
+    <div class="divider"></div>
+    <div class="footer">
+      <p>You're receiving this weekly digest because you use Decipher. You can disable it in your account settings.</p>
+      <p style="margin-top:8px;">© 2025 Decipher. AI Vocabulary Intelligence.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+// ── WELCOME EMAIL ENDPOINT ─────────────────────────────────────
+app.post('/api/send-welcome-email', async (req, res) => {
+  if (!resend) return res.status(503).json({ error: 'Email service not configured. Add RESEND_API_KEY to .env' });
+  const { name, email } = req.body;
+  if (!name || !email) return res.status(400).json({ error: 'name and email required' });
+  try {
+    const data = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: `Welcome to Decipher, ${name.split(' ')[0]}! 🎉`,
+      html: welcomeEmailHTML(name.split(' ')[0]),
+    });
+    console.log('✅ Welcome email sent to', email, data.id);
+    res.json({ success: true, id: data.id });
+  } catch (err) {
+    console.error('Welcome email error:', err);
+    res.status(500).json({ error: 'Failed to send welcome email.' });
+  }
+});
+
+// ── WEEKLY REPORT CRON (every Sunday 9:00 AM IST = 3:30 AM UTC) ────────────
+cron.schedule('30 3 * * 0', async () => {
+  if (!resend) { console.log('[Cron] No RESEND_API_KEY — skipping weekly emails'); return; }
+  console.log('[Cron] Starting weekly email reports...');
+  try {
+    const db = admin.firestore();
+    // Get all users from Firebase Auth (page through)
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const listResult = await admin.auth().listUsers(1000);
+    let sent = 0;
+    for (const user of listResult.users) {
+      if (!user.email) continue;
+      try {
+        // Fetch their sessions from last 7 days
+        const snapshot = await db.collection('sessions')
+          .where('userId', '==', user.uid)
+          .where('savedAt', '>=', admin.firestore.Timestamp.fromDate(sevenDaysAgo))
+          .get();
+        const sessions = snapshot.size;
+        if (sessions === 0) continue; // skip inactive users
+        let words = 0, quizzes = 0;
+        const langCount = {};
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          words   += Array.isArray(d.vocab) ? d.vocab.length : 0;
+          quizzes += d.quizTaken ? 1 : 0;
+          if (d.translatedLang) langCount[d.translatedLang] = (langCount[d.translatedLang] || 0) + 1;
+        });
+        const topLang = Object.keys(langCount).sort((a,b) => langCount[b]-langCount[a])[0] || null;
+        const firstName = (user.displayName || user.email).split(' ')[0];
+        await resend.emails.send({
+          from: FROM_EMAIL,
+          to: user.email,
+          subject: `Your weekly Decipher report — ${sessions} session${sessions !== 1 ? 's' : ''} this week 📊`,
+          html: weeklyReportHTML(firstName, { sessions, words, quizzes, topLang }),
+        });
+        sent++;
+        console.log(`  ✉️  Sent weekly report to ${user.email}`);
+      } catch (userErr) {
+        console.error(`  ❌ Failed for ${user.email}:`, userErr.message);
+      }
+    }
+    console.log(`[Cron] Weekly reports done. Sent: ${sent}`);
+  } catch (err) {
+    console.error('[Cron] Weekly report failed:', err);
+  }
+}, { timezone: 'Asia/Kolkata' });
 
 app.listen(PORT, () => console.log(`🚀 Backend running on http://localhost:${PORT}`));

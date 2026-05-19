@@ -1,103 +1,96 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Decipher – AI-powered vocabulary tool. Upload any text or PDF, get contextual definitions, translate to your language, and quiz yourself.">
+  <meta name="description" content="Decipher – AI-powered vocabulary intelligence. Upload any text, PDF, or image. Get definitions, translations, mnemonics, and quizzes.">
   <title>Decipher | Unlock Any Text</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 </head>
-<body class="bg-mesh">
+<body>
 
-  <!-- ════════════════════════════════════════
-       NAVIGATION — Glassmorphic floating bar
-  ════════════════════════════════════════ -->
-  <nav id="mainNav" class="fixed top-0 left-0 right-0 z-50 nav-glass">
-    <div class="max-w-7xl mx-auto px-8 h-[72px] flex items-center justify-between">
+<!-- ══════════════════════════════════════════════════════
+     GLASSMORPHIC NAV — always visible, floats over everything
+════════════════════════════════════════════════════════ -->
+<nav id="mainNav" class="fixed top-0 left-0 right-0 z-50 nav-glass">
+  <div class="nav-inner">
 
-      <!-- Logo -->
-      <a href="#" class="flex items-center gap-2.5 no-underline">
-        <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" id="decipher-logo" aria-hidden="true">
-          <defs>
-            <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="var(--logo-c1,#fff)"/>
-              <stop offset="100%" stop-color="var(--logo-c2,rgba(255,255,255,0.5))"/>
-            </linearGradient>
-          </defs>
-          <rect width="36" height="36" rx="9" fill="url(#logoGrad)" fill-opacity="0.15"/>
-          <rect x="5" y="17.5" width="26" height="1" rx="0.5" fill="rgba(255,255,255,0.3)"/>
-          <path d="M5 12 L5 5 L12 5" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-          <path d="M31 12 L31 5 L24 5" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-          <path d="M5 24 L5 31 L12 31" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-          <path d="M31 24 L31 31 L24 31" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-          <text x="9" y="26" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="white">D</text>
-        </svg>
-        <span class="nav-brand">Decipher<sup class="text-xs" style="font-size:9px;opacity:0.6;">®</sup></span>
-      </a>
+    <!-- Logo -->
+    <a href="#" id="navLogoBtn" class="nav-logo-link">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+        <defs>
+          <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--logo-c1,#fff)"/>
+            <stop offset="100%" stop-color="var(--logo-c2,rgba(255,255,255,0.5))"/>
+          </linearGradient>
+        </defs>
+        <rect width="36" height="36" rx="9" fill="url(#logoGrad)" fill-opacity="0.15"/>
+        <text x="9" y="26" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="white">D</text>
+      </svg>
+      <span class="nav-brand">Decipher<sup class="nav-brand-sup">®</sup></span>
+    </a>
 
-      <!-- Desktop pill nav -->
-      <div class="nav-pill hidden md:flex items-center gap-1 liquid-glass rounded-full px-1.5 py-1.5">
-        <a href="#" class="nav-link nav-link-active">Home</a>
-        <a href="#analyzer" class="nav-link">Analyzer</a>
-        <a href="#library" class="nav-link">Library</a>
-        <div class="nav-divider"></div>
-        <!-- Theme switcher in pill -->
-        <div class="theme-switcher-pill">
-          <button class="theme-btn-sm active" data-theme="dark" id="themeDark" title="Cyber Dark">🌑</button>
-          <button class="theme-btn-sm" data-theme="light" id="themeLight" title="Sakura Light">🌸</button>
-          <button class="theme-btn-sm" data-theme="red" id="themeRed" title="Matte Red">🔴</button>
-        </div>
-        <div class="nav-divider"></div>
-        <!-- Auth in pill -->
-        <span id="userNameDisplay" class="nav-user-name"></span>
-        <button id="authBtn" class="nav-cta-btn">Log In</button>
+    <!-- Centre pill navigation -->
+    <div class="nav-pill liquid-glass">
+      <button class="nav-link" data-view="aboutView" id="navAbout">About</button>
+      <button class="nav-link nav-link-active" data-view="landing" id="navHome">Home</button>
+      <button class="nav-link" data-view="studioView" id="navStudio">Studio</button>
+      <button class="nav-link" data-view="dojoView" id="navDojo">Quiz</button>
+      <button class="nav-link" data-view="libraryView" id="navLibrary">Library</button>
+      <div class="nav-divider"></div>
+      <!-- Theme switcher -->
+      <div class="theme-switcher-pill">
+        <button class="theme-btn-sm active" data-theme="dark" title="Cyber Dark">🌑</button>
+        <button class="theme-btn-sm" data-theme="light" title="Sakura Light">🌸</button>
+        <button class="theme-btn-sm" data-theme="red" title="Matte Red">🔴</button>
       </div>
-
-      <!-- Mobile: auth only -->
-      <button id="authBtnMobile" class="md:hidden liquid-glass rounded-full px-4 py-2 nav-link" style="display:none !important;">Log In</button>
+      <div class="nav-divider"></div>
+      <span id="userNameDisplay" class="nav-user-name"></span>
+      <button id="authBtn" class="nav-cta-btn">Log In</button>
     </div>
-  </nav>
 
-  <!-- ════════════════════════════════════════
-       CINEMATIC HERO — Fullscreen video
-  ════════════════════════════════════════ -->
+    <!-- Mobile: just auth + hamburger -->
+    <div class="nav-mobile-right">
+      <div class="theme-switcher-pill" style="margin-right:8px;">
+        <button class="theme-btn-sm active" data-theme="dark">🌑</button>
+        <button class="theme-btn-sm" data-theme="light">🌸</button>
+        <button class="theme-btn-sm" data-theme="red">🔴</button>
+      </div>
+      <button id="authBtnMobile" class="nav-cta-btn" style="display:none;">Log In</button>
+    </div>
+
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW: LANDING — Cinematic hero + features
+════════════════════════════════════════════════════════ -->
+<div id="landing" class="app-view active">
+
+  <!-- Cinematic video hero -->
   <section class="hero-cinematic" id="heroSection">
-
-    <!-- Fullscreen video background -->
     <video autoplay loop muted playsinline class="hero-bg-video">
       <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
     </video>
-
-    <!-- Subtle dark vignette over video -->
     <div class="hero-vignette"></div>
-
-    <!-- Hero content (z-10, centered) -->
     <div class="hero-content">
-
-      <!-- Heading -->
       <h1 class="hero-title animate-fade-rise">
         Where <em class="hero-em">words unlock</em><br>
         <em class="hero-em">worlds</em> of meaning.
       </h1>
-
-      <!-- Subtext -->
       <p class="hero-desc animate-fade-rise-delay">
         Upload any passage, PDF, or image. AI extracts vocabulary,
         defines it in context, translates it to 51 languages,
         and quizzes you until every word sticks — for good.
       </p>
-
-      <!-- CTA buttons -->
       <div class="hero-actions animate-fade-rise-delay-2">
-        <a href="#analyzer" class="hero-cta-primary liquid-glass rounded-full">Start Deciphering →</a>
-        <a href="#library" class="hero-cta-ghost">View Library</a>
+        <button data-view="studioView" class="hero-cta-primary nav-view-btn liquid-glass rounded-full">Start Deciphering →</button>
+        <button data-view="libraryView" class="hero-cta-ghost nav-view-btn">View Library</button>
       </div>
-
-      <!-- Stats bar -->
       <div class="hero-stats animate-fade-rise-delay-2">
         <div class="hero-stat"><span class="stat-n">51</span><span class="stat-l">Languages</span></div>
         <div class="stat-divider"></div>
@@ -108,252 +101,515 @@
         <div class="hero-stat"><span class="stat-n">OCR</span><span class="stat-l">Image Input</span></div>
       </div>
     </div>
-
-    <!-- Scroll cue -->
-    <div class="scroll-cue">
-      <div class="scroll-dot-outer"><div class="scroll-dot-inner"></div></div>
-    </div>
+    <div class="scroll-cue"><div class="scroll-dot-outer"><div class="scroll-dot-inner"></div></div></div>
   </section>
 
-  <!-- ════════════════════════════════════════
-       FEATURE HIGHLIGHTS BAR
-  ════════════════════════════════════════ -->
-  <section class="features-bar reveal-section">
-    <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="feature-chip">
-        <span class="feature-icon">📄</span>
-        <div><div class="feature-chip-title">PDF Upload</div><div class="feature-chip-sub">Drag & drop, 20MB</div></div>
-      </div>
-      <div class="feature-chip">
-        <span class="feature-icon">💡</span>
-        <div><div class="feature-chip-title">Memory Hooks</div><div class="feature-chip-sub">AI mnemonics per word</div></div>
-      </div>
-      <div class="feature-chip">
-        <span class="feature-icon">🔍</span>
-        <div><div class="feature-chip-title">ELI5 Simplifier</div><div class="feature-chip-sub">Rewrite any passage</div></div>
-      </div>
-      <div class="feature-chip">
-        <span class="feature-icon">📝</span>
-        <div><div class="feature-chip-title">Smart Quiz</div><div class="feature-chip-sub">AI fill-in-the-blank</div></div>
-      </div>
-    </div>
-  </section>
+</div><!-- /landing -->
 
-  <!-- ════════════════════════════════════════
-       MAIN APP
-  ════════════════════════════════════════ -->
-  <main class="relative z-10 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
-    <!-- Analyzer -->
-    <section id="analyzer" class="grid lg:grid-cols-2 gap-6 mb-20 reveal-section">
+<!-- ══════════════════════════════════════════════════════
+     VIEW: ABOUT — Cinematic hero + features + mission
+════════════════════════════════════════════════════════ -->
+<div id="aboutView" class="app-view hidden about-view">
 
-      <!-- Left: Input -->
-      <div class="fade-in">
-        <div class="glass rounded-2xl p-6 h-full flex flex-col">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;" id="sourceTitle">Reading Passage</h3>
-            <button id="sampleBtn" class="sample-btn">Load Sample</button>
-          </div>
-          <!-- Source Tabs -->
-          <div class="source-tabs" id="sourceTabs">
-            <button class="source-tab active" data-src="text" id="srcTabText">📝 Text</button>
-            <button class="source-tab" data-src="pdf" id="srcTabPdf">📄 PDF/DOCX</button>
-            <button class="source-tab" data-src="image" id="srcTabImage">📷 Image</button>
-            <button class="source-tab" data-src="youtube" id="srcTabYoutube">🎵 YouTube</button>
-          </div>
-          <!-- Panel: Text (default) -->
-          <div class="source-panel active" id="panel-text">
-            <textarea id="inputText" class="input-box" style="width:100%;min-height:180px;margin-bottom:8px;" placeholder="Paste your text here..."></textarea>
-          </div>
-          <!-- Panel: PDF/DOCX -->
-          <div class="source-panel" id="panel-pdf">
-            <div id="pdfDropZone" class="drop-zone" style="padding:20px;margin-bottom:8px;">
-              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);">
-                <div style="font-size:32px;">📥</div>
-                <p style="font-size:13px;font-weight:500;color:var(--text-main);">Drag &amp; drop PDF or DOCX here</p>
-                <button id="pdfUploadBtn" class="btn-primary" style="font-size:13px;padding:8px 18px;">Browse File</button>
-                <span id="pdfFileName" style="font-size:11px;color:var(--accent);font-weight:600;display:none;"></span>
-                <p style="font-size:11px;color:var(--text-muted);">PDF · DOCX · Up to 100 MB</p>
-              </div>
-              <input type="file" id="pdfUploadInput" accept=".pdf,.epub,.docx" style="display:none;">
-            </div>
-          </div>
-          <!-- Panel: Image OCR -->
-          <div class="source-panel" id="panel-image">
-            <div class="drop-zone" id="imageDropZone" style="padding:20px;margin-bottom:8px;">
-              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-                <div style="font-size:32px;">📷</div>
-                <p style="font-size:13px;font-weight:500;color:var(--text-main);">Upload a photo of text</p>
-                <p style="font-size:11px;color:var(--text-muted);">Works with textbook pages, screenshots, handwritten notes</p>
-                <button id="imageUploadBtn" class="btn-primary" style="font-size:13px;padding:8px 18px;">Choose Image</button>
-                <span id="imageFileName" style="font-size:11px;color:var(--accent);font-weight:600;display:none;"></span>
-              </div>
-              <input type="file" id="imageUploadInput" accept="image/*" style="display:none;">
-            </div>
-          </div>
-          <!-- Panel: YouTube -->
-          <div class="source-panel" id="panel-youtube">
-            <div style="margin-bottom:8px;">
-              <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Paste a YouTube URL with captions. Transcript will be extracted automatically.</p>
-              <div style="display:flex;gap:8px;">
-                <input type="url" id="youtubeUrl" class="input-box" style="flex:1;padding:10px 14px;" placeholder="https://www.youtube.com/watch?v=...">
-                <button id="youtubeLoadBtn" class="btn-primary" style="padding:10px 16px;font-size:13px;white-space:nowrap;">Load Transcript</button>
-              </div>
-              <p id="ytStatus" style="font-size:11px;color:var(--text-muted);margin-top:6px;"></p>
-            </div>
-          </div>
-          <!-- Simplify Bar -->
-          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
-            <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;">🔍 Simplify:</span>
-            <select id="simplifyLevel" style="flex:1;min-width:140px;appearance:none;background:rgba(4,9,20,0.7);border:1px solid var(--border);color:var(--text-main);border-radius:8px;padding:8px 12px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">
-              <option value="plain">Plain English</option>
-              <option value="eli5">Explain Like I'm 5</option>
-            </select>
-            <button id="simplifyBtn" class="btn-secondary" style="padding:8px 16px;font-size:12px;">Rewrite Passage</button>
-          </div>
-          <!-- Simplified Result -->
-          <div id="simplifyResult" style="display:none;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.2);border-radius:10px;padding:12px;margin-bottom:10px;font-size:13px;line-height:1.6;color:var(--text-main);position:relative;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <span id="simplifyLevelLabel" style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;">SIMPLIFIED</span>
-              <button id="useSimplifiedBtn" style="font-size:11px;padding:3px 10px;background:rgba(6,182,212,0.15);border:1px solid var(--border);border-radius:6px;color:var(--accent);cursor:pointer;">Use as Input</button>
-            </div>
-            <p id="simplifyText" style="margin:0;"></p>
-          </div>
-          <div style="display:flex;gap:10px;">
-            <select id="themeSelect" class="input-box" style="width:36%;padding:10px 14px;background:var(--surface);cursor:pointer;font-size:13px;">
-              <option value="General">General</option>
-              <option value="Business &amp; Finance">Business</option>
-              <option value="Medical &amp; Science">Medical</option>
-              <option value="Legal">Legal</option>
-              <option value="Literature &amp; Poetry">Literature</option>
-            </select>
-            <button id="analyzeBtn" class="btn-primary" style="flex:1;justify-content:center;">Decipher Text</button>
-            <button id="saveBtn" class="btn-secondary" style="padding:10px 16px;display:none;">Save</button>
-          </div>
+  <!-- Full-screen video background (NO overlay) -->
+  <video autoplay loop muted playsinline class="about-bg-video" id="aboutBgVideo">
+    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4" type="video/mp4">
+  </video>
+
+  <!-- Hero content — pushed to bottom of viewport -->
+  <div class="about-hero-container">
+    <div class="about-hero-grid">
+
+      <!-- Left: Animated heading + sub + CTA -->
+      <div class="about-hero-left">
+        <h1 class="about-hero-title" id="aboutHeroTitle" aria-label="Where words unlock worlds of meaning.">
+          <!-- Chars injected by JS -->
+        </h1>
+        <p class="about-hero-sub" id="aboutHeroSub">
+          The AI-powered vocabulary engine that transforms any text, PDF, or image into mastered knowledge — with memory hooks, smart quizzes, and 51-language translation.
+        </p>
+        <div class="about-hero-btns" id="aboutHeroBtns">
+          <button class="about-btn-primary nav-view-btn" data-view="studioView">Start Deciphering</button>
+          <button class="about-btn-glass nav-view-btn" data-view="landing">Explore Home</button>
         </div>
       </div>
 
-      <!-- Right: Results -->
-      <div class="fade-in">
-        <div class="glass rounded-2xl p-6 h-full flex flex-col">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:12px;border-bottom:1px solid var(--border);">
-            <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;">
-              Extracted Words <span id="wordCountBadge" style="font-size:13px;font-weight:400;color:var(--text-muted);">(0)</span>
-            </h3>
-            <div style="display:flex;gap:12px;align-items:center;">
-              <button id="mnemonicBtn" style="font-size:13px;color:var(--secondary);background:none;border:none;cursor:pointer;opacity:.5;display:none;font-family:'Inter',sans-serif;" disabled>💡 Memory Hooks</button>
-              <button id="oppositeDayBtn" style="font-size:13px;color:var(--amber);background:none;border:none;cursor:pointer;opacity:.5;display:none;font-family:'Inter',sans-serif;" disabled>🔄 Opposite Day</button>
-              <button id="generateStoryBtn" style="font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;opacity:.5;display:none;font-family:'Inter',sans-serif;" disabled>Generate Story</button>
-              <button id="startQuizBtn" style="font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;opacity:.5;font-family:'Inter',sans-serif;" disabled>Start Quiz</button>
-            </div>
-          </div>
-
-          <!-- Translation Bar -->
-          <div id="translationBar" style="display:none;padding:10px 0 12px;border-bottom:1px solid var(--border);margin-bottom:10px;">
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;">🌐 Translate to:</span>
-              <select id="langSelect" class="lang-select" style="flex:1;min-width:160px;"></select>
-              <button id="translateBtn" class="btn-amber" style="padding:9px 16px;font-size:13px;white-space:nowrap;">Translate</button>
-              <button id="reverseQuizBtn" class="btn-secondary" style="padding:9px 14px;font-size:12px;white-space:nowrap;display:none;border-color:var(--secondary);color:var(--secondary);">🔄 Reverse Quiz</button>
-            </div>
-          </div>
-
-          <!-- Story Container -->
-          <div id="storyContainer" style="display:none;margin-bottom:12px;padding:14px;border-radius:10px;background:var(--accent-muted);border:1px solid rgba(6,182,212,0.2);font-size:13px;"></div>
-
-          <!-- Results Box -->
-          <div id="resultsBox" class="flex-grow overflow-y-auto space-y-3 pr-1">
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;color:var(--text-muted);opacity:.5;text-align:center;">
-              <p style="font-size:14px;">Paste text and click <strong style="color:var(--accent);">Decipher Text</strong> to begin.</p>
-            </div>
-          </div>
+      <!-- Right: Tag card -->
+      <div class="about-hero-right">
+        <div class="liquid-glass about-tag-card" id="aboutTagCard">
+          <span class="about-tag-text">Analyze. Learn. Master.</span>
         </div>
       </div>
-    </section>
 
-    <!-- Library -->
-    <section id="library" class="reveal-section">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-        <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;">My Library</h2>
-        <button id="clearLibBtn" style="font-size:12px;color:rgba(248,113,113,0.55);background:none;border:none;cursor:pointer;transition:color .2s;display:none;" onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='rgba(248,113,113,0.55)'">Clear Library</button>
-      </div>
-      <div id="libraryGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="lib-placeholder">Please log in to view your saved sessions.</div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ════════════════════════════════════════
-       QUIZ MODAL
-  ════════════════════════════════════════ -->
-  <div id="quizModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Vocabulary Quiz">
-    <div class="glass rounded-2xl w-full max-w-lg p-8 relative" id="quizContent">
-      <button id="closeQuiz" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'" aria-label="Close quiz">✕</button>
-
-      <!-- Mode Tabs -->
-      <div class="quiz-mode-tabs">
-        <button id="modeStandard" class="mode-tab mode-active">📘 Standard</button>
-        <button id="modeReverse" class="mode-tab">🔄 Reverse</button>
-        <button id="modeSRS" class="mode-tab">📝 Smart Quiz</button>
-      </div>
-      <p id="reverseUnavailNote" style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:-8px;margin-bottom:6px;">Translate words first to unlock Reverse Mode</p>
-      <p id="srsUnavailNote" style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:8px;">Generate Memory Hooks first to unlock Smart Quiz</p>
-
-      <!-- Start Screen -->
-      <div id="quizStartScreen" class="text-center">
-        <div id="quizModeLabel" style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">📘 Standard Mode</div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;">Ready to Practice?</h3>
-        <p style="color:var(--text-muted);margin-bottom:24px;">You will be tested on <span id="quizWordCount">0</span> words.</p>
-        <button id="initQuizBtn" class="btn-primary mx-auto">Begin Quiz</button>
-      </div>
-
-      <!-- Play Screen -->
-      <div id="quizPlayScreen" style="display:none;">
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-bottom:10px;">
-          <span>Question <span id="currentQ">1</span>/<span id="totalQ">10</span></span>
-          <span>Score: <span id="currentScore">0</span></span>
-        </div>
-        <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden;margin-bottom:24px;">
-          <div id="progressBar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--secondary));width:0;transition:width .5s ease;border-radius:99px;"></div>
-        </div>
-        <h4 id="questionText" style="font-size:16px;font-weight:600;margin-bottom:20px;text-align:center;line-height:1.5;"></h4>
-        <div id="optionsContainer" class="space-y-3"></div>
-        <button id="nextQBtn" class="btn-primary w-full mt-6 justify-center" style="display:none;">Next Question →</button>
-      </div>
-
-      <!-- End Screen -->
-      <div id="quizEndScreen" style="display:none;text-align:center;">
-        <div style="font-size:52px;margin-bottom:12px;">🎯</div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;">Deciphered!</h3>
-        <p style="color:var(--text-muted);margin-bottom:24px;">You scored <span id="finalScore" style="color:var(--accent);font-weight:700;font-size:20px;">0%</span></p>
-        <button id="restartQuizBtn" class="btn-secondary" style="margin-right:10px;">Try Again</button>
-        <button id="exitQuizBtn" class="btn-primary">Done</button>
-      </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toast-container" aria-live="polite"></div>
-
-  <!-- Tutor Chat FAB -->
-  <button class="tutor-fab" id="tutorFab" title="Ask the AI Tutor">🤖</button>
-
-  <!-- Tutor Chat Panel -->
-  <div class="tutor-panel" id="tutorPanel">
-    <div class="tutor-header">
-      <div class="tutor-title">🤖 Socratic Tutor</div>
-      <button class="tutor-close" id="tutorClose">✕</button>
+  <!-- ── FEATURES SECTION ── -->
+  <section class="about-features-section">
+    <div class="about-section-inner">
+      <div class="about-section-label">What Decipher Does</div>
+      <h2 class="about-section-title">Every feature you need to master any word</h2>
+      <div class="about-features-grid">
+        <div class="about-feature-card">
+          <div class="afc-icon">📄</div>
+          <div class="afc-title">PDF & DOCX Upload</div>
+          <div class="afc-desc">Drag and drop files up to 100 MB. Decipher extracts all key vocabulary from any document instantly.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">📷</div>
+          <div class="afc-title">OCR Image Scanning</div>
+          <div class="afc-desc">Snap a photo of a textbook page, screenshot, or handwritten note — AI reads and extracts words automatically.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">🎵</div>
+          <div class="afc-title">YouTube Transcripts</div>
+          <div class="afc-desc">Paste any YouTube URL. Decipher pulls the caption transcript and mines it for vocabulary.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">💡</div>
+          <div class="afc-title">AI Memory Hooks</div>
+          <div class="afc-desc">For every extracted word, Gemini generates a vivid mnemonic — a visual story that makes the word unforgettable.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">🌍</div>
+          <div class="afc-title">51-Language Translation</div>
+          <div class="afc-desc">Translate your vocabulary list into any of 51 languages with cultural context notes included.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">🎯</div>
+          <div class="afc-title">Three Quiz Modes</div>
+          <div class="afc-desc">Standard (multiple choice), Reverse (translation → English), and Smart Quiz (AI fill-in-the-blank sentences).</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">🔍</div>
+          <div class="afc-title">ELI5 Simplifier</div>
+          <div class="afc-desc">Rewrite any passage in plain English or explain-like-I'm-5 mode for instant comprehension.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">🔮</div>
+          <div class="afc-title">Decipher Tutor</div>
+          <div class="afc-desc">An AI tutor that understands commands in any language — navigate features, explain concepts, and guide your learning.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">🎙️</div>
+          <div class="afc-title">Pronunciation Coach</div>
+          <div class="afc-desc">Practice speaking words aloud with mic-based grading. Perfect for language learners building oral fluency.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">📖</div>
+          <div class="afc-title">Vocabulary Stories</div>
+          <div class="afc-desc">Generate a short AI story that naturally weaves all your vocabulary words into a memorable narrative.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">🔄</div>
+          <div class="afc-title">Opposite Day</div>
+          <div class="afc-desc">Flip every word in your list to its antonym — a powerful exercise for deepening semantic understanding.</div>
+        </div>
+        <div class="about-feature-card">
+          <div class="afc-icon">📚</div>
+          <div class="afc-title">Cloud Library</div>
+          <div class="afc-desc">Save unlimited sessions to Firebase. Revisit, review, and re-quiz past vocabulary lists anytime.</div>
+        </div>
+      </div>
     </div>
-    <div class="tutor-messages" id="tutorMessages">
-      <div class="tutor-empty">Hi! Ask me anything about the words or passage you're studying. I'll explain using examples and analogies.</div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="about-how-section">
+    <div class="about-section-inner">
+      <div class="about-section-label">The Process</div>
+      <h2 class="about-section-title">From raw text to mastered vocabulary in four steps</h2>
+      <div class="about-steps">
+        <div class="about-step">
+          <div class="about-step-num">01</div>
+          <div class="about-step-content">
+            <div class="about-step-title">Upload Any Content</div>
+            <div class="about-step-desc">Paste text, drag a PDF, upload a photo, or drop in a YouTube link. Decipher accepts it all.</div>
+          </div>
+        </div>
+        <div class="about-step-arrow">→</div>
+        <div class="about-step">
+          <div class="about-step-num">02</div>
+          <div class="about-step-content">
+            <div class="about-step-title">AI Extracts Vocabulary</div>
+            <div class="about-step-desc">Gemini 2.5 Flash identifies key vocabulary, generates definitions, memory hooks, and example sentences in context.</div>
+          </div>
+        </div>
+        <div class="about-step-arrow">→</div>
+        <div class="about-step">
+          <div class="about-step-num">03</div>
+          <div class="about-step-content">
+            <div class="about-step-title">Study & Translate</div>
+            <div class="about-step-desc">Explore definitions, generate memory hooks, translate to 51 languages, and get AI-written stories using your words.</div>
+          </div>
+        </div>
+        <div class="about-step-arrow">→</div>
+        <div class="about-step">
+          <div class="about-step-num">04</div>
+          <div class="about-step-content">
+            <div class="about-step-title">Test & Remember</div>
+            <div class="about-step-desc">Take the quiz in three difficulty modes until you score 100% — then save the session to your Library.</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="tutor-input-row">
-      <textarea class="tutor-input" id="tutorInput" placeholder="Ask about a word..." rows="1"></textarea>
-      <button class="tutor-send" id="tutorSend">➤</button>
+  </section>
+
+  <!-- ── POWERED BY ── -->
+  <section class="about-powered-section">
+    <div class="about-section-inner">
+      <div class="about-section-label">Under the Hood</div>
+      <h2 class="about-section-title">Built on world-class technology</h2>
+      <div class="about-tech-grid">
+        <div class="about-tech-card">
+          <div class="about-tech-icon">✦</div>
+          <div class="about-tech-name">Gemini 2.5 Flash</div>
+          <div class="about-tech-desc">Google's fastest frontier model powers all vocabulary analysis, memory hook generation, quiz creation, and the Decipher Tutor.</div>
+        </div>
+        <div class="about-tech-card">
+          <div class="about-tech-icon">🔥</div>
+          <div class="about-tech-name">Firebase</div>
+          <div class="about-tech-desc">Google authentication and Firestore database for secure, real-time cloud storage of all your vocabulary sessions.</div>
+        </div>
+        <div class="about-tech-card">
+          <div class="about-tech-icon">📄</div>
+          <div class="about-tech-name">PDF.js + Mammoth</div>
+          <div class="about-tech-desc">Industry-standard libraries handle PDF and DOCX parsing on the server, supporting documents up to 100 MB.</div>
+        </div>
+        <div class="about-tech-card">
+          <div class="about-tech-icon">🔒</div>
+          <div class="about-tech-name">Zero Data Retention</div>
+          <div class="about-tech-desc">Your uploaded content is processed in memory and never stored on our servers. Only your saved Library sessions persist.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ── -->
+  <section class="about-faq-section">
+    <div class="about-section-inner">
+      <div class="about-section-label">FAQ</div>
+      <h2 class="about-section-title">Common questions</h2>
+      <div class="about-faq-grid">
+        <div class="about-faq-item">
+          <div class="about-faq-q">Is Decipher free to use?</div>
+          <div class="about-faq-a">Yes — Decipher is completely free during its current phase. Sign in with Google to unlock cloud saving and your personal Library.</div>
+        </div>
+        <div class="about-faq-item">
+          <div class="about-faq-q">How many languages does it support?</div>
+          <div class="about-faq-a">Decipher supports translation into 51 languages including Spanish, French, Hindi, Tamil, Arabic, Japanese, Mandarin, and more.</div>
+        </div>
+        <div class="about-faq-item">
+          <div class="about-faq-q">What file types can I upload?</div>
+          <div class="about-faq-a">PDF, DOCX, EPUB (up to 100 MB), and common image formats (JPG, PNG, WEBP) for OCR scanning.</div>
+        </div>
+        <div class="about-faq-item">
+          <div class="about-faq-q">Is my uploaded data private?</div>
+          <div class="about-faq-a">Absolutely. Files are processed in server memory and immediately discarded. Nothing is stored without your explicit save action.</div>
+        </div>
+        <div class="about-faq-item">
+          <div class="about-faq-q">Can the Decipher Tutor understand other languages?</div>
+          <div class="about-faq-a">Yes. The Decipher Tutor understands commands and questions in any language — Tamil, Hindi, French, Arabic, Spanish, and more.</div>
+        </div>
+        <div class="about-faq-item">
+          <div class="about-faq-q">How does the Smart Quiz work?</div>
+          <div class="about-faq-a">Gemini generates unique fill-in-the-blank sentences for each word in your list. No two quiz sessions are identical.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="about-cta-section">
+    <div class="about-section-inner about-cta-inner">
+      <h2 class="about-cta-title">Ready to master every word?</h2>
+      <p class="about-cta-sub">Join thousands of learners already using Decipher to unlock any text.</p>
+      <div class="about-cta-btns">
+        <button class="about-btn-primary nav-view-btn" data-view="studioView" style="font-size:16px;padding:14px 36px;">Open Studio →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Footer -->
+  <footer class="about-footer">
+    <div class="about-section-inner about-footer-inner">
+      <div class="about-footer-brand">Decipher<sup>®</sup></div>
+      <div class="about-footer-links">
+        <button class="about-footer-link nav-view-btn" data-view="landing">Home</button>
+        <button class="about-footer-link nav-view-btn" data-view="studioView">Studio</button>
+        <button class="about-footer-link nav-view-btn" data-view="dojoView">Quiz</button>
+        <button class="about-footer-link nav-view-btn" data-view="libraryView">Library</button>
+      </div>
+      <div class="about-footer-copy">© 2025 Decipher. AI Vocabulary Intelligence.</div>
+    </div>
+  </footer>
+
+</div><!-- /aboutView -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW: STUDIO — Dual-pane Analyzer
+════════════════════════════════════════════════════════ -->
+<div id="studioView" class="app-view hidden workspace-view">
+  <div class="workspace-header">
+    <div class="workspace-header-inner">
+      <h2 class="workspace-title">Studio</h2>
+      <p class="workspace-subtitle">Paste text, upload a PDF, or snap a photo. AI does the rest.</p>
     </div>
   </div>
 
-  <script src="firebase-config.js"></script>
-  <script type="module" src="main.js"></script>
+  <div class="dual-pane" id="dualPane">
+
+    <!-- ── LEFT PANE: Input ── -->
+    <div class="pane-left" id="paneLeft">
+      <div class="pane-card">
+        <div class="pane-card-header">
+          <h3 id="sourceTitle">Reading Passage</h3>
+          <button id="sampleBtn" class="chip-btn">✦ Load Sample</button>
+        </div>
+
+        <div class="source-tabs" id="sourceTabs">
+          <button class="source-tab active" data-src="text" id="srcTabText">📝 Text</button>
+          <button class="source-tab" data-src="pdf" id="srcTabPdf">📄 PDF/DOCX</button>
+          <button class="source-tab" data-src="image" id="srcTabImage">📷 Image</button>
+          <button class="source-tab" data-src="youtube" id="srcTabYoutube">🎵 YouTube</button>
+        </div>
+
+        <div class="source-panel active" id="panel-text">
+          <textarea id="inputText" class="input-box studio-textarea" placeholder="Paste your text here — a book excerpt, an article, a lecture transcript..."></textarea>
+        </div>
+        <div class="source-panel" id="panel-pdf">
+          <div id="pdfDropZone" class="drop-zone">
+            <div class="drop-zone-inner">
+              <div class="drop-icon">📥</div>
+              <p class="drop-title">Drag &amp; drop PDF or DOCX here</p>
+              <button id="pdfUploadBtn" class="btn-primary">Browse File</button>
+              <span id="pdfFileName" class="file-name-badge" style="display:none;"></span>
+              <p class="drop-hint">PDF · DOCX · Up to 100 MB</p>
+            </div>
+            <input type="file" id="pdfUploadInput" accept=".pdf,.epub,.docx" style="display:none;">
+          </div>
+        </div>
+        <div class="source-panel" id="panel-image">
+          <div class="drop-zone" id="imageDropZone">
+            <div class="drop-zone-inner">
+              <div class="drop-icon">📷</div>
+              <p class="drop-title">Upload a photo of text</p>
+              <p class="drop-hint">Works with textbook pages, screenshots, handwritten notes</p>
+              <button id="imageUploadBtn" class="btn-primary">Choose Image</button>
+              <span id="imageFileName" class="file-name-badge" style="display:none;"></span>
+            </div>
+            <input type="file" id="imageUploadInput" accept="image/*" style="display:none;">
+          </div>
+        </div>
+        <div class="source-panel" id="panel-youtube">
+          <p class="drop-hint" style="margin-bottom:10px;">Paste a YouTube URL with captions — transcript extracts automatically.</p>
+          <div class="input-row">
+            <input type="url" id="youtubeUrl" class="input-box" placeholder="https://www.youtube.com/watch?v=...">
+            <button id="youtubeLoadBtn" class="btn-primary" style="white-space:nowrap;">Load Transcript</button>
+          </div>
+          <p id="ytStatus" class="status-text"></p>
+        </div>
+
+        <!-- Simplify bar -->
+        <div class="toolbar-row">
+          <span class="toolbar-label">🔍 Simplify:</span>
+          <select id="simplifyLevel" class="select-input">
+            <option value="plain">Plain English</option>
+            <option value="eli5">Explain Like I'm 5</option>
+          </select>
+          <button id="simplifyBtn" class="btn-ghost">Rewrite</button>
+        </div>
+
+        <div id="simplifyResult" style="display:none;" class="simplify-result-box">
+          <div class="simplify-result-header">
+            <span id="simplifyLevelLabel" class="badge-accent">SIMPLIFIED</span>
+            <button id="useSimplifiedBtn" class="chip-btn">Use as Input</button>
+          </div>
+          <p id="simplifyText"></p>
+        </div>
+
+        <!-- Analyze row -->
+        <div class="analyze-row">
+          <select id="themeSelect" class="select-input" style="flex:0 0 auto;width:140px;">
+            <option value="General">General</option>
+            <option value="Business &amp; Finance">Business</option>
+            <option value="Medical &amp; Science">Medical</option>
+            <option value="Legal">Legal</option>
+            <option value="Literature &amp; Poetry">Literature</option>
+          </select>
+          <button id="analyzeBtn" class="btn-primary btn-analyze">⚡ Decipher Text</button>
+          <button id="saveBtn" class="btn-ghost" style="display:none;">💾 Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESIZER -->
+    <div class="pane-resizer" id="paneResizer">
+      <div class="resizer-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- ── RIGHT PANE: Results ── -->
+    <div class="pane-right" id="paneRight">
+      <div class="pane-card">
+        <div class="pane-card-header">
+          <h3>Extracted Words <span id="wordCountBadge" class="word-count-badge">(0)</span></h3>
+          <div class="action-chips">
+            <button id="mnemonicBtn" class="chip-btn chip-purple" style="display:none;" disabled>💡 Memory Hooks</button>
+            <button id="oppositeDayBtn" class="chip-btn chip-amber" style="display:none;" disabled>🔄 Opposite Day</button>
+            <button id="generateStoryBtn" class="chip-btn" style="display:none;" disabled>📖 Story</button>
+            <button id="startQuizBtn" class="chip-btn chip-accent" disabled>🎯 Quiz</button>
+          </div>
+        </div>
+
+        <div id="translationBar" style="display:none;" class="translation-bar">
+          <span class="toolbar-label">🌐 Translate to:</span>
+          <select id="langSelect" class="lang-select"></select>
+          <button id="translateBtn" class="btn-amber">Translate</button>
+          <button id="reverseQuizBtn" class="btn-ghost" style="display:none;">🔄 Reverse Quiz</button>
+        </div>
+
+        <div id="storyContainer" style="display:none;" class="story-box"></div>
+
+        <div id="resultsBox" class="results-scroll">
+          <div class="results-empty">
+            <div class="results-empty-icon">🔬</div>
+            <p>Paste text on the left and click <strong>⚡ Decipher Text</strong> to begin.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /dual-pane -->
+</div><!-- /studioView -->
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW: DOJO — Quiz hub
+════════════════════════════════════════════════════════ -->
+<div id="dojoView" class="app-view hidden workspace-view">
+  <div class="workspace-header">
+    <div class="workspace-header-inner">
+      <h2 class="workspace-title">Quiz</h2>
+      <p class="workspace-subtitle">Test your mastery across three quiz modes.</p>
+    </div>
+  </div>
+  <div class="dojo-layout">
+    <div class="dojo-hero-card glass">
+      <div class="dojo-hero-icon">🎯</div>
+      <h3 class="dojo-hero-title">Practice Arena</h3>
+      <p class="dojo-hero-desc">Analyze a passage in Studio first, then return here to test your mastery across three progressively harder quiz modes.</p>
+      <div class="dojo-modes">
+        <div class="dojo-mode-card">
+          <span class="dojo-mode-icon">📘</span>
+          <div>
+            <div class="dojo-mode-name">Standard</div>
+            <div class="dojo-mode-desc">Classic 4-choice quiz</div>
+          </div>
+        </div>
+        <div class="dojo-mode-card">
+          <span class="dojo-mode-icon">🔄</span>
+          <div>
+            <div class="dojo-mode-name">Reverse</div>
+            <div class="dojo-mode-desc">Translation → English</div>
+          </div>
+        </div>
+        <div class="dojo-mode-card">
+          <span class="dojo-mode-icon">📝</span>
+          <div>
+            <div class="dojo-mode-name">Smart Quiz</div>
+            <div class="dojo-mode-desc">AI fill-in-the-blank</div>
+          </div>
+        </div>
+      </div>
+      <div class="dojo-actions">
+        <button id="dojoStartQuizBtn" class="btn-primary btn-analyze" disabled>⚡ Start Quiz</button>
+        <button class="btn-ghost nav-view-btn" data-view="studioView">← Go to Studio</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /dojoView -->
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW: LIBRARY — Saved sessions
+════════════════════════════════════════════════════════ -->
+<div id="libraryView" class="app-view hidden workspace-view">
+  <div class="workspace-header">
+    <div class="workspace-header-inner">
+      <h2 class="workspace-title">Library</h2>
+      <p class="workspace-subtitle">Your saved vocabulary sessions, ready to revisit anytime.</p>
+    </div>
+    <button id="clearLibBtn" class="chip-btn chip-danger" style="display:none;">🗑 Clear All</button>
+  </div>
+  <div id="library" class="library-content">
+    <div id="libraryGrid" class="library-grid">
+      <div class="lib-placeholder">
+        <div style="font-size:40px;margin-bottom:12px;">🔒</div>
+        <p>Please log in to view your saved sessions.</p>
+      </div>
+    </div>
+  </div>
+</div><!-- /libraryView -->
+
+<!-- ══════════════════════════════════════════════════════
+     GLOBAL: QUIZ MODAL
+════════════════════════════════════════════════════════ -->
+<div id="quizModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Vocabulary Quiz">
+  <div class="glass rounded-2xl w-full max-w-lg p-8 relative" id="quizContent">
+    <button id="closeQuiz" class="modal-close" aria-label="Close quiz">✕</button>
+    <div class="quiz-mode-tabs">
+      <button id="modeStandard" class="mode-tab mode-active">📘 Standard</button>
+      <button id="modeReverse" class="mode-tab">🔄 Reverse</button>
+      <button id="modeSRS" class="mode-tab">📝 Smart Quiz</button>
+    </div>
+    <p id="reverseUnavailNote" class="quiz-note">Translate words first to unlock Reverse Mode</p>
+    <p id="srsUnavailNote" class="quiz-note" style="margin-bottom:8px;">Generate Memory Hooks first to unlock Smart Quiz</p>
+    <div id="quizStartScreen" class="text-center">
+      <div id="quizModeLabel" class="quiz-mode-label">📘 Standard Mode</div>
+      <h3 class="quiz-ready-title">Ready to Practice?</h3>
+      <p style="color:var(--text-muted);margin-bottom:24px;">You will be tested on <span id="quizWordCount">0</span> words.</p>
+      <button id="initQuizBtn" class="btn-primary mx-auto">Begin Quiz</button>
+    </div>
+    <div id="quizPlayScreen" style="display:none;">
+      <div class="quiz-progress-row">
+        <span>Question <span id="currentQ">1</span>/<span id="totalQ">10</span></span>
+        <span>Score: <span id="currentScore">0</span></span>
+      </div>
+      <div class="quiz-progress-track"><div id="progressBar" class="quiz-progress-fill"></div></div>
+      <h4 id="questionText" class="quiz-question"></h4>
+      <div id="optionsContainer" class="space-y-3"></div>
+      <button id="nextQBtn" class="btn-primary w-full mt-6 justify-center" style="display:none;">Next Question →</button>
+    </div>
+    <div id="quizEndScreen" style="display:none;text-align:center;">
+      <div style="font-size:52px;margin-bottom:12px;">🎯</div>
+      <h3 class="quiz-ready-title">Deciphered!</h3>
+      <p style="color:var(--text-muted);margin-bottom:24px;">You scored <span id="finalScore" class="score-highlight">0%</span></p>
+      <button id="restartQuizBtn" class="btn-ghost" style="margin-right:10px;">Try Again</button>
+      <button id="exitQuizBtn" class="btn-primary">Done ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST + TUTOR -->
+<div id="toast-container" aria-live="polite"></div>
+<button class="tutor-fab" id="tutorFab" title="Ask Decipher Tutor">🤖</button>
+<div class="tutor-panel" id="tutorPanel">
+  <div class="tutor-header">
+    <div class="tutor-title">🔮 Decipher Tutor</div>
+    <button class="tutor-close" id="tutorClose">✕</button>
+  </div>
+  <div class="tutor-messages" id="tutorMessages">
+    <div class="tutor-empty">Hi! I'm your Decipher Tutor. Ask me about any word, ask me to navigate somewhere (e.g. "show memory hooks"), or ask anything about the passage.</div>
+  </div>
+  <div class="tutor-input-row">
+    <textarea class="tutor-input" id="tutorInput" placeholder="Ask about a word..." rows="1"></textarea>
+    <button class="tutor-send" id="tutorSend">➤</button>
+  </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script type="module" src="main.js"></script>
 </body>
 </html>
