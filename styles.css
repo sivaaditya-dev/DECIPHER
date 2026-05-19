@@ -1281,19 +1281,14 @@ body { overflow-x: hidden; }
   margin-bottom: 20px;
   min-height: 2.5em; /* prevent layout jump before JS renders chars */
 }
-/* Each animated character */
+/* Each animated character — opacity only (no transform = no black pixel GPU artifacts) */
 .about-char {
   display: inline-block;
-  transition: opacity 500ms ease, transform 500ms ease;
+  will-change: opacity;
+  transition: opacity 450ms ease;
 }
-.about-char.hidden-char {
-  opacity: 0;
-  transform: translateX(-18px);
-}
-.about-char.visible-char {
-  opacity: 1;
-  transform: translateX(0);
-}
+.about-char.hidden-char  { opacity: 0; }
+.about-char.visible-char { opacity: 1; }
 .about-hero-sub {
   font-family: var(--font-body);
   font-size: clamp(15px, 1.4vw, 18px);

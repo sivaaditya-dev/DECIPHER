@@ -95,6 +95,7 @@ let currentLangName   = '';
 // 1. AUTH
 // ======================
 firebase.initializeApp(firebaseConfig);
+const heroLoginBtn = document.getElementById('heroLoginBtn');
 initAuth(firebase, (user) => {
   if (user) {
     authBtn.textContent = 'Log Out';
@@ -103,15 +104,34 @@ initAuth(firebase, (user) => {
     saveBtn.disabled = false;
     clearLibBtn.style.display = 'inline';
     loadLibrary();
+    // Hero button becomes "Open Studio" once logged in
+    if (heroLoginBtn) {
+      heroLoginBtn.textContent = 'Open Studio →';
+      heroLoginBtn.classList.add('logged-in');
+    }
   } else {
     authBtn.textContent = 'Log In with Google';
     userNameDisplay.style.display = 'none';
     saveBtn.disabled = true;
     clearLibBtn.style.display = 'none';
     renderLibraryLoggedOut(libraryGrid);
+    if (heroLoginBtn) {
+      heroLoginBtn.textContent = 'Login with Google';
+      heroLoginBtn.classList.remove('logged-in');
+    }
   }
 });
 authBtn.addEventListener('click', handleAuthButtonClick);
+if (heroLoginBtn) {
+  heroLoginBtn.addEventListener('click', () => {
+    if (getCurrentUser()) {
+      // Already logged in — go to Studio
+      if (window.decipherNav) window.decipherNav('studioView');
+    } else {
+      handleAuthButtonClick();
+    }
+  });
+}
 
 // ======================
 // 2. PDF UPLOAD
