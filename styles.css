@@ -60,9 +60,17 @@ h1,h2,h3,h4{font-family:var(--font-display);font-style:normal;}
 .input-box{background:rgba(4,9,20,0.7);border:1px solid var(--border);color:var(--text-main);border-radius:10px;padding:14px;width:100%;resize:none;transition:all .3s;font-family:'Barlow',sans-serif;font-size:14px;}
 .input-box:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
 .input-box::placeholder{color:var(--text-muted);}
-.lang-select{appearance:none;background:rgba(4,9,20,0.7) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%234d7a9a'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 12px center;background-size:12px;border:1px solid var(--border);color:var(--text-main);border-radius:10px;padding:11px 36px 11px 14px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:13px;transition:border-color .2s;}
+.lang-select{appearance:none;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%234d7a9a'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 12px center;background-size:12px;border:1px solid var(--border);color:var(--text-main);border-radius:10px;padding:11px 36px 11px 14px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:13px;transition:border-color .2s;}
 .lang-select:focus{outline:none;border-color:var(--secondary);}
-.lang-select option{background:#070d1a;color:#deeeff;}
+/* option elements inherit background from their parent select, explicit bg prevents white-on-white across themes */
+.lang-select option, select option {
+  background-color: #1a1f2e;
+  color: #deeeff;
+}
+html[data-theme="light"] .lang-select option,
+html[data-theme="light"] select option { background-color: #f0f4ff; color: #0a1830; }
+html[data-theme="red"] .lang-select option,
+html[data-theme="red"] select option   { background-color: #1a0808; color: #f5e5e5; }
 
 /* Drop Zone */
 .drop-zone{border:2px dashed var(--border);border-radius:14px;padding:28px 20px;text-align:center;transition:all .3s;cursor:default;}
@@ -1281,14 +1289,15 @@ body { overflow-x: hidden; }
   margin-bottom: 20px;
   min-height: 2.5em; /* prevent layout jump before JS renders chars */
 }
-/* Each animated character — opacity only (no transform = no black pixel GPU artifacts) */
+/* Each animated character — use color transition to avoid GPU black-pixel artifacts */
 .about-char {
-  display: inline-block;
-  will-change: opacity;
-  transition: opacity 450ms ease;
+  display: inline;
+  will-change: auto;
+  transition: color 400ms ease;
+  color: transparent;
 }
-.about-char.hidden-char  { opacity: 0; }
-.about-char.visible-char { opacity: 1; }
+.about-char.hidden-char  { color: transparent; }
+.about-char.visible-char { color: #fff; }
 .about-hero-sub {
   font-family: var(--font-body);
   font-size: clamp(15px, 1.4vw, 18px);

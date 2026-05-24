@@ -22,6 +22,7 @@ import {
   initQuizModeTabs, getMode
 } from './modules/quiz.js';
 import { LANGUAGES } from './modules/languages.js';
+import { SAMPLE_TEXTS } from './modules/samples.js';
 
 // ======================
 // Populate Language Select
@@ -175,47 +176,27 @@ async function handleFileUpload(file) {
 }
 
 // ======================
-// 3. LOAD SAMPLE (11 diverse texts, random each click)
+// 3. LOAD SAMPLE (121 diverse texts, bag randomizer)
 // ======================
-const SAMPLE_TEXTS = [
-  // 1. Science & Space
-  `The James Webb Space Telescope has fundamentally transformed our understanding of the cosmos. By capturing infrared light invisible to the human eye, Webb can peer through dense clouds of gas and dust that once obfuscated stellar nurseries. Astronomers have been astounded by its unprecedented resolution, which has enabled the observation of galaxies formed merely 300 million years after the Big Bang — a period cosmologists call cosmic dawn. The telescope's segmented beryllium mirrors, coated in gold to maximize infrared reflectivity, represent a pinnacle of human ingenuity and precision engineering.`,
-  // 2. Philosophy & Ethics
-  `The paradox of moral relativism has long vexed philosophers. If ethical standards are merely cultural constructs, then no society can be condemned for its transgressions — an implication that strikes many as deeply pernicious. Proponents of moral realism contend that objective ethical truths exist independently of human sentiment, while pragmatists argue that moral frameworks should be evaluated by their consequences rather than their metaphysical foundations. This epistemological tension between absolutism and relativism remains unresolved, permeating contemporary debates on human rights, justice, and the legitimacy of cultural critique.`,
-  // 3. Economics
-  `Quantitative easing, a heterodox monetary policy tool, was deployed by central banks during the 2008 financial crisis to combat deflationary spirals. By purchasing government securities and mortgage-backed assets, the Federal Reserve injected liquidity into a moribund credit market, ostensibly forestalling a catastrophic economic contraction. Critics, however, contend that such unconventional interventions exacerbate wealth inequality and create perverse incentives by artificially suppressing interest rates. The long-term ramifications of sustained asset purchases on inflation expectations and fiscal sustainability remain contentious among economists.`,
-  // 4. Literature & Language
-  `Postcolonial literature grapples with the enduring psychological and cultural ramifications of colonial subjugation. Authors such as Chinua Achebe and Frantz Fanon elucidated how colonialism engendered a profound sense of alienation among subjugated peoples — a rupture between indigenous identity and the hegemonic norms imposed by colonial powers. The concept of hybridity, theorized by Homi Bhabha, suggests that colonial encounters produce ambivalent cultural identities that neither fully assimilate into the colonizer's paradigm nor revert to precolonial traditions, resulting in a liminal space of perpetual negotiation.`,
-  // 5. Biology & Medicine
-  `The phenomenon of neuroplasticity challenges the long-held dogma that the adult brain is immutable. Contrary to earlier assumptions, the cerebral cortex retains a remarkable capacity for structural reorganization in response to experience, injury, or therapeutic interventions. Synaptic pruning during adolescence refines neural pathways, while long-term potentiation — the persistent strengthening of synaptic connections — underpins the consolidation of memories. These discoveries have profound implications for treating neurodegenerative disorders and rehabilitating patients with traumatic brain injuries, offering hope for recovery previously deemed inconceivable.`,
-  // 6. Technology & AI
-  `Large language models represent a paradigm shift in artificial intelligence, leveraging transformer architectures to process and generate human-like text with remarkable coherence. Trained on vast corpora through self-supervised learning, these models demonstrate emergent capabilities — reasoning, analogy, and even rudimentary commonsense inference — that were not explicitly programmed. Yet critics argue that such systems are fundamentally stochastic parrots, adept at pattern interpolation but devoid of genuine comprehension or intentionality. The debate over sentience, consciousness, and the ethical deployment of autonomous AI systems grows increasingly consequential as these technologies permeate critical infrastructure.`,
-  // 7. History & Civilization
-  `The Silk Road was not merely a conduit for mercantile exchange but a vector for the propagation of ideas, religions, and pathogens across Eurasia. Buddhist iconography traveled westward from the Indian subcontinent; papermaking techniques diffused from Tang dynasty China to the Islamic caliphates; and the devastating Black Death traversed the same routes that had carried silk and spices. This intricate web of interdependence illustrates that globalization is not a modern phenomenon but an ancient, inexorable process that has perpetually reshaped civilizations through contact, commerce, and contagion.`,
-  // 8. Psychology
-  `Cognitive dissonance, Leon Festinger's seminal contribution to social psychology, describes the psychological discomfort experienced when an individual holds contradictory beliefs or when actions conflict with deeply held values. To alleviate this dissonance, individuals engage in a repertoire of rationalization strategies — minimizing the importance of the conflicting belief, acquiring consonant information, or modifying their behavior. This mechanism underlies a vast spectrum of human conduct, from the smoker who dismisses carcinogenic evidence to the investor who remains steadfastly committed to a failing position, exemplifying the profound irrationality embedded in ostensibly rational agents.`,
-  // 9. Environmental Science
-  `The cryosphere — encompassing Earth's frozen water in glaciers, ice sheets, and permafrost — is undergoing unprecedented destabilization. The ablation of the Greenland and Antarctic ice sheets has accelerated alarmingly, contributing to sea level rise that threatens coastal megacities with inundation within decades. Concurrently, the thawing of Arctic permafrost releases sequestered methane, a potent greenhouse gas that amplifies warming in a pernicious feedback loop. Glaciologists warn that crossing critical tipping points may render these changes irreversible on human timescales, fundamentally altering precipitation patterns and freshwater availability for billions of people.`,
-  // 10. Art & Culture
-  `The Baroque period epitomized artistic grandeur and emotional exuberance, emerging as an aesthetic response to the Protestant Reformation's austerity. Painters such as Caravaggio revolutionized chiaroscuro — the dramatic interplay of luminosity and shadow — to imbue sacred narratives with visceral, earthly immediacy. Meanwhile, architects like Bernini conceived ecclesiastical spaces as immersive theatrical experiences, deploying colonnades, gilded stucco, and trompe-l'oeil ceilings to overwhelm the senses and engender devotional fervor. The Baroque's exuberant ornamentation was simultaneously a demonstration of ecclesiastical magnificence and a sophisticated instrument of Counter-Reformation propaganda.`,
-  // 11. Law & Politics
-  `Judicial review — the power of courts to invalidate legislation that contravenes a constitution — stands as one of the most consequential innovations in democratic governance. First asserted by Chief Justice John Marshall in Marbury v. Madison, this doctrine transformed the judiciary from a relatively inconsequential branch into a formidable arbiter of constitutional legitimacy. Critics contend that unelected judges wielding such authority constitutes a countermajoritarian paradox incompatible with democratic self-governance. Proponents counter that constitutional entrenchment of fundamental rights serves as an indispensable bulwark against majoritarian tyranny and the ephemeral passions of electoral politics.`,
-];
-
 if (sampleBtn) {
+  sampleBtn._bag = [];
   sampleBtn.addEventListener('click', () => {
-    // Pick a random sample — never repeat twice in a row
-    const prev = sampleBtn._lastIdx ?? -1;
-    let idx;
-    do { idx = Math.floor(Math.random() * SAMPLE_TEXTS.length); } while (idx === prev && SAMPLE_TEXTS.length > 1);
-    sampleBtn._lastIdx = idx;
+    // Pick a random sample using bag randomizer (no repeats until empty)
+    if (!sampleBtn._bag || sampleBtn._bag.length === 0) {
+      sampleBtn._bag = Array.from({ length: SAMPLE_TEXTS.length }, (_, i) => i);
+      // Fisher-Yates shuffle
+      for (let i = sampleBtn._bag.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [sampleBtn._bag[i], sampleBtn._bag[j]] = [sampleBtn._bag[j], sampleBtn._bag[i]];
+      }
+    }
+    
+    const idx = sampleBtn._bag.pop();
 
     inputText.value = SAMPLE_TEXTS[idx];
     // Switch to text tab if not already there
     const textTab = document.getElementById('srcTabText');
     if (textTab && !textTab.classList.contains('active')) textTab.click();
-
-    showToast(`Sample ${idx + 1} of ${SAMPLE_TEXTS.length} loaded! Click "Decipher Text" to analyze.`, 'info', 3500);
     inputText.focus();
   });
 }
@@ -433,8 +414,11 @@ async function loadSession(id) {
       mnemonicBtn.style.opacity = '1';
       mnemonicBtn.disabled = false;
       reverseQuizBtn.style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      showToast('Session loaded!', 'success', 2000);
+      // Navigate to Studio view and scroll workspace to top
+      if (window.decipherNav) window.decipherNav('studioView');
+      const workspace = document.querySelector('.app-workspace');
+      if (workspace) workspace.scrollTop = 0;
+      showToast('Session loaded! 📖', 'success', 2000);
     }
   } catch (err) {
     showToast('Could not load session. It may have been deleted.', 'error');
@@ -452,14 +436,6 @@ clearLibBtn.addEventListener('click', async () => {
   }
 });
 
-// ======================
-// 10. SAMPLE TEXT
-// ======================
-sampleBtn.addEventListener('click', () => {
-  inputText.value = 'The proliferation of digital technology has precipitated a paradigm shift in pedagogical methodologies. While traditional education relied on a teacher-centric model, modern approaches necessitate a more interactive and student-focused framework. This unprecedented integration of sophisticated algorithms into learning platforms has created both opportunities and challenges.';
-  simplifyResult.style.display = 'none';
-  showToast('Sample text loaded!', 'info', 2000);
-});
 
 // ======================
 // THEME TOGGLE
@@ -873,6 +849,21 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     // 6. Trigger about page animations when entering About view
     if (viewId === 'aboutView') {
       runAboutAnimations();
+    }
+
+    // 7. Sync Quiz view state whenever it becomes visible
+    if (viewId === 'dojoView') {
+      const dojoStart = document.getElementById('dojoStartQuizBtn');
+      const dojoDesc  = document.querySelector('.dojo-hero-desc');
+      if (dojoStart) {
+        const hasWords = currentVocabList.length > 0;
+        dojoStart.disabled = !hasWords;
+        if (dojoDesc) {
+          dojoDesc.textContent = hasWords
+            ? `${currentVocabList.length} words loaded and ready. Choose a quiz mode below and hit Start!`
+            : 'Analyze a passage in Studio first, then return here to test your mastery across three progressively harder quiz modes.';
+        }
+      }
     }
   }
 
