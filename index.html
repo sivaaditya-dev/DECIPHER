@@ -592,8 +592,25 @@
   </div>
 </div>
 
+<!-- VOICE LISTENING OVERLAY — shown while mic is active -->
+<div id="voiceOverlay" class="voice-overlay hidden" role="status" aria-live="assertive">
+  <span class="voice-overlay-pulse"></span>
+  <span id="voiceStatus" class="voice-overlay-text">🎤 Listening…</span>
+</div>
+
 <!-- TOAST + TUTOR -->
 <div id="toast-container" aria-live="polite"></div>
+
+<!-- Voice Assistant FAB (above Tutor FAB) -->
+<button class="voice-fab" id="voiceFab" title="Voice Assistant (click to speak a command)" aria-label="Voice Assistant">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="9" y="2" width="6" height="11" rx="3" fill="currentColor"/>
+    <path d="M5 11a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="9" y1="22" x2="15" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+
 <button class="tutor-fab" id="tutorFab" title="Ask Decipher Tutor">🤖</button>
 <div class="tutor-panel" id="tutorPanel">
   <div class="tutor-header">

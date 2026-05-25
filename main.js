@@ -23,6 +23,7 @@ import {
 } from './modules/quiz.js';
 import { LANGUAGES } from './modules/languages.js';
 import { SAMPLE_TEXTS } from './modules/samples.js';
+import { initVoiceAssistant } from './modules/voice.js';
 
 // ======================
 // Populate Language Select
@@ -747,6 +748,85 @@ document.getElementById('restartQuizBtn').addEventListener('click', async () => 
 });
 document.getElementById('exitQuizBtn').addEventListener('click', closeQuiz);
 document.getElementById('quizModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeQuiz(); });
+
+// ======================
+// 13. VOICE ASSISTANT
+// ======================
+(function initVoice() {
+  // Helper: find and set language in the langSelect dropdown by name
+  function setLangSelect(langName) {
+    const lower = langName.toLowerCase();
+    // Try matching full name or code
+    for (const opt of langSelect.options) {
+      if (opt.text.toLowerCase().includes(lower) || opt.value.toLowerCase().includes(lower)) {
+        langSelect.value = opt.value;
+        return;
+      }
+    }
+    // If no match found, leave as-is and toast a hint
+    showToast(`Couldn't match language "${langName}" — please select it manually.`, 'warning', 4000);
+  }
+
+  // Helper: programmatically click the sample button
+  function loadSampleVoice() {
+    if (sampleBtn) sampleBtn.click();
+  }
+
+  // Helper: trigger analyze button click
+  function clickAnalyze() {
+    if (analyzeBtn && !analyzeBtn.disabled) analyzeBtn.click();
+    else showToast('Please enter some text first.', 'warning');
+  }
+
+  // Helper: trigger dojoStartQuizBtn (smart quiz via voice)
+  async function clickStartSmartQuiz() {
+    const btn = document.getElementById('dojoStartQuizBtn');
+    if (!btn || currentVocabList.length === 0) {
+      showToast('Analyze some text first, then try Smart Quiz.', 'warning');
+      return;
+    }
+    // Select Smart Quiz (SRS) mode tab, then start
+    const srsTab = document.getElementById('modeSRS');
+    if (srsTab) srsTab.click();
+    if (btn && !btn.disabled) btn.click();
+  }
+
+  // Helper: trigger dojoStartQuizBtn (standard quiz via voice)
+  function clickStartQuiz() {
+    const btn = document.getElementById('dojoStartQuizBtn');
+    if (!btn || currentVocabList.length === 0) {
+      showToast('Analyze some text first, then start the quiz.', 'warning');
+      return;
+    }
+    // Select Standard mode tab, then start
+    const stdTab = document.getElementById('modeStandard');
+    if (stdTab) stdTab.click();
+    if (btn && !btn.disabled) btn.click();
+  }
+
+  initVoiceAssistant({
+    decipherNav:      () => window.decipherNav,  // getter — resolved at call-time after initAppShell runs
+    loadSample:       loadSampleVoice,
+    clickAnalyze,
+    clickMemoryHooks: () => { if (mnemonicBtn && !mnemonicBtn.disabled) mnemonicBtn.click(); else showToast('Analyze text first.', 'warning'); },
+    clickStory:       () => { if (generateStoryBtn && !generateStoryBtn.disabled) generateStoryBtn.click(); else showToast('Analyze text first.', 'warning'); },
+    clickOppositeDay: () => { if (oppositeDayBtn && !oppositeDayBtn.disabled) oppositeDayBtn.click(); else showToast('Analyze text first.', 'warning'); },
+    clickSimplify:    () => { if (simplifyBtn && inputText.value.length > 20) simplifyBtn.click(); else showToast('Enter some text first.', 'warning'); },
+    clickSave:        () => saveBtn.click(),
+    clickTranslate:   () => { if (translateBtn && !translateBtn.disabled) translateBtn.click(); else showToast('Analyze text first.', 'warning'); },
+    setLangSelect,
+    clickStartQuiz,
+    clickStartSmartQuiz,
+    sendToTutor: (text) => {
+      // Forward unrecognized voice command to the tutor chat
+      if (tutorInput) {
+        tutorInput.value = text;
+        sendTutorMessage();
+      }
+    },
+    currentVocabList,
+  });
+})();
 // ======================
 // 12. PARALLAX + REVEAL
 // ======================

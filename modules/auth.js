@@ -50,28 +50,9 @@ export function handleAuthButtonClick() {
   } else {
     auth
       .signInWithPopup(provider)
-      .then(async (result) => {
+      .then((result) => {
         const firstName = result.user.displayName.split(' ')[0];
         showToast(`Welcome, ${firstName}! 🎉`, 'success');
-
-        // Send welcome email only on very first sign-in
-        const isNew = result.additionalUserInfo?.isNewUser;
-        if (isNew && result.user.email) {
-          try {
-            await fetch('/api/send-welcome-email', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                name:  result.user.displayName,
-                email: result.user.email,
-              }),
-            });
-            console.log('✅ Welcome email dispatched for', result.user.email);
-          } catch (emailErr) {
-            // Email failure is non-critical — don't block the user
-            console.warn('Welcome email failed (non-critical):', emailErr);
-          }
-        }
       })
       .catch((err) => {
         if (err.code !== 'auth/popup-closed-by-user') {

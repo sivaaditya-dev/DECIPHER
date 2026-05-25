@@ -1,0 +1,419 @@
+/**
+ * voice.js — Decipher Voice Assistant
+ *
+ * Uses the Web Speech API (SpeechRecognition + SpeechSynthesis).
+ * No API key required. Works in Chrome, Edge, and modern Android browsers.
+ *
+ * Capabilities:
+ *  - Listens in any language / accent (Gemini interprets intent)
+ *  - Parses multi-step commands: "load sample, translate to Tamil, go to quiz"
+ *  - Speaks confirmation back with Web TTS
+ *  - Falls back gracefully if browser doesn't support Speech API
+ *
+ * Usage:
+ *   import { initVoiceAssistant } from './modules/voice.js';
+ *   initVoiceAssistant({ handlers, decipherNav, showToast, ... });
+ */
+
+// ─────────────────────────────────────────────────────────────────
+// ACTION INTENT MAP
+// Natural language → action key.  Each entry has several phrase
+// patterns so we match informal, accented, or non-English input.
+// ─────────────────────────────────────────────────────────────────
+const VOICE_INTENTS = [
+  // Navigation
+  {
+    patterns: [/\b(studio|analyze|analyser|analyzer|decipher text)\b/i],
+    action: 'navStudio',
+    label: 'Navigating to Studio',
+  },
+  {
+    patterns: [/\b(quiz|test|dojo|practice)\b/i],
+    action: 'navQuiz',
+    label: 'Navigating to Quiz',
+  },
+  {
+    patterns: [/\b(library|saved|history|sessions)\b/i],
+    action: 'navLibrary',
+    label: 'Navigating to Library',
+  },
+  {
+    patterns: [/\b(home|landing|start|main page)\b/i],
+    action: 'navHome',
+    label: 'Going Home',
+  },
+  {
+    patterns: [/\b(about)\b/i],
+    action: 'navAbout',
+    label: 'Opening About page',
+  },
+
+  // Studio actions — order matters: run before generic nav
+  {
+    patterns: [/\b(load|use|insert|get|open|fetch)\b.{0,20}\b(sample|example|demo|text)\b/i,
+               /\b(sample|example|demo)\b/i],
+    action: 'loadSample',
+    label: 'Loading a sample text',
+  },
+  {
+    patterns: [/\b(analyze|analyse|decipher|extract|process|scan)\b/i],
+    action: 'analyze',
+    label: 'Analyzing the text',
+  },
+  {
+    patterns: [/\b(memory hook|mnemonic|hook|remember|memorize)\b/i],
+    action: 'memoryHooks',
+    label: 'Generating Memory Hooks',
+  },
+  {
+    patterns: [/\b(story|generate story|create story|write story)\b/i],
+    action: 'story',
+    label: 'Generating a Story',
+  },
+  {
+    patterns: [/\b(opposite day|antonym|opposite|flip|reverse meaning)\b/i],
+    action: 'oppositeDay',
+    label: 'Running Opposite Day',
+  },
+  {
+    patterns: [/\b(simplify|eli5|simple|plain english|rewrite|easy)\b/i],
+    action: 'simplify',
+    label: 'Simplifying the passage',
+  },
+  {
+    patterns: [/\b(save|bookmark|store|keep)\b/i],
+    action: 'save',
+    label: 'Saving the session',
+  },
+
+  // Translation — capture language name
+  {
+    patterns: [/\b(translate|translation)\b/i],
+    action: 'translate',
+    label: 'Translating vocabulary',
+  },
+
+  // Quiz modes
+  {
+    patterns: [/\b(smart quiz|srs|fill.in.the.blank|sentence quiz)\b/i],
+    action: 'startSmartQuiz',
+    label: 'Starting Smart Quiz',
+  },
+  {
+    patterns: [/\b(start quiz|begin quiz|start test|play quiz|launch quiz)\b/i],
+    action: 'startQuiz',
+    label: 'Starting Quiz',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────
+// LANGUAGE EXTRACTION
+// Detect a target language in the utterance for translate action.
+// ─────────────────────────────────────────────────────────────────
+const KNOWN_LANGS = [
+  'tamil','hindi','telugu','kannada','malayalam','marathi','bengali','gujarati',
+  'punjabi','urdu','spanish','french','german','italian','portuguese','japanese',
+  'korean','chinese','arabic','russian','dutch','swedish','turkish','polish',
+  'vietnamese','thai','indonesian','malay','swahili','greek','hebrew',
+];
+
+function extractLanguage(text) {
+  const lower = text.toLowerCase();
+  for (const lang of KNOWN_LANGS) {
+    if (lower.includes(lang)) {
+      return lang.charAt(0).toUpperCase() + lang.slice(1);
+    }
+  }
+  // Fallback: look for "translate to X" or "in X" pattern
+  const match = lower.match(/\b(?:translate|into|to|in)\s+([a-z]+)/i);
+  if (match && match[1] && match[1].length > 2 && !['the','a','an','my','your'].includes(match[1])) {
+    return match[1].charAt(0).toUpperCase() + match[1].slice(1);
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// PARSE COMMANDS — split utterance into ordered action queue
+// ─────────────────────────────────────────────────────────────────
+function parseCommands(utterance) {
+  // Split on common conjunctions / punctuation used in chained commands
+  const chunks = utterance
+    .split(/\s*(?:,\s*(?:and\s*)?|(?:\s+and\s+)|(?:\s+then\s+)|(?:\s*;\s*)|\s+also\s+|\s+after\s+that\s+)\s*/i)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  const queue = [];
+
+  for (const chunk of chunks) {
+    for (const intent of VOICE_INTENTS) {
+      if (intent.patterns.some(p => p.test(chunk))) {
+        // Avoid duplicate consecutive actions
+        if (queue.length === 0 || queue[queue.length - 1].action !== intent.action) {
+          const entry = { action: intent.action, label: intent.label, raw: chunk };
+          if (intent.action === 'translate') {
+            entry.lang = extractLanguage(chunk) || extractLanguage(utterance);
+          }
+          queue.push(entry);
+        }
+        break; // only first matching intent per chunk
+      }
+    }
+  }
+  return queue;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SPEECH SYNTHESIS (TTS)
+// ─────────────────────────────────────────────────────────────────
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate  = 1.05;
+  utt.pitch = 1.0;
+  utt.volume = 1.0;
+  // Prefer a natural English voice if available
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v =>
+    v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google'))
+  ) || voices.find(v => v.lang.startsWith('en')) || null;
+  if (preferred) utt.voice = preferred;
+  window.speechSynthesis.speak(utt);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// EXECUTE ACTION QUEUE (sequential with delays)
+// ─────────────────────────────────────────────────────────────────
+async function executeQueue(queue, handlers) {
+  for (let i = 0; i < queue.length; i++) {
+    const cmd = queue[i];
+    const delay = i * 600; // stagger each action
+    await new Promise(resolve => setTimeout(resolve, delay));
+    await runAction(cmd, handlers);
+  }
+}
+
+async function runAction(cmd, handlers) {
+  const { action, lang } = cmd;
+  const {
+    loadSample, clickAnalyze, clickMemoryHooks,
+    clickStory, clickOppositeDay, clickSimplify, clickSave,
+    clickTranslate, setLangSelect, clickStartQuiz, clickStartSmartQuiz,
+    currentVocabList,
+  } = handlers;
+
+  // decipherNav is a getter function — resolve it at call-time
+  const decipherNav = typeof handlers.decipherNav === 'function'
+    ? handlers.decipherNav()
+    : handlers.decipherNav;
+
+  switch (action) {
+    case 'navStudio':  if (decipherNav) decipherNav('studioView');  break;
+    case 'navQuiz':    if (decipherNav) decipherNav('dojoView');    break;
+    case 'navLibrary': if (decipherNav) decipherNav('libraryView'); break;
+    case 'navHome':    if (decipherNav) decipherNav('landing');     break;
+    case 'navAbout':   if (decipherNav) decipherNav('aboutView');   break;
+
+    case 'loadSample':
+      if (loadSample) {
+        if (decipherNav) decipherNav('studioView');
+        await new Promise(r => setTimeout(r, 300));
+        loadSample();
+      }
+      break;
+
+    case 'analyze':
+      if (decipherNav) decipherNav('studioView');
+      await new Promise(r => setTimeout(r, 300));
+      if (clickAnalyze) clickAnalyze();
+      break;
+
+    case 'memoryHooks':
+      if (decipherNav) decipherNav('studioView');
+      await new Promise(r => setTimeout(r, 400));
+      if (clickMemoryHooks) clickMemoryHooks();
+      break;
+
+    case 'story':
+      if (decipherNav) decipherNav('studioView');
+      await new Promise(r => setTimeout(r, 400));
+      if (clickStory) clickStory();
+      break;
+
+    case 'oppositeDay':
+      if (decipherNav) decipherNav('studioView');
+      await new Promise(r => setTimeout(r, 400));
+      if (clickOppositeDay) clickOppositeDay();
+      break;
+
+    case 'simplify':
+      if (decipherNav) decipherNav('studioView');
+      await new Promise(r => setTimeout(r, 400));
+      if (clickSimplify) clickSimplify();
+      break;
+
+    case 'save':
+      if (clickSave) clickSave();
+      break;
+
+    case 'translate':
+      if (decipherNav) decipherNav('studioView');
+      await new Promise(r => setTimeout(r, 400));
+      if (lang && setLangSelect) {
+        setLangSelect(lang);
+        await new Promise(r => setTimeout(r, 200));
+      }
+      if (clickTranslate) clickTranslate();
+      break;
+
+    case 'startQuiz':
+      if (decipherNav) decipherNav('dojoView');
+      await new Promise(r => setTimeout(r, 500));
+      if (clickStartQuiz) clickStartQuiz();
+      break;
+
+    case 'startSmartQuiz':
+      if (decipherNav) decipherNav('dojoView');
+      await new Promise(r => setTimeout(r, 500));
+      if (clickStartSmartQuiz) clickStartSmartQuiz();
+      break;
+
+    default:
+      console.warn('[Voice] Unknown action:', action);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// MAIN INIT
+// ─────────────────────────────────────────────────────────────────
+export function initVoiceAssistant(handlers) {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const voiceFab     = document.getElementById('voiceFab');
+  const voiceOverlay = document.getElementById('voiceOverlay');
+  const voiceStatus  = document.getElementById('voiceStatus');
+
+  // Hide mic FAB if browser doesn't support Web Speech API
+  if (!SpeechRecognition) {
+    if (voiceFab) voiceFab.style.display = 'none';
+    console.warn('[Voice] SpeechRecognition not supported in this browser.');
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.continuous     = false;  // single utterance
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  // Accept any language — Gemini/intent parser handles multi-lingual
+  recognition.lang = navigator.language || 'en-US';
+
+  let isListening = false;
+
+  function showOverlay(text) {
+    if (voiceOverlay) voiceOverlay.classList.remove('hidden');
+    if (voiceStatus)  voiceStatus.textContent = text;
+    if (voiceFab)     voiceFab.classList.add('voice-active');
+  }
+
+  function hideOverlay() {
+    if (voiceOverlay) voiceOverlay.classList.add('hidden');
+    if (voiceFab)     voiceFab.classList.remove('voice-active');
+  }
+
+  function startListening() {
+    if (isListening) {
+      recognition.stop();
+      return;
+    }
+    try {
+      recognition.start();
+    } catch (e) {
+      // recognition already started (race condition) — ignore
+    }
+  }
+
+  recognition.onstart = () => {
+    isListening = true;
+    showOverlay('🎤  Listening… speak now');
+  };
+
+  recognition.onspeechstart = () => {
+    showOverlay('🎤  Hearing you…');
+  };
+
+  recognition.onresult = async (event) => {
+    const utterance = event.results[0][0].transcript.trim();
+    const confidence = event.results[0][0].confidence;
+    console.log(`[Voice] Heard: "${utterance}" (confidence: ${(confidence * 100).toFixed(0)}%)`);
+    showOverlay(`💬  "${utterance}"`);
+
+    const queue = parseCommands(utterance);
+
+    if (queue.length === 0) {
+      // Nothing matched — forward to the Decipher Tutor as a text message
+      showOverlay('🤔  Thinking…');
+      speak('Let me check that for you.');
+      if (handlers.sendToTutor) {
+        handlers.sendToTutor(utterance);
+        // Open tutor panel
+        const tutorPanel = document.getElementById('tutorPanel');
+        const tutorInput = document.getElementById('tutorInput');
+        if (tutorPanel) tutorPanel.classList.add('open');
+        if (tutorInput) tutorInput.value = utterance;
+      }
+      await new Promise(r => setTimeout(r, 800));
+      hideOverlay();
+      return;
+    }
+
+    // Build human-readable confirmation
+    const actionLabels = queue.map(q => {
+      if (q.action === 'translate' && q.lang) return `Translating to ${q.lang}`;
+      return q.label;
+    });
+
+    const confirmMsg =
+      queue.length === 1
+        ? `${actionLabels[0]}!`
+        : `Doing everything you asked — ${actionLabels.join(', ')}.`;
+
+    speak(confirmMsg);
+    showOverlay(`✅  ${confirmMsg}`);
+
+    await executeQueue(queue, handlers);
+
+    await new Promise(r => setTimeout(r, 1200));
+    hideOverlay();
+  };
+
+  recognition.onerror = (event) => {
+    console.warn('[Voice] Recognition error:', event.error);
+    const userErrors = {
+      'no-speech':         'No speech detected. Try again.',
+      'audio-capture':     'Microphone not found.',
+      'not-allowed':       'Microphone access denied. Please allow it in browser settings.',
+      'network':           'Network error during recognition.',
+      'aborted':           '', // user stopped — no message
+    };
+    const msg = userErrors[event.error] || `Voice error: ${event.error}`;
+    if (msg) showOverlay(`⚠️  ${msg}`);
+    speak(msg || '');
+    setTimeout(hideOverlay, 2000);
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    // Don't call hideOverlay here — let onresult / onerror handle it
+  };
+
+  // Wire mic button
+  if (voiceFab) {
+    voiceFab.addEventListener('click', startListening);
+  }
+
+  // Also expose a programmatic trigger
+  window.decipherVoice = { start: startListening, speak };
+
+  console.log('[Voice] Assistant initialized. Click the mic button to begin.');
+}
