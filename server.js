@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Multer instances — memory storage
+// Multer instances ??? memory storage
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 100 * 1024 * 1024 },
@@ -48,9 +48,9 @@ try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });
-  console.log("✅ Connected to Firebase Firestore!");
+  console.log("??? Connected to Firebase Firestore!");
 } catch (error) {
-  console.error("❌ ERROR: Could not load serviceAccountKey.json.");
+  console.error("??? ERROR: Could not load serviceAccountKey.json.");
   process.exit(1);
 }
 
@@ -154,7 +154,7 @@ app.post('/api/extract-pdf', upload.single('document'), async (req, res) => {
     }
 
     if (ext === '.epub') {
-      // EPUB is a ZIP with HTML inside — basic extraction
+      // EPUB is a ZIP with HTML inside ??? basic extraction
       // For now, return a friendly error pointing users toward PDF
       return res.status(422).json({
         error: 'EPUB support is coming soon. Please convert your e-book to PDF first.'
@@ -258,7 +258,7 @@ app.post('/api/mnemonic', async (req, res) => {
   }
   try {
     const prompt = `
-      You are a creative memory coach and linguistics expert. For each vocabulary word, create a vivid, memorable "Memory Hook" — a fun mental image, wordplay, or short story that connects the word's sound/spelling directly to its meaning.
+      You are a creative memory coach and linguistics expert. For each vocabulary word, create a vivid, memorable "Memory Hook" ??? a fun mental image, wordplay, or short story that connects the word's sound/spelling directly to its meaning.
 
       Rules:
       - Keep each mnemonic to 1-2 punchy sentences.
@@ -266,8 +266,8 @@ app.post('/api/mnemonic', async (req, res) => {
       - The hook should make the meaning instantly recalled.
       - Do NOT just restate the definition. Be creative!
 
-      Example: "Gregarious" (def: sociable, fond of company) →
-      Mnemonic: "Think of GREG who's always HILARIOUS at parties — he never shuts up because he loves being around people!"
+      Example: "Gregarious" (def: sociable, fond of company) ???
+      Mnemonic: "Think of GREG who's always HILARIOUS at parties ??? he never shuts up because he loves being around people!"
 
       Words to process:
       ${JSON.stringify(vocabList.map(v => ({ term: v.term, def: v.def })))}
@@ -304,10 +304,10 @@ app.post('/api/simplify', async (req, res) => {
 
   const levelInstruction = level === 'eli5'
     ? 'Rewrite this passage as if explaining to a curious, bright 12-year-old. Use simple everyday words, fun analogies, short sentences, and a conversational tone. Keep ALL the core ideas.'
-    : 'Rewrite this passage in clear, straightforward Modern English (B1–B2 level). Remove jargon, complex syntax, and archaic language. Keep all ideas intact — just make them easy to read.';
+    : 'Rewrite this passage in clear, straightforward Modern English (B1???B2 level). Remove jargon, complex syntax, and archaic language. Keep all ideas intact ??? just make them easy to read.';
 
   try {
-    const prompt = `${levelInstruction}\n\nPassage:\n"${text}"\n\nReturn ONLY the rewritten passage as plain text — no headings, no bullet points, no formatting.`;
+    const prompt = `${levelInstruction}\n\nPassage:\n"${text}"\n\nReturn ONLY the rewritten passage as plain text ??? no headings, no bullet points, no formatting.`;
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
@@ -333,10 +333,10 @@ app.post('/api/srs-questions', async (req, res) => {
       - Use ___ (three underscores) to mark exactly where the word goes.
       - The sentence must be realistic: a news headline, business email, academic text, or everyday conversation.
       - Context clues should make the meaning inferable but NOT give away the word directly.
-      - Each sentence must be 10–22 words long.
+      - Each sentence must be 10???22 words long.
       - Do NOT include the actual word anywhere else in the sentence.
 
-      Example: "proliferate" →
+      Example: "proliferate" ???
       "Social media platforms continue to ___ at an astonishing rate, with millions of new accounts created daily."
 
       Words:
@@ -412,7 +412,7 @@ app.post('/api/chat', async (req, res) => {
   const contextWords = vocabList ? vocabList.map(v => `"${v.term}" (${v.def})`).join('; ') : 'None';
   const passageSnippet = passage ? passage.substring(0, 1000) : 'No passage loaded.';
 
-  const systemPrompt = `You are "Decipher Tutor", the intelligent assistant built into Decipher — an AI vocabulary learning app.
+  const systemPrompt = `You are "Decipher Tutor", the intelligent assistant built into Decipher ??? an AI vocabulary learning app.
 
 You have two abilities:
 1. ANSWER vocabulary and comprehension questions.
@@ -421,31 +421,31 @@ You have two abilities:
 == AVAILABLE ACTIONS ==
 When you detect ANY navigational or feature-triggering intent, prepend the EXACT action tag at the very start of your reply (before anything else). Choose the single most relevant action:
 
-[ACTION:navStudio]    — User wants to go to Studio (analyzer, input text, reading passage)
-[ACTION:navQuiz]      — User wants to go to the Quiz page/tab
-[ACTION:navLibrary]   — User wants to go to the Library (saved sessions)
-[ACTION:navHome]      — User wants to go to the home/landing page
-[ACTION:memoryHooks]  — User wants memory hooks, mnemonics, memory aids for words
-[ACTION:quiz]         — User wants to start/take/begin the quiz immediately
-[ACTION:translate]    — User wants to translate vocabulary words
-[ACTION:story]        — User wants to generate a vocabulary story
-[ACTION:simplify]     — User wants to simplify/rewrite the passage (ELI5, plain English)
-[ACTION:oppositeDay]  — User wants antonyms or the Opposite Day feature
+[ACTION:navStudio]    ??? User wants to go to Studio (analyzer, input text, reading passage)
+[ACTION:navQuiz]      ??? User wants to go to the Quiz page/tab
+[ACTION:navLibrary]   ??? User wants to go to the Library (saved sessions)
+[ACTION:navHome]      ??? User wants to go to the home/landing page
+[ACTION:memoryHooks]  ??? User wants memory hooks, mnemonics, memory aids for words
+[ACTION:quiz]         ??? User wants to start/take/begin the quiz immediately
+[ACTION:translate]    ??? User wants to translate vocabulary words
+[ACTION:story]        ??? User wants to generate a vocabulary story
+[ACTION:simplify]     ??? User wants to simplify/rewrite the passage (ELI5, plain English)
+[ACTION:oppositeDay]  ??? User wants antonyms or the Opposite Day feature
 
 == CRITICAL RULES FOR ACTIONS ==
 - Detect intent from ANY language (Tamil, Hindi, Spanish, French, Arabic, etc.) and ANY accent or phrasing variation.
 - Examples of what to recognize:
-  * "memory hooks" / "mnemonic" / "yaad karne ka tarika" / "moyens mnémotechniques" / "aide-mémoire" / "ways to remember" → [ACTION:memoryHooks]
-  * "quiz" / "test me" / "pariksha" / "quiz karo" / "interrogation" / "practise" → [ACTION:quiz]
-  * "translate" / "anuvad" / "traduire" / "traducir" → [ACTION:translate]
-  * "library" / "saved" / "meri library" / "bibliothèque" → [ACTION:navLibrary]
-  * "studio" / "analyzer" / "go back" / "input" → [ACTION:navStudio]
-  * "simplify" / "ELI5" / "explain simple" / "aasaan bhasha" / "simple karo" → [ACTION:simplify]
-  * "story" / "generate story" / "kahani" / "histoire" → [ACTION:story]
+  * "memory hooks" / "mnemonic" / "yaad karne ka tarika" / "moyens mn??motechniques" / "aide-m??moire" / "ways to remember" ??? [ACTION:memoryHooks]
+  * "quiz" / "test me" / "pariksha" / "quiz karo" / "interrogation" / "practise" ??? [ACTION:quiz]
+  * "translate" / "anuvad" / "traduire" / "traducir" ??? [ACTION:translate]
+  * "library" / "saved" / "meri library" / "biblioth??que" ??? [ACTION:navLibrary]
+  * "studio" / "analyzer" / "go back" / "input" ??? [ACTION:navStudio]
+  * "simplify" / "ELI5" / "explain simple" / "aasaan bhasha" / "simple karo" ??? [ACTION:simplify]
+  * "story" / "generate story" / "kahani" / "histoire" ??? [ACTION:story]
 - If NO action is needed (user just asking a vocabulary question), do NOT include any [ACTION:...] tag.
 - NEVER make up action tags. Only use the ones listed above.
 - After the action tag, give a SHORT confirmation (1 sentence) + helpful tip if needed.
-  Example: "[ACTION:memoryHooks] ✅ Navigating to Studio and generating Memory Hooks for your words!"
+  Example: "[ACTION:memoryHooks] ??? Navigating to Studio and generating Memory Hooks for your words!"
 
 == CONTEXT ==
 Active reading passage (first 1000 chars): "${passageSnippet}"
@@ -453,7 +453,7 @@ Vocabulary words being studied: ${contextWords}
 
 == AS A TUTOR ==
 - Help students understand words with vivid analogies and real-world examples.
-- Use the Socratic method — ask occasional follow-up questions.
+- Use the Socratic method ??? ask occasional follow-up questions.
 - Keep responses concise (2-4 sentences for simple questions).
 - Always connect word explanations back to the passage context.
 - Respond warmly and encouragingly.`;
@@ -487,7 +487,7 @@ app.post('/api/opposite-day', async (req, res) => {
     ? `Focus on replacing these key words with their opposites: ${vocabList.map(v => v.term).join(', ')}.`
     : '';
   try {
-    const prompt = `Rewrite this passage by replacing vocabulary words with their antonyms or opposite concepts. Make the result subtly absurd and fun — the meaning should flip but the sentence structure should stay readable. ${terms}
+    const prompt = `Rewrite this passage by replacing vocabulary words with their antonyms or opposite concepts. Make the result subtly absurd and fun ??? the meaning should flip but the sentence structure should stay readable. ${terms}
 
 Original: "${text}"
 
@@ -615,4 +615,161 @@ app.delete('/api/history', verifyToken, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`🚀 Backend running on http://localhost:${PORT}`));
+
+// ─────────────────────────────────────────────────────────
+// DAILY WORD CHALLENGE ENDPOINTS
+// ─────────────────────────────────────────────────────────
+
+// GET /api/daily-word — returns today's word (cached in Firestore, shared by all users)
+app.get('/api/daily-word', async (req, res) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const docRef = db.collection('dailyWords').doc(today);
+  try {
+    const snap = await docRef.get();
+    if (snap.exists) return res.json(snap.data());
+
+    const prompt = `You are a vocabulary teacher. Generate a challenging English word for today's Daily Word Challenge.
+Return a JSON object with EXACTLY these fields (no markdown, no extra text):
+{
+  "word": "the vocabulary word",
+  "phonetic": "/pronunciation/",
+  "definition": "clear, one-sentence definition",
+  "wrongChoices": ["wrong def 1", "wrong def 2", "wrong def 3"],
+  "sentence": "A sentence with the word replaced by ___ so users fill in the blank.",
+  "partOfSpeech": "noun/verb/adjective/etc"
+}
+Choose a sophisticated but real English word. wrongChoices should be plausible but clearly wrong. sentence must contain exactly ___ (three underscores) for the blank.`;
+
+    const result = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: [{ role: 'user', parts: [{ text: prompt }] }]
+    });
+    const raw = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const jsonStr = raw.replace(/```json|```/g, '').trim();
+    const wordData = JSON.parse(jsonStr);
+    wordData.date = today;
+    wordData.generatedAt = new Date().toISOString();
+    await docRef.set(wordData);
+    res.json(wordData);
+  } catch (err) {
+    console.error('Error generating daily word:', err);
+    res.status(500).json({ error: 'Failed to generate daily word.' });
+  }
+});
+
+// GET /api/challenge/leaderboard?type=global|weekly — top 10 entries
+app.get('/api/challenge/leaderboard', async (req, res) => {
+  const type = req.query.type === 'weekly' ? 'weekly' : 'global';
+  try {
+    if (type === 'global') {
+      const snap = await db.collection('challengeLeaderboard')
+        .orderBy('totalCorrect', 'desc').limit(10).get();
+      const entries = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+      res.json({ entries });
+    } else {
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const weekNum = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+      const weekKey = `${now.getFullYear()}-W${String(weekNum).padStart(2,'0')}`;
+      const snap = await db.collection('challengeWeekly').doc(weekKey)
+        .collection('entries').orderBy('weeklyScore', 'desc').limit(10).get();
+      const entries = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+      res.json({ entries, weekKey });
+    }
+  } catch (err) {
+    console.error('Error fetching leaderboard:', err);
+    res.status(500).json({ error: 'Failed to fetch leaderboard.' });
+  }
+});
+
+// POST /api/challenge/submit — record a completed daily challenge attempt
+app.post('/api/challenge/submit', verifyToken, async (req, res) => {
+  const uid = req.user.uid;
+  const { mcqCorrect, sentenceCorrect, date } = req.body;
+  if (!date) return res.status(400).json({ error: 'date required' });
+
+  try {
+    const userRef = db.collection('challengeUsers').doc(uid);
+    const snap = await userRef.get();
+    const today = new Date().toISOString().slice(0, 10);
+    let data = snap.exists ? snap.data() : {
+      totalCorrect: 0, currentStreak: 0, longestStreak: 0,
+      rankPoints: 0, lastPlayedDate: null, rankResetDate: new Date().toISOString(),
+      displayName: req.user.name || 'Anonymous',
+      photoURL: req.user.picture || null,
+      weeklyScore: 0, weeklyResetDate: null
+    };
+
+    if (data.lastPlayedDate === today) {
+      return res.json({ alreadyPlayed: true, data });
+    }
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = yesterday.toISOString().slice(0,10);
+    if (data.lastPlayedDate === yStr) {
+      data.currentStreak = (data.currentStreak || 0) + 1;
+    } else {
+      data.currentStreak = 1;
+    }
+    data.longestStreak = Math.max(data.longestStreak || 0, data.currentStreak);
+    data.lastPlayedDate = today;
+
+    const pointsEarned = (mcqCorrect ? 1 : 0) + (sentenceCorrect ? 1 : 0);
+    data.totalCorrect = (data.totalCorrect || 0) + pointsEarned;
+    data.rankPoints = (data.rankPoints || 0) + pointsEarned;
+
+    // 6-month rank drop (6 tiers) check
+    const resetDate = new Date(data.rankResetDate || new Date());
+    const monthsElapsed = (new Date() - resetDate) / (1000 * 60 * 60 * 24 * 30);
+    if (monthsElapsed >= 6) {
+      data.rankPoints = Math.max(0, (data.rankPoints || 0) - 6);
+      data.rankResetDate = new Date().toISOString();
+    }
+
+    // Weekly score tracking
+    const now = new Date();
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const weekNum = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+    const weekKey = `${now.getFullYear()}-W${String(weekNum).padStart(2,'0')}`;
+    if (data.weeklyResetDate !== weekKey) {
+      data.weeklyScore = 0;
+      data.weeklyResetDate = weekKey;
+    }
+    data.weeklyScore = (data.weeklyScore || 0) + pointsEarned;
+
+    await userRef.set(data, { merge: true });
+
+    const lbRef = db.collection('challengeLeaderboard').doc(uid);
+    await lbRef.set({
+      displayName: data.displayName, photoURL: data.photoURL,
+      totalCorrect: data.totalCorrect, currentStreak: data.currentStreak,
+      rankPoints: data.rankPoints
+    }, { merge: true });
+
+    const wlRef = db.collection('challengeWeekly').doc(weekKey).collection('entries').doc(uid);
+    await wlRef.set({
+      displayName: data.displayName, photoURL: data.photoURL,
+      weeklyScore: data.weeklyScore
+    }, { merge: true });
+
+    res.json({ success: true, data, pointsEarned });
+  } catch (err) {
+    console.error('Error submitting challenge:', err);
+    res.status(500).json({ error: 'Failed to submit challenge.' });
+  }
+});
+
+// GET /api/challenge/me — get current user's challenge data
+app.get('/api/challenge/me', verifyToken, async (req, res) => {
+  try {
+    const snap = await db.collection('challengeUsers').doc(req.user.uid).get();
+    if (!snap.exists) return res.json({ newUser: true });
+    res.json(snap.data());
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch user data.' });
+  }
+});
+
+
+app.listen(PORT, () => console.log(`???? Backend running on http://localhost:${PORT}`));

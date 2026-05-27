@@ -24,6 +24,9 @@ import {
 import { LANGUAGES } from './modules/languages.js';
 import { SAMPLE_TEXTS } from './modules/samples.js';
 import { initVoiceAssistant } from './modules/voice.js';
+import { initSpidey, playCorrect, playWrong, resetSpidey } from './modules/spidey.js';
+import { initChallenge, setTokenProvider, setChallengeSpideyCallback, calculateRank } from './modules/challenge.js';
+import { setSpideyCallback } from './modules/quiz.js';
 
 // ======================
 // ======================
@@ -184,6 +187,25 @@ let currentLangName   = '';
 // 1. AUTH
 // ======================
 firebase.initializeApp(firebaseConfig);
+
+// ── Spidey Animation Init ──────────────────────────────────────────────────
+initSpidey();
+setSpideyCallback(({ isCorrect, word }) => {
+  if (isCorrect) playCorrect(word);
+  else playWrong();
+});
+setChallengeSpideyCallback(({ isCorrect, word }) => {
+  if (isCorrect) playCorrect(word);
+  else playWrong();
+});
+
+// ── Challenge Token Provider ──────────────────────────────────────────────
+setTokenProvider(async () => {
+  const user = getCurrentUser();
+  if (!user) return null;
+  try { return await user.getIdToken(); } catch { return null; }
+});
+
 const heroLoginBtn  = document.getElementById('heroLoginBtn');
 const heroGuestBtn  = document.querySelector('[data-view="studioView"].hero-cta-ghost');
 initAuth(firebase, (user) => {
@@ -194,6 +216,8 @@ initAuth(firebase, (user) => {
     saveBtn.disabled = false;
     clearLibBtn.style.display = 'inline';
     loadLibrary();
+    // Init challenge view for logged-in user
+    initChallenge(user);
     // Hero button becomes "Get Started" → navigates to Studio
     if (heroLoginBtn) {
       heroLoginBtn.textContent = 'Get Started →';
@@ -207,6 +231,8 @@ initAuth(firebase, (user) => {
     saveBtn.disabled = true;
     clearLibBtn.style.display = 'none';
     renderLibraryLoggedOut(libraryGrid);
+    // Clear challenge view for logged-out state
+    initChallenge(null);
     if (heroLoginBtn) {
       heroLoginBtn.textContent = 'Login with Google';
       heroLoginBtn.classList.remove('logged-in');
@@ -983,7 +1009,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   //  since we unified to a single set of .theme-btn-sm buttons)
 
   // ── VIEW ROUTER ───────────────────────────────────────────────
-  const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'libraryView'];
+  const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'challengeView', 'libraryView'];
 
   function switchAppView(viewId) {
     // 1. Hide every view
@@ -1050,6 +1076,11 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
             : 'Analyze a passage in Studio first, then return here to test your mastery across three progressively harder quiz modes.';
         }
       }
+    }
+
+    // 8. Init challenge view whenever user navigates to it
+    if (viewId === 'challengeView') {
+      initChallenge(getCurrentUser());
     }
   }
 

@@ -8,6 +8,10 @@
 
 import { showToast } from './toast.js';
 
+// ─── Spidey Animation Callback ────────────────────────────────────────────
+let _spideyCallback = null;
+export function setSpideyCallback(fn) { _spideyCallback = fn; }
+
 // DOM references
 const quizModal       = document.getElementById('quizModal');
 const quizContent     = document.getElementById('quizContent');
@@ -211,6 +215,7 @@ function _attachOptionListeners() {
 function handleOptionClick(event) {
   const clicked   = event.currentTarget;
   const isCorrect = clicked.dataset.correct === 'true';
+  const word      = quizState.questions[quizState.current]?.word || '';
   if (isCorrect) {
     quizState.score++;
     document.getElementById('currentScore').textContent = quizState.score;
@@ -221,6 +226,8 @@ function handleOptionClick(event) {
     else if (btn === clicked) btn.classList.add('wrong');
   });
   nextQBtn.style.display = 'inline-flex';
+  // Fire spidey animation
+  if (_spideyCallback) _spideyCallback({ isCorrect, word });
 }
 
 function endQuiz() {
