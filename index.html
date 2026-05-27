@@ -50,8 +50,8 @@
         <button class="theme-btn-sm" data-theme="red" title="Matte Red">🔴</button>
       </div>
       <div class="nav-divider"></div>
-      <span id="userNameDisplay" class="nav-user-name"></span>
-      <button id="authBtn" class="nav-cta-btn">Log In</button>
+      <button id="navProfileBtn" class="nav-link nav-profile-btn" data-view="profileView" style="display:none;">Profile</button>
+      <button id="authBtn" class="nav-cta-btn">Sign In</button>
     </div>
 
     <!-- Mobile: just auth + hamburger -->
@@ -61,7 +61,7 @@
         <button class="theme-btn-sm" data-theme="light">🌸</button>
         <button class="theme-btn-sm" data-theme="red">🔴</button>
       </div>
-      <button id="authBtnMobile" class="nav-cta-btn" style="display:none;">Log In</button>
+      <button id="authBtnMobile" class="nav-cta-btn" style="display:none;">Sign In</button>
     </div>
 
   </div>
@@ -89,7 +89,7 @@
         and quizzes you until every word sticks — for good.
       </p>
       <div class="hero-actions animate-fade-rise-delay-2">
-        <button id="heroLoginBtn" class="hero-cta-primary liquid-glass rounded-full">Login with Google</button>
+        <button id="heroLoginBtn" class="hero-cta-primary liquid-glass rounded-full">Sign In / Sign Up</button>
         <button data-view="studioView" class="hero-cta-ghost nav-view-btn">Continue as Guest →</button>
       </div>
       <div class="hero-stats animate-fade-rise-delay-2">
@@ -557,6 +557,14 @@
   <!-- Rendered dynamically by challenge.js -->
 </div>
 
+<!-- ══════════════════════════════════════════════════════
+     VIEW: PROFILE — Avatar, Trophy Room, Galaxy Word Map
+════════════════════════════════════════════════════════ -->
+<div id="profileView" class="app-view hidden workspace-view">
+  <!-- Rendered dynamically by profile.js -->
+  <div id="profileContent"></div>
+</div>
+
 <div id="libraryView" class="app-view hidden workspace-view">
   <div class="workspace-header">
     <div class="workspace-header-inner">
@@ -649,6 +657,15 @@
 </div>
 
 <script src="firebase-config.js"></script>
+<!-- Three.js for Galaxy Word Map (ESM import map) -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.163.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.163.0/examples/jsm/"
+  }
+}
+</script>
 <script type="module" src="main.js"></script>
 </body>
 </html>

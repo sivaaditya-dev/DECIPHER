@@ -550,52 +550,79 @@ app.post('/api/history', verifyToken, async (req, res) => {
 });
 
 // UPGRADED: Get history ONLY for the logged-in user
+// No .orderBy() - requires composite index. Sort in JS instead.
 app.get('/api/history', verifyToken, async (req, res) => {
-  const userId = req.user.uid; // Get UID from verified token
-
+  const userId = req.user.uid;
   try {
-    // Let Firestore do the sorting and limiting to save memory and read costs
-    const snapshot = await sessionsCollection
-      .where('userId', '==', userId)
-      .orderBy('createdAt', 'desc')
-      .limit(10)
-      .get();
-    
+    const snapshot = await sessionsCollection.where('userId', '==', userId).get();
     let history = [];
     snapshot.forEach(doc => {
       const data = doc.data();
-      const dateString = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : new Date().toLocaleDateString();
-      
       history.push({
         id: doc.id,
-        date: dateString,
+        _ts: data.createdAt ? data.createdAt.toMillis() : 0,
+        date: data.createdAt ? data.createdAt.toDate().toLocaleDateString() : new Date().toLocaleDateString(),
         snippet: data.snippet,
         words: data.words
       });
     });
-
+    history.sort((a, b) => b._ts - a._ts);
+    history = history.slice(0, 20).map(({ _ts, ...rest }) => rest);
     res.json(history);
   } catch (err) {
-    console.error("Error fetching history from database:", err);
-    res.status(500).json({ error: "Failed to fetch history. Please check the server logs for more details." });
+    console.error('Error fetching history:', err);
+    res.status(500).json({ error: 'Failed to fetch history.' });
   }
 });
 
-// Get a specific session by ID (Unchanged)
+// Get a specific session by ID
 app.get('/api/history/:id', verifyToken, async (req, res) => {
   try {
     const doc = await sessionsCollection.doc(req.params.id).get();
-    if (!doc.exists) return res.status(404).json({ error: "Session not found" });
-
+    if (!doc.exists) return res.status(404).json({ error: 'Session not found' });
     const sessionData = doc.data();
-    // SECURITY CHECK: Ensure the user requesting the session is the one who owns it
-    if (sessionData.userId !== req.user.uid) return res.status(403).json({ error: "Forbidden: You do not own this session." });
+    if (sessionData.userId !== req.user.uid) return res.status(403).json({ error: 'Forbidden.' });
     res.json({ id: doc.id, ...sessionData });
   } catch (err) {
-    console.error("Error fetching session by ID:", err);
-    res.status(500).json({ error: "Invalid ID format or database error. Please check the server logs." });
+    console.error('Error fetching session by ID:', err);
+    res.status(500).json({ error: 'Invalid ID format or database error.' });
   }
 });
+
+// ─────────────────────────────────────────────────────────
+// PROFILE ENDPOINTS
+// ─────────────────────────────────────────────────────────
+
+// GET /api/profile — fetch user's profile preferences
+app.get('/api/profile', verifyToken, async (req, res) => {
+  const uid = req.user.uid;
+  try {
+    const doc = await db.collection('userProfiles').doc(uid).get();
+    if (!doc.exists) return res.json({});
+    res.json(doc.data());
+  } catch (err) {
+    console.error('Profile fetch error:', err);
+    res.status(500).json({ error: 'Failed to fetch profile.' });
+  }
+});
+
+// POST /api/profile — save/update profile preferences (merge)
+app.post('/api/profile', verifyToken, async (req, res) => {
+  const uid = req.user.uid;
+  const allowed = ['displayName', 'avatarId', 'voiceId'];
+  const updates = {};
+  allowed.forEach(k => { if (req.body[k] != null) updates[k] = req.body[k]; });
+  if (Object.keys(updates).length === 0) return res.status(400).json({ error: 'No valid fields.' });
+  try {
+    await db.collection('userProfiles').doc(uid).set(updates, { merge: true });
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Profile save error:', err);
+    res.status(500).json({ error: 'Failed to save profile.' });
+  }
+});
+
+
 
 // UPGRADED: Clear ONLY the logged-in user's history
 app.delete('/api/history', verifyToken, async (req, res) => {

@@ -11,7 +11,7 @@ import {
   generateSRSQuestions, SPINNER_SVG,
   extractImageText, fetchYouTubeTranscript, sendChatMessage, generateOppositeDay
 } from './modules/api.js';
-import { initAuth, handleAuthButtonClick, getCurrentUser } from './modules/auth.js';
+import { initAuth, handleAuthButtonClick, getCurrentUser, showAuthModal, hideAuthModal } from './modules/auth.js';
 import {
   renderResults, renderLibraryLoading, renderLibraryGrid,
   renderLibraryError, renderLibraryLoggedOut, renderStory
@@ -27,6 +27,7 @@ import { initVoiceAssistant } from './modules/voice.js';
 import { initSpidey, playCorrect, playWrong, resetSpidey } from './modules/spidey.js';
 import { initChallenge, setTokenProvider, setChallengeSpideyCallback, calculateRank } from './modules/challenge.js';
 import { setSpideyCallback } from './modules/quiz.js';
+import { initProfile } from './modules/profile.js';
 
 // ======================
 // ======================
@@ -208,11 +209,13 @@ setTokenProvider(async () => {
 
 const heroLoginBtn  = document.getElementById('heroLoginBtn');
 const heroGuestBtn  = document.querySelector('[data-view="studioView"].hero-cta-ghost');
+const navProfileBtn = document.getElementById('navProfileBtn');
+
 initAuth(firebase, (user) => {
   if (user) {
     authBtn.textContent = 'Log Out';
-    userNameDisplay.textContent = `Hi, ${user.displayName.split(' ')[0]}`;
-    userNameDisplay.style.display = 'inline';
+    // Show Profile nav button instead of greeting
+    if (navProfileBtn) navProfileBtn.style.display = 'inline-flex';
     saveBtn.disabled = false;
     clearLibBtn.style.display = 'inline';
     loadLibrary();
@@ -226,15 +229,16 @@ initAuth(firebase, (user) => {
     // Hide the guest button once logged in
     if (heroGuestBtn) heroGuestBtn.style.display = 'none';
   } else {
-    authBtn.textContent = 'Log In with Google';
-    userNameDisplay.style.display = 'none';
+    authBtn.textContent = 'Sign In';
+    // Hide Profile nav button
+    if (navProfileBtn) navProfileBtn.style.display = 'none';
     saveBtn.disabled = true;
     clearLibBtn.style.display = 'none';
     renderLibraryLoggedOut(libraryGrid);
     // Clear challenge view for logged-out state
     initChallenge(null);
     if (heroLoginBtn) {
-      heroLoginBtn.textContent = 'Login with Google';
+      heroLoginBtn.textContent = 'Sign In / Sign Up';
       heroLoginBtn.classList.remove('logged-in');
     }
     // Restore guest button on logout
@@ -246,11 +250,15 @@ if (heroLoginBtn) {
   heroLoginBtn.addEventListener('click', () => {
     if (getCurrentUser()) {
       // Already logged in — go to Studio
-      if (window.decipherNav) window.decipherNav('studioView');
+      switchAppView('studioView');
     } else {
-      handleAuthButtonClick();
+      showAuthModal('signin');
     }
   });
+}
+// Wire Profile nav button
+if (navProfileBtn) {
+  navProfileBtn.addEventListener('click', () => switchAppView('profileView'));
 }
 
 // ======================
@@ -1009,7 +1017,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   //  since we unified to a single set of .theme-btn-sm buttons)
 
   // ── VIEW ROUTER ───────────────────────────────────────────────
-  const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'challengeView', 'libraryView'];
+  const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'challengeView', 'profileView', 'libraryView'];
 
   function switchAppView(viewId) {
     // 1. Hide every view
@@ -1081,6 +1089,11 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     // 8. Init challenge view whenever user navigates to it
     if (viewId === 'challengeView') {
       initChallenge(getCurrentUser());
+    }
+
+    // 9. Init profile view whenever user navigates to it
+    if (viewId === 'profileView') {
+      initProfile(getCurrentUser());
     }
   }
 
