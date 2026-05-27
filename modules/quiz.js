@@ -62,7 +62,7 @@ export function startQuiz(srsSentences = null) {
   if (currentMode === 'srs') {
     if (srsSentences) srsQuestions = srsSentences;
     if (srsQuestions.length === 0) {
-      showToast('Generate Memory Hooks first to unlock Smart Quiz.', 'warning'); return;
+      showToast('Click "⚡ Start Quiz" on the Quiz page to auto-generate Smart Quiz questions.', 'warning'); return;
     }
   }
   _buildAndOpen();

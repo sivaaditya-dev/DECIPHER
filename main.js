@@ -26,15 +26,102 @@ import { SAMPLE_TEXTS } from './modules/samples.js';
 import { initVoiceAssistant } from './modules/voice.js';
 
 // ======================
-// Populate Language Select
 // ======================
-const langSelect = document.getElementById('langSelect');
-LANGUAGES.forEach(lang => {
-  const opt = document.createElement('option');
-  opt.value = lang.code;
-  opt.textContent = `${lang.name} — ${lang.native}`;
-  langSelect.appendChild(opt);
-});
+// Populate Searchable Language Dropdown
+// ======================
+(function initLangDropdown() {
+  const hiddenInput   = document.getElementById('langSelect');
+  const dropBtn       = document.getElementById('langDropdownBtn');
+  const dropLabel     = document.getElementById('langDropdownLabel');
+  const dropPanel     = document.getElementById('langDropdownPanel');
+  const searchInput   = document.getElementById('langSearchInput');
+  const optionList    = document.getElementById('langOptionList');
+  if (!hiddenInput || !dropBtn || !optionList) return;
+
+  let selectedCode = 'Tamil';
+  let focusedIdx   = -1;
+
+  // Build all <li> items
+  function buildList(filter = '') {
+    const q = filter.toLowerCase().trim();
+    optionList.innerHTML = '';
+    focusedIdx = -1;
+    LANGUAGES.forEach((lang, i) => {
+      const text = `${lang.name} — ${lang.native}`;
+      if (q && !lang.name.toLowerCase().includes(q) && !lang.native.toLowerCase().includes(q)) return;
+      const li = document.createElement('li');
+      li.className = 'lang-option' + (lang.code === selectedCode ? ' lang-option-active' : '');
+      li.dataset.code = lang.code;
+      li.dataset.label = text;
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', lang.code === selectedCode ? 'true' : 'false');
+      // Highlight match
+      if (q) {
+        const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        li.innerHTML = text.replace(re, '<mark>$1</mark>');
+      } else {
+        li.textContent = text;
+      }
+      li.addEventListener('click', () => selectLang(lang.code, text));
+      optionList.appendChild(li);
+    });
+  }
+
+  function selectLang(code, label) {
+    selectedCode = code;
+    hiddenInput.value = code;
+    dropLabel.textContent = label;
+    closeDropdown();
+    // Dispatch change event so any listeners notice
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Expose for voice assistant external calls
+  window._voiceSetLang = selectLang;
+
+  function openDropdown() {
+    dropPanel.classList.add('open');
+    dropBtn.setAttribute('aria-expanded', 'true');
+    searchInput.value = '';
+    buildList();
+    searchInput.focus();
+    // Scroll active item into view
+    setTimeout(() => {
+      const active = optionList.querySelector('.lang-option-active');
+      if (active) active.scrollIntoView({ block: 'nearest' });
+    }, 50);
+  }
+
+  function closeDropdown() {
+    dropPanel.classList.remove('open');
+    dropBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  dropBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropPanel.classList.contains('open') ? closeDropdown() : openDropdown();
+  });
+
+  searchInput.addEventListener('input', () => buildList(searchInput.value));
+
+  // Keyboard: arrow up/down + enter
+  searchInput.addEventListener('keydown', (e) => {
+    const items = [...optionList.querySelectorAll('.lang-option')];
+    if (e.key === 'ArrowDown') { e.preventDefault(); focusedIdx = Math.min(focusedIdx + 1, items.length - 1); items[focusedIdx]?.scrollIntoView({ block: 'nearest' }); items.forEach((el, i) => el.classList.toggle('lang-option-focused', i === focusedIdx)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); focusedIdx = Math.max(focusedIdx - 1, 0); items[focusedIdx]?.scrollIntoView({ block: 'nearest' }); items.forEach((el, i) => el.classList.toggle('lang-option-focused', i === focusedIdx)); }
+    else if (e.key === 'Enter' && focusedIdx >= 0 && items[focusedIdx]) { const el = items[focusedIdx]; selectLang(el.dataset.code, el.dataset.label); }
+    else if (e.key === 'Escape') closeDropdown();
+  });
+
+  // Click outside closes dropdown
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('langDropdownWrap')?.contains(e.target)) closeDropdown();
+  });
+
+  // Initial build
+  buildList();
+})();
+
 
 // ======================
 // DOM References
@@ -97,7 +184,8 @@ let currentLangName   = '';
 // 1. AUTH
 // ======================
 firebase.initializeApp(firebaseConfig);
-const heroLoginBtn = document.getElementById('heroLoginBtn');
+const heroLoginBtn  = document.getElementById('heroLoginBtn');
+const heroGuestBtn  = document.querySelector('[data-view="studioView"].hero-cta-ghost');
 initAuth(firebase, (user) => {
   if (user) {
     authBtn.textContent = 'Log Out';
@@ -106,11 +194,13 @@ initAuth(firebase, (user) => {
     saveBtn.disabled = false;
     clearLibBtn.style.display = 'inline';
     loadLibrary();
-    // Hero button becomes "Open Studio" once logged in
+    // Hero button becomes "Get Started" → navigates to Studio
     if (heroLoginBtn) {
-      heroLoginBtn.textContent = 'Open Studio →';
+      heroLoginBtn.textContent = 'Get Started →';
       heroLoginBtn.classList.add('logged-in');
     }
+    // Hide the guest button once logged in
+    if (heroGuestBtn) heroGuestBtn.style.display = 'none';
   } else {
     authBtn.textContent = 'Log In with Google';
     userNameDisplay.style.display = 'none';
@@ -121,6 +211,8 @@ initAuth(firebase, (user) => {
       heroLoginBtn.textContent = 'Login with Google';
       heroLoginBtn.classList.remove('logged-in');
     }
+    // Restore guest button on logout
+    if (heroGuestBtn) heroGuestBtn.style.display = '';
   }
 });
 authBtn.addEventListener('click', handleAuthButtonClick);
@@ -150,11 +242,11 @@ pdfDropZone.addEventListener('drop', e => {
 
 async function handleFileUpload(file) {
   const ext = file.name.toLowerCase();
-  if (!ext.endsWith('.pdf') && !ext.endsWith('.epub')) {
-    showToast('Only PDF and EPUB files are supported.', 'error'); return;
+  if (!ext.endsWith('.pdf') && !ext.endsWith('.epub') && !ext.endsWith('.docx')) {
+    showToast('Only PDF, DOCX and EPUB files are supported.', 'error'); return;
   }
-  if (file.size > 20 * 1024 * 1024) {
-    showToast('File is too large. Please upload a file under 20MB.', 'error'); return;
+  if (file.size > 100 * 1024 * 1024) {
+    showToast('File is too large. Maximum size is 100 MB.', 'error'); return;
   }
   pdfFileName.textContent = `📎 ${file.name}`;
   pdfFileName.style.display = 'inline';
@@ -165,7 +257,10 @@ async function handleFileUpload(file) {
     const result = await extractPdfText(file);
     inputText.value = result.text;
     showToast(`Extracted ${result.pageCount} page(s) from "${result.fileName}". Ready to analyze!`, 'success', 5000);
-    document.getElementById('analyzer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    inputText.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Switch to Text tab to show extracted content
+    const textTab = document.getElementById('srcTabText');
+    if (textTab && !textTab.classList.contains('active')) textTab.click();
   } catch (err) {
     showToast(`PDF extraction failed: ${err.message}`, 'error');
     pdfFileName.style.display = 'none';
@@ -753,18 +848,29 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
 // 13. VOICE ASSISTANT
 // ======================
 (function initVoice() {
-  // Helper: find and set language in the langSelect dropdown by name
+  // Helper: find and set language in the new searchable dropdown by name
   function setLangSelect(langName) {
     const lower = langName.toLowerCase();
-    // Try matching full name or code
-    for (const opt of langSelect.options) {
-      if (opt.text.toLowerCase().includes(lower) || opt.value.toLowerCase().includes(lower)) {
-        langSelect.value = opt.value;
-        return;
+    const match = LANGUAGES.find(l =>
+      l.name.toLowerCase().includes(lower) ||
+      l.code.toLowerCase().includes(lower) ||
+      l.native.toLowerCase().includes(lower)
+    );
+    if (match) {
+      // Use the global voice sync hook registered by initLangDropdown
+      if (window._voiceSetLang) {
+        window._voiceSetLang(match.code, `${match.name} — ${match.native}`);
+      } else {
+        // Fallback: update hidden input directly
+        const hiddenInput = document.getElementById('langSelect');
+        if (hiddenInput) hiddenInput.value = match.code;
+        const label = document.getElementById('langDropdownLabel');
+        if (label) label.textContent = `${match.name} — ${match.native}`;
       }
+      showToast(`Language set to ${match.name}`, 'success', 2000);
+    } else {
+      showToast(`Couldn't match language "${langName}" — please select it manually.`, 'warning', 4000);
     }
-    // If no match found, leave as-is and toast a hint
-    showToast(`Couldn't match language "${langName}" — please select it manually.`, 'warning', 4000);
   }
 
   // Helper: programmatically click the sample button

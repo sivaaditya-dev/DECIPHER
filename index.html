@@ -84,7 +84,7 @@
       </h1>
       <p class="hero-desc animate-fade-rise-delay">
         Upload any passage, PDF, or image. AI extracts vocabulary,
-        defines it in context, translates it to 51 languages,
+        defines it in context, translates it to 200+ languages,
         and quizzes you until every word sticks — for good.
       </p>
       <div class="hero-actions animate-fade-rise-delay-2">
@@ -92,7 +92,7 @@
         <button data-view="studioView" class="hero-cta-ghost nav-view-btn">Continue as Guest →</button>
       </div>
       <div class="hero-stats animate-fade-rise-delay-2">
-        <div class="hero-stat"><span class="stat-n">51</span><span class="stat-l">Languages</span></div>
+        <div class="hero-stat"><span class="stat-n">200+</span><span class="stat-l">Languages</span></div>
         <div class="stat-divider"></div>
         <div class="hero-stat"><span class="stat-n">3</span><span class="stat-l">Quiz Modes</span></div>
         <div class="stat-divider"></div>
@@ -173,8 +173,8 @@
         </div>
         <div class="about-feature-card">
           <div class="afc-icon">🌍</div>
-          <div class="afc-title">51-Language Translation</div>
-          <div class="afc-desc">Translate your vocabulary list into any of 51 languages with cultural context notes included.</div>
+          <div class="afc-title">200+ Language Translation</div>
+          <div class="afc-desc">Translate your vocabulary list into any of 200+ languages with cultural context, mirror word alerts, and bilingual card toggle.</div>
         </div>
         <div class="about-feature-card">
           <div class="afc-icon">🎯</div>
@@ -241,7 +241,7 @@
           <div class="about-step-num">03</div>
           <div class="about-step-content">
             <div class="about-step-title">Study & Translate</div>
-            <div class="about-step-desc">Explore definitions, generate memory hooks, translate to 51 languages, and get AI-written stories using your words.</div>
+            <div class="about-step-desc">Explore definitions, generate memory hooks, translate to 200+ languages, and get AI-written stories using your words.</div>
           </div>
         </div>
         <div class="about-step-arrow">→</div>
@@ -298,7 +298,7 @@
         </div>
         <div class="about-faq-item">
           <div class="about-faq-q">How many languages does it support?</div>
-          <div class="about-faq-a">Decipher supports translation into 51 languages including Spanish, French, Hindi, Tamil, Arabic, Japanese, Mandarin, and more.</div>
+          <div class="about-faq-a">Decipher supports translation into 200+ languages including Spanish, French, Hindi, Tamil, Arabic, Japanese, Mandarin, and many more.</div>
         </div>
         <div class="about-faq-item">
           <div class="about-faq-q">What file types can I upload?</div>
@@ -467,7 +467,21 @@
 
         <div id="translationBar" style="display:none;" class="translation-bar">
           <span class="toolbar-label">🌐 Translate to:</span>
-          <select id="langSelect" class="lang-select"></select>
+          <!-- Custom searchable language dropdown -->
+          <div class="lang-dropdown-wrap" id="langDropdownWrap">
+            <button type="button" class="lang-dropdown-btn" id="langDropdownBtn" aria-haspopup="listbox" aria-expanded="false">
+              <span id="langDropdownLabel">Tamil — தமிழ்</span>
+              <span class="lang-dropdown-arrow">▾</span>
+            </button>
+            <div class="lang-dropdown-panel" id="langDropdownPanel" role="listbox" aria-label="Select language">
+              <div class="lang-search-wrap">
+                <input type="text" id="langSearchInput" class="lang-search-input" placeholder="🔍 Search language..." autocomplete="off" spellcheck="false">
+              </div>
+              <ul class="lang-option-list" id="langOptionList"></ul>
+            </div>
+          </div>
+          <!-- Hidden input keeps the current lang value readable by JS -->
+          <input type="hidden" id="langSelect" value="Tamil">
           <button id="translateBtn" class="btn-amber">Translate</button>
           <button id="reverseQuizBtn" class="btn-ghost" style="display:none;">🔄 Reverse Quiz</button>
         </div>
@@ -561,11 +575,11 @@
     <button id="closeQuiz" class="modal-close" aria-label="Close quiz">✕</button>
     <div class="quiz-mode-tabs">
       <button id="modeStandard" class="mode-tab mode-active">📘 Standard</button>
-      <button id="modeReverse" class="mode-tab">🔄 Reverse</button>
-      <button id="modeSRS" class="mode-tab">📝 Smart Quiz</button>
+      <button id="modeReverse" class="mode-tab" disabled>🔄 Reverse</button>
+      <button id="modeSRS" class="mode-tab" disabled>📝 Smart Quiz</button>
     </div>
     <p id="reverseUnavailNote" class="quiz-note">Translate words first to unlock Reverse Mode</p>
-    <p id="srsUnavailNote" class="quiz-note" style="margin-bottom:8px;">Generate Memory Hooks first to unlock Smart Quiz</p>
+    <p id="srsUnavailNote" class="quiz-note" style="margin-bottom:8px;">Click "⚡ Start Quiz" on the Quiz tab to auto-generate Smart Quiz questions</p>
     <div id="quizStartScreen" class="text-center">
       <div id="quizModeLabel" class="quiz-mode-label">📘 Standard Mode</div>
       <h3 class="quiz-ready-title">Ready to Practice?</h3>

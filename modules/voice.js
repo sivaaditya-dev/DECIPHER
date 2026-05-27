@@ -303,17 +303,29 @@ export function initVoiceAssistant(handlers) {
 
   const recognition = new SpeechRecognition();
   recognition.continuous     = false;  // single utterance
-  recognition.interimResults = false;
+  recognition.interimResults = true;   // fire as user speaks for live transcript
   recognition.maxAlternatives = 1;
-  // Accept any language — Gemini/intent parser handles multi-lingual
+  // Accept any language — intent parser handles multi-lingual
   recognition.lang = navigator.language || 'en-US';
 
   let isListening = false;
 
-  function showOverlay(text) {
+  // showOverlay: statusText = prefix shown before the transcript
+  //               transcriptFinal / transcriptInterim = live speech text
+  function showOverlay(statusText, transcriptFinal = '', transcriptInterim = '') {
     if (voiceOverlay) voiceOverlay.classList.remove('hidden');
-    if (voiceStatus)  voiceStatus.textContent = text;
     if (voiceFab)     voiceFab.classList.add('voice-active');
+    if (voiceStatus) {
+      // Build the inner HTML:
+      //   <span class="voice-status-prefix">🎤 Listening…</span>
+      //   <span class="voice-final">confirmed words</span>
+      //   <span class="voice-interim">still speaking…</span>
+      let html = '';
+      if (statusText)        html += `<span class="voice-status-prefix">${statusText}</span>`;
+      if (transcriptFinal)   html += `<span class="voice-final">${transcriptFinal}</span>`;
+      if (transcriptInterim) html += `<span class="voice-interim">${transcriptInterim}</span>`;
+      voiceStatus.innerHTML = html || statusText;
+    }
   }
 
   function hideOverlay() {
@@ -335,24 +347,48 @@ export function initVoiceAssistant(handlers) {
 
   recognition.onstart = () => {
     isListening = true;
-    showOverlay('🎤  Listening… speak now');
+    showOverlay('🎤', '', 'Listening… speak now');
   };
 
   recognition.onspeechstart = () => {
-    showOverlay('🎤  Hearing you…');
+    showOverlay('🎤', '', 'Hearing you…');
+  };
+
+  recognition.onspeechend = () => {
+    showOverlay('⏳', '', 'Processing…');
   };
 
   recognition.onresult = async (event) => {
-    const utterance = event.results[0][0].transcript.trim();
-    const confidence = event.results[0][0].confidence;
+    // Collect all results — some final, some interim
+    let finalTranscript   = '';
+    let interimTranscript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const text = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += text;
+      } else {
+        interimTranscript += text;
+      }
+    }
+
+    // Update live overlay with styled final + interim text
+    if (finalTranscript || interimTranscript) {
+      showOverlay('🎤', finalTranscript, interimTranscript);
+    }
+
+    // Only process commands once we have a final result
+    if (!finalTranscript) return;
+
+    const utterance = finalTranscript.trim();
+    const confidence = event.results[event.results.length - 1][0].confidence;
     console.log(`[Voice] Heard: "${utterance}" (confidence: ${(confidence * 100).toFixed(0)}%)`);
-    showOverlay(`💬  "${utterance}"`);
 
     const queue = parseCommands(utterance);
 
     if (queue.length === 0) {
       // Nothing matched — forward to the Decipher Tutor as a text message
-      showOverlay('🤔  Thinking…');
+      showOverlay('🤔', utterance, '');
       speak('Let me check that for you.');
       if (handlers.sendToTutor) {
         handlers.sendToTutor(utterance);
@@ -379,7 +415,7 @@ export function initVoiceAssistant(handlers) {
         : `Doing everything you asked — ${actionLabels.join(', ')}.`;
 
     speak(confirmMsg);
-    showOverlay(`✅  ${confirmMsg}`);
+    showOverlay('✅', utterance, '');
 
     await executeQueue(queue, handlers);
 
@@ -397,7 +433,7 @@ export function initVoiceAssistant(handlers) {
       'aborted':           '', // user stopped — no message
     };
     const msg = userErrors[event.error] || `Voice error: ${event.error}`;
-    if (msg) showOverlay(`⚠️  ${msg}`);
+    if (msg) showOverlay(`⚠️`, msg, '');
     speak(msg || '');
     setTimeout(hideOverlay, 2000);
   };
