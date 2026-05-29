@@ -15,6 +15,8 @@ let animFrameId = null;
 let container = null;
 let cardOverlay = null;
 let isInitialized = false;
+let isPaused = false;
+let observer = null;
 
 // ─── Init Galaxy ───────────────────────────────────────────────────────────────
 export function initGalaxy(containerEl, words = []) {
@@ -77,6 +79,16 @@ export function initGalaxy(containerEl, words = []) {
   });
   ro.observe(container);
 
+  // Intersection observer to pause when off-screen
+  observer = new IntersectionObserver((entries) => {
+    isPaused = !entries[0].isIntersecting;
+  }, { threshold: 0.1 });
+  observer.observe(container);
+
+  // Pause when tab is inactive
+  window.addEventListener('blur', _onBlur);
+  window.addEventListener('focus', _onFocus);
+
   // Word card overlay
   _buildCardOverlay();
 
@@ -90,7 +102,7 @@ export function initGalaxy(containerEl, words = []) {
 
 // ─── Nebula Background Particles ──────────────────────────────────────────────
 function _addNebulaParticles() {
-  const count = 3000;
+  const count = 1000;
   const geo = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
@@ -218,6 +230,8 @@ function _addEmptyState() {
 let galaxyRotY = 0;
 function _animate() {
   animFrameId = requestAnimationFrame(_animate);
+  if (isPaused) return; // Skip rendering if paused
+
   // Slow auto-rotation
   galaxyRotY += 0.0008;
   scene.rotation.y = galaxyRotY;
@@ -225,6 +239,9 @@ function _animate() {
   camera.position.y = Math.sin(Date.now() * 0.0003) * 2;
   renderer.render(scene, camera);
 }
+
+function _onBlur() { isPaused = true; }
+function _onFocus() { isPaused = false; }
 
 // ─── Mouse / Click Events ──────────────────────────────────────────────────────
 let hoveredStar = null;
@@ -356,7 +373,11 @@ export function destroyGalaxy() {
     renderer.domElement.remove();
   }
   if (cardOverlay) { cardOverlay.remove(); cardOverlay = null; }
+  if (observer) { observer.disconnect(); observer = null; }
+  window.removeEventListener('blur', _onBlur);
+  window.removeEventListener('focus', _onFocus);
   scene = camera = renderer = raycaster = null;
   starMeshes = [];
   isInitialized = false;
+  isPaused = false;
 }

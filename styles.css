@@ -1818,7 +1818,7 @@ body { overflow-x: hidden; }
    SPIDEY ANIMATION SYSTEM - CINEMATIC REWRITE
 ===================================================== */
 
-/* Streak badge pop */,
+/* Streak badge pop */
 @keyframes spideyStreakPop {
   0%   { transform: scale(0.6) translateY(8px); opacity: 0; }
   70%  { transform: scale(1.12) translateY(-2px); opacity: 1; }
@@ -2007,10 +2007,6 @@ body { overflow-x: hidden; }
   cursor: pointer; transition: all 0.2s;
   border: 1px solid;
 }
-.am-github {
-  background: #21262d; border-color: #30363d; color: #e6edf3;
-}
-.am-github:hover { background: #30363d; border-color: #8b949e; }
 .am-google {
   background: rgba(66, 133, 244, 0.08); border-color: rgba(66, 133, 244, 0.3);
   color: #e6edf3;
