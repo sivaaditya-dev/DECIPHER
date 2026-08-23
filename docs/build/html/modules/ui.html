@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ui.js — Shared UI Utilities &mdash; Decipher — AI Vocabulary Learning App</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=6278791d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="samples.js — Sample Texts Library" href="samples.html" />
+    <link rel="prev" title="toast.js — Toast Notifications" href="toast.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #0f172a" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Decipher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🚀 Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#clone-install">1. Clone &amp; Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#environment-variables">2. Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#firebase-setup">3. Firebase Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#a-firebase-admin-server">3a. Firebase Admin (Server)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#b-firebase-client-browser">3b. Firebase Client (Browser)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#c-enable-firestore-auth">3c. Enable Firestore &amp; Auth</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#run-the-app">4. Run the App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#verify-it-works">5. Verify It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#high-level-overview">High-Level Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#frontend-layer">Frontend Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#index-html"><code class="docutils literal notranslate"><span class="pre">index.html</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#main-js"><code class="docutils literal notranslate"><span class="pre">main.js</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#modules"><code class="docutils literal notranslate"><span class="pre">modules/</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#backend-layer">Backend Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#server-js"><code class="docutils literal notranslate"><span class="pre">server.js</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../architecture.html#ai-integration">AI Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#external-services">External Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../architecture.html#security-model">Security Model</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🔌 Backend API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference.html">REST API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#vocabulary-analysis">Vocabulary Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-analyze"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analyze</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#document-extraction">Document Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-extract-pdf"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/extract-pdf</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#image-ocr">Image OCR</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-ocr"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/ocr</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#youtube-transcript">YouTube Transcript</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-youtube-transcript"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/youtube-transcript</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#translation">Translation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-translate"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/translate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#memory-hooks-mnemonics">Memory Hooks (Mnemonics)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-mnemonic"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/mnemonic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#passage-simplifier">Passage Simplifier</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-simplify"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/simplify</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#opposite-day">Opposite Day</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-opposite-day"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/opposite-day</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#story-generation">Story Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-story"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/story</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#srs-quiz-questions">SRS Quiz Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-srs-questions"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/srs-questions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#socratic-tutor-chat">Socratic Tutor Chat</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-chat"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/chat</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#user-library-sessions">User Library (Sessions)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-history"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#get-api-history"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#get-api-history-id"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history/:id</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#delete-api-history"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#user-profile">User Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#get-api-profile"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/profile</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-profile"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/profile</span></code> 🔒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api-reference.html#daily-word-challenge">Daily Word Challenge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#get-api-daily-word"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/daily-word</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#post-api-challenge-submit"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/challenge/submit</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#get-api-challenge-leaderboard"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/leaderboard</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api-reference.html#get-api-challenge-me"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/me</span></code> 🔒</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧩 Frontend Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Frontend Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html"><code class="docutils literal notranslate"><span class="pre">api.js</span></code> — Backend Communication Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#constants">Constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#api-base"><code class="docutils literal notranslate"><span class="pre">API_BASE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#auth-header-management">Auth Header Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#setauth-authinstance"><code class="docutils literal notranslate"><span class="pre">setAuth(authInstance)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#getauthheaders"><code class="docutils literal notranslate"><span class="pre">getAuthHeaders()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#ai-functions">AI Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#analyzetext-text-theme"><code class="docutils literal notranslate"><span class="pre">analyzeText(text,</span> <span class="pre">theme)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#translatevocablist-vocablist-targetlang"><code class="docutils literal notranslate"><span class="pre">translateVocabList(vocabList,</span> <span class="pre">targetLang)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#generatestory-words"><code class="docutils literal notranslate"><span class="pre">generateStory(words)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#generatemnemonics-vocablist"><code class="docutils literal notranslate"><span class="pre">generateMnemonics(vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#simplifypassage-text-level"><code class="docutils literal notranslate"><span class="pre">simplifyPassage(text,</span> <span class="pre">level)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#generatesrsquestions-vocablist"><code class="docutils literal notranslate"><span class="pre">generateSRSQuestions(vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#generateoppositeday-text-vocablist"><code class="docutils literal notranslate"><span class="pre">generateOppositeDay(text,</span> <span class="pre">vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#sendchatmessage-messages-passage-vocablist"><code class="docutils literal notranslate"><span class="pre">sendChatMessage(messages,</span> <span class="pre">passage,</span> <span class="pre">vocabList)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#file-media-functions">File / Media Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#extractpdftext-file"><code class="docutils literal notranslate"><span class="pre">extractPdfText(file)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#extractimagetext-imagefile"><code class="docutils literal notranslate"><span class="pre">extractImageText(imageFile)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#fetchyoutubetranscript-url"><code class="docutils literal notranslate"><span class="pre">fetchYouTubeTranscript(url)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#library-functions">Library Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#savesession-snippet-words"><code class="docutils literal notranslate"><span class="pre">saveSession(snippet,</span> <span class="pre">words)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#fetchlibrary"><code class="docutils literal notranslate"><span class="pre">fetchLibrary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#fetchsession-id"><code class="docutils literal notranslate"><span class="pre">fetchSession(id)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#clearlibrary"><code class="docutils literal notranslate"><span class="pre">clearLibrary()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="auth.html"><code class="docutils literal notranslate"><span class="pre">auth.js</span></code> — Authentication Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auth.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#initauth-firebaseapp-onuserchanged"><code class="docutils literal notranslate"><span class="pre">initAuth(firebaseApp,</span> <span class="pre">onUserChanged)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html#modal-control">Modal Control</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#showauthmodal-mode"><code class="docutils literal notranslate"><span class="pre">showAuthModal(mode?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#hideauthmodal"><code class="docutils literal notranslate"><span class="pre">hideAuthModal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#handleauthbuttonclick"><code class="docutils literal notranslate"><span class="pre">handleAuthButtonClick()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html#user-state">User State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#getcurrentuser"><code class="docutils literal notranslate"><span class="pre">getCurrentUser()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html#internal-flow">Internal Flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#sign-in-with-google">Sign In with Google</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#email-sign-in">Email Sign In</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#email-sign-up">Email Sign Up</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auth.html#forgot-password">Forgot Password</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quiz.html"><code class="docutils literal notranslate"><span class="pre">quiz.js</span></code> — Quiz Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quiz.html#quiz-modes">Quiz Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quiz.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#setvocablist-list"><code class="docutils literal notranslate"><span class="pre">setVocabList(list)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#settranslatedvocablist-list"><code class="docutils literal notranslate"><span class="pre">setTranslatedVocabList(list)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#setsrsquestions-questions"><code class="docutils literal notranslate"><span class="pre">setSRSQuestions(questions)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#getmode"><code class="docutils literal notranslate"><span class="pre">getMode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#startquiz-srssentences"><code class="docutils literal notranslate"><span class="pre">startQuiz(srsSentences?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#closequiz"><code class="docutils literal notranslate"><span class="pre">closeQuiz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#initquiz"><code class="docutils literal notranslate"><span class="pre">initQuiz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#nextquestion"><code class="docutils literal notranslate"><span class="pre">nextQuestion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#initquizmodetabs"><code class="docutils literal notranslate"><span class="pre">initQuizModeTabs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quiz.html#spidey-integration">Spidey Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="quiz.html#setspideycallback-fn"><code class="docutils literal notranslate"><span class="pre">setSpideyCallback(fn)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quiz.html#scoring">Scoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="voice.html"><code class="docutils literal notranslate"><span class="pre">voice.js</span></code> — Voice Assistant</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="voice.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="voice.html#initvoiceassistant-handlers"><code class="docutils literal notranslate"><span class="pre">initVoiceAssistant(handlers)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="voice.html#supported-voice-commands">Supported Voice Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="voice.html#multi-step-commands">Multi-Step Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="voice.html#translation-language-extraction">Translation Language Extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="voice.html#text-to-speech">Text-to-Speech</a></li>
+<li class="toctree-l3"><a class="reference internal" href="voice.html#fallback-to-tutor-chat">Fallback to Tutor Chat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="voice.html#global-api">Global API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="languages.html"><code class="docutils literal notranslate"><span class="pre">languages.js</span></code> — Translation Panel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="languages.html#key-features">Key Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="languages.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="languages.html#initlanguages-ontranslatecallback"><code class="docutils literal notranslate"><span class="pre">initLanguages(onTranslateCallback)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="languages.html#settranslationdata-translatedlist"><code class="docutils literal notranslate"><span class="pre">setTranslationData(translatedList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="languages.html#getselectedlanguage"><code class="docutils literal notranslate"><span class="pre">getSelectedLanguage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="languages.html#setlanguage-langname"><code class="docutils literal notranslate"><span class="pre">setLanguage(langName)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html"><code class="docutils literal notranslate"><span class="pre">profile.js</span></code> — User Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="profile.html#initprofile-auth"><code class="docutils literal notranslate"><span class="pre">initProfile(auth)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="profile.html#showprofilemodal"><code class="docutils literal notranslate"><span class="pre">showProfileModal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="profile.html#loadprofile"><code class="docutils literal notranslate"><span class="pre">loadProfile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="profile.html#saveprofile"><code class="docutils literal notranslate"><span class="pre">saveProfile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="challenge.html"><code class="docutils literal notranslate"><span class="pre">challenge.js</span></code> — Daily Word Challenge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="challenge.html#feature-overview">Feature Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="challenge.html#rank-system">Rank System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="challenge.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="challenge.html#initchallenge-auth"><code class="docutils literal notranslate"><span class="pre">initChallenge(auth)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="challenge.html#renderleaderboard-type"><code class="docutils literal notranslate"><span class="pre">renderLeaderboard(type)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="galaxy.html"><code class="docutils literal notranslate"><span class="pre">galaxy.js</span></code> — Galaxy Animation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="galaxy.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="galaxy.html#initgalaxy-canvasid"><code class="docutils literal notranslate"><span class="pre">initGalaxy(canvasId)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spidey.html"><code class="docutils literal notranslate"><span class="pre">spidey.js</span></code> — Spidey-Sense Animation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spidey.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spidey.html#initspidey-canvasid"><code class="docutils literal notranslate"><span class="pre">initSpidey(canvasId?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spidey.html#triggerspidey-iscorrect-word"><code class="docutils literal notranslate"><span class="pre">triggerSpidey({</span> <span class="pre">isCorrect,</span> <span class="pre">word</span> <span class="pre">})</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="toast.html"><code class="docutils literal notranslate"><span class="pre">toast.js</span></code> — Toast Notifications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="toast.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="toast.html#showtoast-message-type-duration"><code class="docutils literal notranslate"><span class="pre">showToast(message,</span> <span class="pre">type?,</span> <span class="pre">duration?)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ui.js</span></code> — Shared UI Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#responsibilities">Responsibilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#initui"><code class="docutils literal notranslate"><span class="pre">initUI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#settheme-themename"><code class="docutils literal notranslate"><span class="pre">setTheme(themeName)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="samples.html"><code class="docutils literal notranslate"><span class="pre">samples.js</span></code> — Sample Texts Library</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="samples.html#domains-included">Domains Included</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="samples.html#getsampletext-domain"><code class="docutils literal notranslate"><span class="pre">getSampleText(domain?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="samples.html#getalldomains"><code class="docutils literal notranslate"><span class="pre">getAllDomains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="samples.html#getrandomsample"><code class="docutils literal notranslate"><span class="pre">getRandomSample()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🗄️ Database</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../database.html">Database Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../database.html#sessions"><code class="docutils literal notranslate"><span class="pre">sessions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../database.html#userprofiles"><code class="docutils literal notranslate"><span class="pre">userProfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../database.html#dailywords"><code class="docutils literal notranslate"><span class="pre">dailyWords</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../database.html#challengeusers"><code class="docutils literal notranslate"><span class="pre">challengeUsers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../database.html#challengeleaderboard"><code class="docutils literal notranslate"><span class="pre">challengeLeaderboard</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../database.html#challengeweekly-weekkey-entries"><code class="docutils literal notranslate"><span class="pre">challengeWeekly/{weekKey}/entries</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🎨 UI &amp; Themes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ui-and-themes.html">UI &amp; Themes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ui-and-themes.html#themes">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui-and-themes.html#design-tokens-css-custom-properties">Design Tokens (CSS Custom Properties)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui-and-themes.html#glassmorphism-cards">Glassmorphism Cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui-and-themes.html#navigation">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui-and-themes.html#view-system">View System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui-and-themes.html#typography">Typography</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui-and-themes.html#animations-micro-interactions">Animations &amp; Micro-interactions</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">📋 Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#id1">[1.0.0] — 2026-08-23</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#initial-open-source-release">🎉 Initial Open Source Release</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #0f172a" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Decipher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Frontend Modules</a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">ui.js</span></code> — Shared UI Utilities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/ui.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ui-js-shared-ui-utilities">
+<h1><code class="docutils literal notranslate"><span class="pre">ui.js</span></code> — Shared UI Utilities<a class="headerlink" href="#ui-js-shared-ui-utilities" title="Link to this heading"></a></h1>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">modules/ui.js</span></code></p>
+<p>Houses miscellaneous UI helpers used across the application that don’t belong to any single feature module.</p>
+<hr class="docutils" />
+<section id="responsibilities">
+<h2>Responsibilities<a class="headerlink" href="#responsibilities" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Theme Switching</strong> — Applies the active theme class (<code class="docutils literal notranslate"><span class="pre">theme-dark</span></code>, <code class="docutils literal notranslate"><span class="pre">theme-sakura</span></code>, <code class="docutils literal notranslate"><span class="pre">theme-red</span></code>) to <code class="docutils literal notranslate"><span class="pre">document.body</span></code> and persists the choice to <code class="docutils literal notranslate"><span class="pre">localStorage</span></code>.</p></li>
+<li><p><strong>Scroll Effects</strong> — Adds/removes CSS classes on the nav bar based on scroll position (e.g. adding a <code class="docutils literal notranslate"><span class="pre">scrolled</span></code> class for the glassmorphism blur effect).</p></li>
+<li><p><strong>Navigation Toggle</strong> — Opens/closes the mobile hamburger menu.</p></li>
+<li><p><strong>Intersection Observer</strong> — Animates elements into view as the user scrolls the landing page (fade-in-up transitions).</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="public-api">
+<h2>Public API<a class="headerlink" href="#public-api" title="Link to this heading"></a></h2>
+<section id="initui">
+<h3><code class="docutils literal notranslate"><span class="pre">initUI()</span></code><a class="headerlink" href="#initui" title="Link to this heading"></a></h3>
+<p>Must be called once at startup. Wires all scroll and resize listeners, applies the saved theme, and initialises intersection observers.</p>
+</section>
+<section id="settheme-themename">
+<h3><code class="docutils literal notranslate"><span class="pre">setTheme(themeName)</span></code><a class="headerlink" href="#settheme-themename" title="Link to this heading"></a></h3>
+<p>Programmatically switch the active theme.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Param</p></th>
+<th class="head"><p>Options</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">themeName</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'dark'</span></code> | <code class="docutils literal notranslate"><span class="pre">'sakura'</span></code> | <code class="docutils literal notranslate"><span class="pre">'red'</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="toast.html" class="btn btn-neutral float-left" title="toast.js — Toast Notifications" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="samples.html" class="btn btn-neutral float-right" title="samples.js — Sample Texts Library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Siva Aditya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

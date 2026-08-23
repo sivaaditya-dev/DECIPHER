@@ -1,0 +1,150 @@
+/* Custom CSS for Decipher Sphinx Documentation */
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+/* ── Base ── */
+body, .wy-nav-content {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+code, pre, .highlight {
+    font-family: 'Fira Code', 'Courier New', monospace !important;
+}
+
+/* ── Sidebar ── */
+.wy-nav-side {
+    background: #0f172a !important;
+}
+
+.wy-side-nav-search {
+    background: #1e293b !important;
+    border-bottom: 1px solid rgba(108, 142, 255, 0.2) !important;
+}
+
+.wy-side-nav-search input[type=text] {
+    border-radius: 8px !important;
+    border: 1px solid rgba(108, 142, 255, 0.3) !important;
+    background: rgba(255,255,255,0.05) !important;
+    color: #e2e8f0 !important;
+}
+
+.wy-side-nav-search .wy-side-nav-search__title-link {
+    color: #6C8EFF !important;
+    font-weight: 700 !important;
+    font-size: 1.1em !important;
+}
+
+/* ── Navigation links ── */
+.wy-menu-vertical a {
+    color: #94a3b8 !important;
+    transition: color 0.2s, background 0.2s !important;
+}
+
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current > a {
+    color: #e2e8f0 !important;
+    background: rgba(108, 142, 255, 0.12) !important;
+}
+
+.wy-menu-vertical li.current > a {
+    border-right: 3px solid #6C8EFF !important;
+    font-weight: 600 !important;
+}
+
+/* Caption (section headers) */
+.wy-menu-vertical p.caption {
+    color: #6C8EFF !important;
+    font-size: 0.75em !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    padding: 0.6em 1em 0.3em !important;
+}
+
+/* ── Content area ── */
+.wy-nav-content {
+    background: #f8fafc !important;
+}
+
+.rst-content h1 {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid #6C8EFF !important;
+    padding-bottom: 0.4em !important;
+}
+
+.rst-content h2 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+    margin-top: 2em !important;
+}
+
+.rst-content h3 {
+    color: #334155 !important;
+}
+
+/* ── Code blocks ── */
+.highlight {
+    border-radius: 10px !important;
+    border: 1px solid #e2e8f0 !important;
+    overflow: hidden !important;
+}
+
+.highlight pre {
+    background: #0f172a !important;
+    color: #e2e8f0 !important;
+    padding: 1.2em !important;
+    border-radius: 10px !important;
+}
+
+code.literal {
+    background: #eff6ff !important;
+    color: #3730a3 !important;
+    border: 1px solid #c7d2fe !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    font-size: 0.9em !important;
+}
+
+/* ── Tables ── */
+.wy-table-responsive table {
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+}
+
+.wy-table-responsive table th {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+
+.wy-table-responsive table tr:nth-child(even) td {
+    background: #f1f5f9 !important;
+}
+
+/* ── Admonitions ── */
+.rst-content .note,
+.rst-content .tip,
+.rst-content .important,
+.rst-content .warning,
+.rst-content .caution {
+    border-radius: 10px !important;
+    border-left-width: 4px !important;
+}
+
+/* ── Footer ── */
+footer {
+    border-top: 1px solid #e2e8f0 !important;
+    margin-top: 2em !important;
+    padding-top: 1em !important;
+    color: #94a3b8 !important;
+    font-size: 0.85em !important;
+}
+
+/* ── Version badge in sidebar ── */
+.wy-side-nav-search .version {
+    color: rgba(108, 142, 255, 0.8) !important;
+    font-size: 0.75em !important;
+}

@@ -1,0 +1,800 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REST API Reference &mdash; Decipher — AI Vocabulary Learning App</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6278791d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frontend Modules" href="modules/index.html" />
+    <link rel="prev" title="Architecture" href="architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #0f172a" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Decipher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🚀 Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#clone-install">1. Clone &amp; Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#environment-variables">2. Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#firebase-setup">3. Firebase Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#a-firebase-admin-server">3a. Firebase Admin (Server)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#b-firebase-client-browser">3b. Firebase Client (Browser)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#c-enable-firestore-auth">3c. Enable Firestore &amp; Auth</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#run-the-app">4. Run the App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#verify-it-works">5. Verify It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-overview">High-Level Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontend-layer">Frontend Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#index-html"><code class="docutils literal notranslate"><span class="pre">index.html</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#main-js"><code class="docutils literal notranslate"><span class="pre">main.js</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#modules"><code class="docutils literal notranslate"><span class="pre">modules/</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#backend-layer">Backend Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-js"><code class="docutils literal notranslate"><span class="pre">server.js</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#ai-integration">AI Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#external-services">External Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#security-model">Security Model</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🔌 Backend API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">REST API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vocabulary-analysis">Vocabulary Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-analyze"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analyze</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#document-extraction">Document Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-extract-pdf"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/extract-pdf</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#image-ocr">Image OCR</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-ocr"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/ocr</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#youtube-transcript">YouTube Transcript</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-youtube-transcript"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/youtube-transcript</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#translation">Translation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-translate"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/translate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#memory-hooks-mnemonics">Memory Hooks (Mnemonics)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-mnemonic"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/mnemonic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#passage-simplifier">Passage Simplifier</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-simplify"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/simplify</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#opposite-day">Opposite Day</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-opposite-day"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/opposite-day</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#story-generation">Story Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-story"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/story</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#srs-quiz-questions">SRS Quiz Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-srs-questions"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/srs-questions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#socratic-tutor-chat">Socratic Tutor Chat</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-chat"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/chat</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#user-library-sessions">User Library (Sessions)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-history"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-api-history"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-api-history-id"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history/:id</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-api-history"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#user-profile">User Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#get-api-profile"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/profile</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-profile"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/profile</span></code> 🔒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#daily-word-challenge">Daily Word Challenge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#get-api-daily-word"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/daily-word</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-challenge-submit"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/challenge/submit</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-api-challenge-leaderboard"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/leaderboard</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-api-challenge-me"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/me</span></code> 🔒</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧩 Frontend Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Frontend Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html"><code class="docutils literal notranslate"><span class="pre">api.js</span></code> — Backend Communication Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#constants">Constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#api-base"><code class="docutils literal notranslate"><span class="pre">API_BASE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#auth-header-management">Auth Header Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#setauth-authinstance"><code class="docutils literal notranslate"><span class="pre">setAuth(authInstance)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#getauthheaders"><code class="docutils literal notranslate"><span class="pre">getAuthHeaders()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#ai-functions">AI Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#analyzetext-text-theme"><code class="docutils literal notranslate"><span class="pre">analyzeText(text,</span> <span class="pre">theme)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#translatevocablist-vocablist-targetlang"><code class="docutils literal notranslate"><span class="pre">translateVocabList(vocabList,</span> <span class="pre">targetLang)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generatestory-words"><code class="docutils literal notranslate"><span class="pre">generateStory(words)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generatemnemonics-vocablist"><code class="docutils literal notranslate"><span class="pre">generateMnemonics(vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#simplifypassage-text-level"><code class="docutils literal notranslate"><span class="pre">simplifyPassage(text,</span> <span class="pre">level)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generatesrsquestions-vocablist"><code class="docutils literal notranslate"><span class="pre">generateSRSQuestions(vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generateoppositeday-text-vocablist"><code class="docutils literal notranslate"><span class="pre">generateOppositeDay(text,</span> <span class="pre">vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#sendchatmessage-messages-passage-vocablist"><code class="docutils literal notranslate"><span class="pre">sendChatMessage(messages,</span> <span class="pre">passage,</span> <span class="pre">vocabList)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#file-media-functions">File / Media Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#extractpdftext-file"><code class="docutils literal notranslate"><span class="pre">extractPdfText(file)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#extractimagetext-imagefile"><code class="docutils literal notranslate"><span class="pre">extractImageText(imageFile)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#fetchyoutubetranscript-url"><code class="docutils literal notranslate"><span class="pre">fetchYouTubeTranscript(url)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#library-functions">Library Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#savesession-snippet-words"><code class="docutils literal notranslate"><span class="pre">saveSession(snippet,</span> <span class="pre">words)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#fetchlibrary"><code class="docutils literal notranslate"><span class="pre">fetchLibrary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#fetchsession-id"><code class="docutils literal notranslate"><span class="pre">fetchSession(id)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#clearlibrary"><code class="docutils literal notranslate"><span class="pre">clearLibrary()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/auth.html"><code class="docutils literal notranslate"><span class="pre">auth.js</span></code> — Authentication Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#initauth-firebaseapp-onuserchanged"><code class="docutils literal notranslate"><span class="pre">initAuth(firebaseApp,</span> <span class="pre">onUserChanged)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#modal-control">Modal Control</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#showauthmodal-mode"><code class="docutils literal notranslate"><span class="pre">showAuthModal(mode?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#hideauthmodal"><code class="docutils literal notranslate"><span class="pre">hideAuthModal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#handleauthbuttonclick"><code class="docutils literal notranslate"><span class="pre">handleAuthButtonClick()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#user-state">User State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#getcurrentuser"><code class="docutils literal notranslate"><span class="pre">getCurrentUser()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#internal-flow">Internal Flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#sign-in-with-google">Sign In with Google</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#email-sign-in">Email Sign In</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#email-sign-up">Email Sign Up</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#forgot-password">Forgot Password</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/quiz.html"><code class="docutils literal notranslate"><span class="pre">quiz.js</span></code> — Quiz Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#quiz-modes">Quiz Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#setvocablist-list"><code class="docutils literal notranslate"><span class="pre">setVocabList(list)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#settranslatedvocablist-list"><code class="docutils literal notranslate"><span class="pre">setTranslatedVocabList(list)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#setsrsquestions-questions"><code class="docutils literal notranslate"><span class="pre">setSRSQuestions(questions)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#getmode"><code class="docutils literal notranslate"><span class="pre">getMode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#startquiz-srssentences"><code class="docutils literal notranslate"><span class="pre">startQuiz(srsSentences?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#closequiz"><code class="docutils literal notranslate"><span class="pre">closeQuiz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#initquiz"><code class="docutils literal notranslate"><span class="pre">initQuiz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#nextquestion"><code class="docutils literal notranslate"><span class="pre">nextQuestion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#initquizmodetabs"><code class="docutils literal notranslate"><span class="pre">initQuizModeTabs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#spidey-integration">Spidey Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#setspideycallback-fn"><code class="docutils literal notranslate"><span class="pre">setSpideyCallback(fn)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#scoring">Scoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/voice.html"><code class="docutils literal notranslate"><span class="pre">voice.js</span></code> — Voice Assistant</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#initvoiceassistant-handlers"><code class="docutils literal notranslate"><span class="pre">initVoiceAssistant(handlers)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#supported-voice-commands">Supported Voice Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#multi-step-commands">Multi-Step Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#translation-language-extraction">Translation Language Extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#text-to-speech">Text-to-Speech</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#fallback-to-tutor-chat">Fallback to Tutor Chat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#global-api">Global API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/languages.html"><code class="docutils literal notranslate"><span class="pre">languages.js</span></code> — Translation Panel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/languages.html#key-features">Key Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/languages.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#initlanguages-ontranslatecallback"><code class="docutils literal notranslate"><span class="pre">initLanguages(onTranslateCallback)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#settranslationdata-translatedlist"><code class="docutils literal notranslate"><span class="pre">setTranslationData(translatedList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#getselectedlanguage"><code class="docutils literal notranslate"><span class="pre">getSelectedLanguage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#setlanguage-langname"><code class="docutils literal notranslate"><span class="pre">setLanguage(langName)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/profile.html"><code class="docutils literal notranslate"><span class="pre">profile.js</span></code> — User Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/profile.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/profile.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#initprofile-auth"><code class="docutils literal notranslate"><span class="pre">initProfile(auth)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#showprofilemodal"><code class="docutils literal notranslate"><span class="pre">showProfileModal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#loadprofile"><code class="docutils literal notranslate"><span class="pre">loadProfile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#saveprofile"><code class="docutils literal notranslate"><span class="pre">saveProfile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/challenge.html"><code class="docutils literal notranslate"><span class="pre">challenge.js</span></code> — Daily Word Challenge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/challenge.html#feature-overview">Feature Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/challenge.html#rank-system">Rank System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/challenge.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/challenge.html#initchallenge-auth"><code class="docutils literal notranslate"><span class="pre">initChallenge(auth)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/challenge.html#renderleaderboard-type"><code class="docutils literal notranslate"><span class="pre">renderLeaderboard(type)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/galaxy.html"><code class="docutils literal notranslate"><span class="pre">galaxy.js</span></code> — Galaxy Animation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/galaxy.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/galaxy.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/galaxy.html#initgalaxy-canvasid"><code class="docutils literal notranslate"><span class="pre">initGalaxy(canvasId)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/galaxy.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/spidey.html"><code class="docutils literal notranslate"><span class="pre">spidey.js</span></code> — Spidey-Sense Animation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/spidey.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/spidey.html#initspidey-canvasid"><code class="docutils literal notranslate"><span class="pre">initSpidey(canvasId?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/spidey.html#triggerspidey-iscorrect-word"><code class="docutils literal notranslate"><span class="pre">triggerSpidey({</span> <span class="pre">isCorrect,</span> <span class="pre">word</span> <span class="pre">})</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/toast.html"><code class="docutils literal notranslate"><span class="pre">toast.js</span></code> — Toast Notifications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/toast.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/toast.html#showtoast-message-type-duration"><code class="docutils literal notranslate"><span class="pre">showToast(message,</span> <span class="pre">type?,</span> <span class="pre">duration?)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/ui.html"><code class="docutils literal notranslate"><span class="pre">ui.js</span></code> — Shared UI Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/ui.html#responsibilities">Responsibilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/ui.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/ui.html#initui"><code class="docutils literal notranslate"><span class="pre">initUI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/ui.html#settheme-themename"><code class="docutils literal notranslate"><span class="pre">setTheme(themeName)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/samples.html"><code class="docutils literal notranslate"><span class="pre">samples.js</span></code> — Sample Texts Library</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/samples.html#domains-included">Domains Included</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/samples.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/samples.html#getsampletext-domain"><code class="docutils literal notranslate"><span class="pre">getSampleText(domain?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/samples.html#getalldomains"><code class="docutils literal notranslate"><span class="pre">getAllDomains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/samples.html#getrandomsample"><code class="docutils literal notranslate"><span class="pre">getRandomSample()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🗄️ Database</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="database.html#sessions"><code class="docutils literal notranslate"><span class="pre">sessions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#userprofiles"><code class="docutils literal notranslate"><span class="pre">userProfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#dailywords"><code class="docutils literal notranslate"><span class="pre">dailyWords</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#challengeusers"><code class="docutils literal notranslate"><span class="pre">challengeUsers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#challengeleaderboard"><code class="docutils literal notranslate"><span class="pre">challengeLeaderboard</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#challengeweekly-weekkey-entries"><code class="docutils literal notranslate"><span class="pre">challengeWeekly/{weekKey}/entries</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🎨 UI &amp; Themes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ui-and-themes.html">UI &amp; Themes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#themes">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#design-tokens-css-custom-properties">Design Tokens (CSS Custom Properties)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#glassmorphism-cards">Glassmorphism Cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#navigation">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#view-system">View System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#typography">Typography</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#animations-micro-interactions">Animations &amp; Micro-interactions</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">📋 Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#id1">[1.0.0] — 2026-08-23</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#initial-open-source-release">🎉 Initial Open Source Release</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #0f172a" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Decipher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">REST API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api-reference.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rest-api-reference">
+<h1>REST API Reference<a class="headerlink" href="#rest-api-reference" title="Link to this heading"></a></h1>
+<p>The backend exposes a JSON REST API at <code class="docutils literal notranslate"><span class="pre">/api</span></code>. All AI-powered endpoints call <strong>Google Gemini 2.5 Flash</strong>. Protected endpoints require a Firebase ID token.</p>
+<hr class="docutils" />
+<section id="authentication">
+<h2>Authentication<a class="headerlink" href="#authentication" title="Link to this heading"></a></h2>
+<p>Protected routes must include an <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Authorization</span><span class="p">:</span> <span class="n">Bearer</span> <span class="o">&lt;</span><span class="n">Firebase</span> <span class="n">ID</span> <span class="n">Token</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The server validates it via <code class="docutils literal notranslate"><span class="pre">admin.auth().verifyIdToken()</span></code>. On failure it returns <code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">Forbidden</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="vocabulary-analysis">
+<h2>Vocabulary Analysis<a class="headerlink" href="#vocabulary-analysis" title="Link to this heading"></a></h2>
+<section id="post-api-analyze">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analyze</span></code><a class="headerlink" href="#post-api-analyze" title="Link to this heading"></a></h3>
+<p>Extracts complex vocabulary from a block of text using Gemini AI.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Your passage or article text here..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"theme"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Science"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+<td><p>string</p></td>
+<td><p>✅</p></td>
+<td><p>The passage to analyze. Minimum 20 characters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">theme</span></code></p></td>
+<td><p>string</p></td>
+<td><p>❌</p></td>
+<td><p>Domain hint (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;Law&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Medicine&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;General&quot;</span></code>). Steers Gemini’s definitions.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ephemeral"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"def"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lasting for a very short time."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"syn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"transient"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="s2">"These ephemeral connections shaped the city's culture."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Up to 25 words are returned.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="document-extraction">
+<h2>Document Extraction<a class="headerlink" href="#document-extraction" title="Link to this heading"></a></h2>
+<section id="post-api-extract-pdf">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/extract-pdf</span></code><a class="headerlink" href="#post-api-extract-pdf" title="Link to this heading"></a></h3>
+<p>Extracts text from an uploaded <strong>PDF</strong> or <strong>DOCX</strong> file (max 100 MB).</p>
+<p><strong>Request</strong> — <code class="docutils literal notranslate"><span class="pre">multipart/form-data</span></code></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">document</span></code></p></td>
+<td><p>File</p></td>
+<td><p>A <code class="docutils literal notranslate"><span class="pre">.pdf</span></code> or <code class="docutils literal notranslate"><span class="pre">.docx</span></code> file.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Extracted text (up to 20,000 characters)..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pageCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"fileName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-article.pdf"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"truncated"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="image-ocr">
+<h2>Image OCR<a class="headerlink" href="#image-ocr" title="Link to this heading"></a></h2>
+<section id="post-api-ocr">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/ocr</span></code><a class="headerlink" href="#post-api-ocr" title="Link to this heading"></a></h3>
+<p>Uses Gemini Vision to extract all readable text from an uploaded image (max 20 MB).</p>
+<p><strong>Request</strong> — <code class="docutils literal notranslate"><span class="pre">multipart/form-data</span></code></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">image</span></code></p></td>
+<td><p>File</p></td>
+<td><p>Any common image format (JPEG, PNG, WebP…).</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"All text found in the image..."</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="youtube-transcript">
+<h2>YouTube Transcript<a class="headerlink" href="#youtube-transcript" title="Link to this heading"></a></h2>
+<section id="post-api-youtube-transcript">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/youtube-transcript</span></code><a class="headerlink" href="#post-api-youtube-transcript" title="Link to this heading"></a></h3>
+<p>Fetches the English caption transcript from a YouTube video URL.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.youtube.com/watch?v=dQw4w9WgXcQ"</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Full transcript text (up to 20,000 characters)..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"wordCount"</span><span class="p">:</span><span class="w"> </span><span class="mi">3241</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="translation">
+<h2>Translation<a class="headerlink" href="#translation" title="Link to this heading"></a></h2>
+<section id="post-api-translate">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/translate</span></code><a class="headerlink" href="#post-api-translate" title="Link to this heading"></a></h3>
+<p>Translates a vocabulary list into any of 51 supported languages. Also detects <strong>cultural notes</strong> and <strong>mirror words</strong> (false friends).</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"vocabList"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ephemeral"</span><span class="p">,</span><span class="w"> </span><span class="nt">"def"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"targetLang"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tamil"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ephemeral"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"translatedDef"</span><span class="p">:</span><span class="w"> </span><span class="s2">"மிகவும் குறுகிய காலம் நீடிக்கும்."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"translatedContext"</span><span class="p">:</span><span class="w"> </span><span class="s2">"இந்த நொடிப்பொழுது தொடர்புகள்..."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"culturalNote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tamil literature often uses the metaphor of morning dew for ephemeral things."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"mirrorWord"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"nativeWord"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"nativeMeaning"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"alert"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="memory-hooks-mnemonics">
+<h2>Memory Hooks (Mnemonics)<a class="headerlink" href="#memory-hooks-mnemonics" title="Link to this heading"></a></h2>
+<section id="post-api-mnemonic">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/mnemonic</span></code><a class="headerlink" href="#post-api-mnemonic" title="Link to this heading"></a></h3>
+<p>Generates vivid, memorable mnemonics for each vocabulary word.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"vocabList"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gregarious"</span><span class="p">,</span><span class="w"> </span><span class="nt">"def"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fond of company; sociable."</span><span class="w"> </span><span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gregarious"</span><span class="p">,</span><span class="w"> </span><span class="nt">"mnemonic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Think of GREG who's always HILARIOUS at parties..."</span><span class="w"> </span><span class="p">}]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="passage-simplifier">
+<h2>Passage Simplifier<a class="headerlink" href="#passage-simplifier" title="Link to this heading"></a></h2>
+<section id="post-api-simplify">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/simplify</span></code><a class="headerlink" href="#post-api-simplify" title="Link to this heading"></a></h3>
+<p>Rewrites a passage into simpler language.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The phenomenon of quantum entanglement..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eli5"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">level</span></code></p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;plain&quot;</span></code></p></td>
+<td><p>Clear B1–B2 English, removes jargon.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;eli5&quot;</span></code></p></td>
+<td><p>Explain Like I’m 5 — very simple, fun analogies.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"simplified"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Imagine two magic coins..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eli5"</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="opposite-day">
+<h2>Opposite Day<a class="headerlink" href="#opposite-day" title="Link to this heading"></a></h2>
+<section id="post-api-opposite-day">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/opposite-day</span></code><a class="headerlink" href="#post-api-opposite-day" title="Link to this heading"></a></h3>
+<p>Rewrites a passage by replacing key vocabulary with their antonyms — subtly absurd.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The brave knight stormed the fortress."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"vocabList"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"brave"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stormed"</span><span class="w"> </span><span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"opposite"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The cowardly knight tiptoed past the sandbox."</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="story-generation">
+<h2>Story Generation<a class="headerlink" href="#story-generation" title="Link to this heading"></a></h2>
+<section id="post-api-story">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/story</span></code><a class="headerlink" href="#post-api-story" title="Link to this heading"></a></h3>
+<p>Generates a short paragraph that weaves all vocabulary words into a coherent narrative.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"words"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ephemeral"</span><span class="p">,</span><span class="w"> </span><span class="s2">"gregarious"</span><span class="p">,</span><span class="w"> </span><span class="s2">"tenacious"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"story"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Despite the ephemeral nature of fame, the gregarious singer remained tenacious..."</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="srs-quiz-questions">
+<h2>SRS Quiz Questions<a class="headerlink" href="#srs-quiz-questions" title="Link to this heading"></a></h2>
+<section id="post-api-srs-questions">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/srs-questions</span></code><a class="headerlink" href="#post-api-srs-questions" title="Link to this heading"></a></h3>
+<p>Generates AI-written fill-in-the-blank sentences for Spaced Repetition quizzes.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"vocabList"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"proliferate"</span><span class="p">,</span><span class="w"> </span><span class="nt">"def"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Increase rapidly in number."</span><span class="w"> </span><span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"proliferate"</span><span class="p">,</span><span class="w"> </span><span class="nt">"sentence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Social media platforms continue to ___ at an astonishing rate."</span><span class="w"> </span><span class="p">}]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="socratic-tutor-chat">
+<h2>Socratic Tutor Chat<a class="headerlink" href="#socratic-tutor-chat" title="Link to this heading"></a></h2>
+<section id="post-api-chat">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/chat</span></code><a class="headerlink" href="#post-api-chat" title="Link to this heading"></a></h3>
+<p>Multi-turn conversational AI tutor. Understands navigation intents and answers vocabulary questions.</p>
+<p><strong>Request Body</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"messages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w"> </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What does ephemeral mean in this context?"</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"passage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The ephemeral beauty of cherry blossoms..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"vocabList"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"term"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ephemeral"</span><span class="p">,</span><span class="w"> </span><span class="nt">"def"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response</strong> <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"reply"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Great question! In this passage, ephemeral describes how briefly cherry blossoms bloom..."</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Action tags (e.g. <code class="docutils literal notranslate"><span class="pre">[ACTION:navQuiz]</span></code>) may be prepended to the reply to trigger UI navigation.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="user-library-sessions">
+<h2>User Library (Sessions)<a class="headerlink" href="#user-library-sessions" title="Link to this heading"></a></h2>
+<p>All library endpoints require authentication.</p>
+<section id="post-api-history">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/history</span></code> 🔒<a class="headerlink" href="#post-api-history" title="Link to this heading"></a></h3>
+<p>Save the current session.</p>
+<p><strong>Body:</strong> <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">&quot;snippet&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;words&quot;:</span> <span class="pre">[...]</span> <span class="pre">}</span></code><br />
+<strong>Response:</strong> <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">&quot;success&quot;:</span> <span class="pre">true,</span> <span class="pre">&quot;id&quot;:</span> <span class="pre">&quot;firestoreDocId&quot;</span> <span class="pre">}</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="get-api-history">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history</span></code> 🔒<a class="headerlink" href="#get-api-history" title="Link to this heading"></a></h3>
+<p>Fetch the current user’s 20 most recent sessions (sorted by date, newest first).</p>
+<p><strong>Response:</strong> Array of session objects <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">id,</span> <span class="pre">date,</span> <span class="pre">snippet,</span> <span class="pre">words</span> <span class="pre">}</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="get-api-history-id">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history/:id</span></code> 🔒<a class="headerlink" href="#get-api-history-id" title="Link to this heading"></a></h3>
+<p>Fetch a specific session by Firestore document ID.</p>
+</section>
+<hr class="docutils" />
+<section id="delete-api-history">
+<h3><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/history</span></code> 🔒<a class="headerlink" href="#delete-api-history" title="Link to this heading"></a></h3>
+<p>Delete <strong>all</strong> sessions belonging to the current user.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="user-profile">
+<h2>User Profile<a class="headerlink" href="#user-profile" title="Link to this heading"></a></h2>
+<section id="get-api-profile">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/profile</span></code> 🔒<a class="headerlink" href="#get-api-profile" title="Link to this heading"></a></h3>
+<p>Fetch the user’s saved preferences (<code class="docutils literal notranslate"><span class="pre">displayName</span></code>, <code class="docutils literal notranslate"><span class="pre">avatarId</span></code>, <code class="docutils literal notranslate"><span class="pre">voiceId</span></code>).</p>
+</section>
+<section id="post-api-profile">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/profile</span></code> 🔒<a class="headerlink" href="#post-api-profile" title="Link to this heading"></a></h3>
+<p>Save/update profile preferences (partial updates supported via merge).</p>
+<p><strong>Allowed fields:</strong> <code class="docutils literal notranslate"><span class="pre">displayName</span></code>, <code class="docutils literal notranslate"><span class="pre">avatarId</span></code>, <code class="docutils literal notranslate"><span class="pre">voiceId</span></code>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="daily-word-challenge">
+<h2>Daily Word Challenge<a class="headerlink" href="#daily-word-challenge" title="Link to this heading"></a></h2>
+<section id="get-api-daily-word">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/daily-word</span></code><a class="headerlink" href="#get-api-daily-word" title="Link to this heading"></a></h3>
+<p>Returns today’s daily vocabulary challenge word (shared by all users, cached in Firestore).</p>
+<p><strong>Response</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"word"</span><span class="p">:</span><span class="w"> </span><span class="s2">"perspicacious"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"phonetic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/ˌpɜːr.spɪˈkeɪ.ʃəs/"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"partOfSpeech"</span><span class="p">:</span><span class="w"> </span><span class="s2">"adjective"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"definition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Having a ready insight into things; shrewd."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"wrongChoices"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"extremely talkative"</span><span class="p">,</span><span class="w"> </span><span class="s2">"easily frightened"</span><span class="p">,</span><span class="w"> </span><span class="s2">"showing great generosity"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"sentence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The ___ detective immediately noticed the discrepancy in the alibi."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-08-23"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="post-api-challenge-submit">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/challenge/submit</span></code> 🔒<a class="headerlink" href="#post-api-challenge-submit" title="Link to this heading"></a></h3>
+<p>Record a user’s challenge attempt. Handles streak tracking, rank points, and weekly score updates.</p>
+<p><strong>Body:</strong> <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">&quot;mcqCorrect&quot;:</span> <span class="pre">true,</span> <span class="pre">&quot;sentenceCorrect&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;date&quot;:</span> <span class="pre">&quot;2026-08-23&quot;</span> <span class="pre">}</span></code></p>
+<p><strong>Response:</strong> Updated user stats object.</p>
+</section>
+<hr class="docutils" />
+<section id="get-api-challenge-leaderboard">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/leaderboard</span></code><a class="headerlink" href="#get-api-challenge-leaderboard" title="Link to this heading"></a></h3>
+<p>Fetch the top-10 leaderboard.</p>
+<p><strong>Query param:</strong> <code class="docutils literal notranslate"><span class="pre">?type=global</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">?type=weekly</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="get-api-challenge-me">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/me</span></code> 🔒<a class="headerlink" href="#get-api-challenge-me" title="Link to this heading"></a></h3>
+<p>Fetch the current user’s personal challenge stats (streak, rank points, total correct).</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules/index.html" class="btn btn-neutral float-right" title="Frontend Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Siva Aditya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
