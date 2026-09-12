@@ -858,6 +858,9 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
   }
 });
-app.listen(PORT, () => console.log(`???? Backend running on http://localhost:${PORT}`));
+// Only start the HTTP server when running locally (not on Vercel)
+if (require.main === module) {
+  app.listen(PORT, () => console.log('Backend running on http://localhost:' + PORT));
+}
 
 module.exports = app;
