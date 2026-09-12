@@ -187,7 +187,8 @@ let currentLangName   = '';
 // ======================
 firebase.initializeApp(firebaseConfig);
 
-// ?? Challenge Token Provider ??????????????????????????????????????????????????
+
+// ── Challenge Token Provider ──────────────────────────────────────────────
 setTokenProvider(async () => {
   const user = getCurrentUser();
   if (!user) return null;
@@ -574,8 +575,6 @@ clearLibBtn.addEventListener('click', async () => {
       document.querySelectorAll(`.theme-btn[data-theme="${t}"], .theme-btn-sm[data-theme="${t}"]`)
         .forEach(x => x.classList.add('active'));
       localStorage.setItem('decipher-theme', t);
-    });
-  });
 })();
 
 
