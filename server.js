@@ -52,16 +52,22 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static('.'));
 
 // --- CONNECT TO FIREBASE ---
-try {
-  const serviceAccount = require("./serviceAccountKey.json");
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-  console.log("??? Connected to Firebase Firestore!");
-} catch (error) {
-  console.error("??? ERROR: Could not load serviceAccountKey.json.");
-  process.exit(1);
-}
+  // --- CONNECT TO FIREBASE ---
+  try {
+    let serviceAccount;
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    } else {
+      serviceAccount = require("./serviceAccountKey.json");
+    }
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    console.log("Connected to Firebase Firestore!");
+  } catch (error) {
+    console.error("ERROR: Could not load Firebase credentials. Please provide FIREBASE_SERVICE_ACCOUNT env var or serviceAccountKey.json.");
+    process.exit(1);
+  }
 
 const db = admin.firestore();
 const sessionsCollection = db.collection('sessions'); 
