@@ -64,8 +64,9 @@ app.use(express.static('.'));
       credential: admin.credential.cert(serviceAccount)
     });
     console.log("Connected to Firebase Firestore!");
-  } catch (error) {
-    console.error("ERROR: Could not load Firebase credentials. Please provide FIREBASE_SERVICE_ACCOUNT env var or serviceAccountKey.json.");
+  }   } catch (error) {
+    console.error("ERROR: Could not load Firebase credentials.");
+    console.error(error);
     process.exit(1);
   }
 
