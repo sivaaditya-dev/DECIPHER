@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
@@ -589,11 +589,11 @@ app.get('/api/history/:id', verifyToken, async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // PROFILE ENDPOINTS
-// ─────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// GET /api/profile — fetch user's profile preferences
+// GET /api/profile â€” fetch user's profile preferences
 app.get('/api/profile', verifyToken, async (req, res) => {
   const uid = req.user.uid;
   try {
@@ -606,7 +606,7 @@ app.get('/api/profile', verifyToken, async (req, res) => {
   }
 });
 
-// POST /api/profile — save/update profile preferences (merge)
+// POST /api/profile â€” save/update profile preferences (merge)
 app.post('/api/profile', verifyToken, async (req, res) => {
   const uid = req.user.uid;
   const allowed = ['displayName', 'avatarId', 'voiceId'];
@@ -643,11 +643,11 @@ app.delete('/api/history', verifyToken, async (req, res) => {
 });
 
 
-// ─────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // DAILY WORD CHALLENGE ENDPOINTS
-// ─────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// GET /api/daily-word — returns today's word (cached in Firestore, shared by all users)
+// GET /api/daily-word â€” returns today's word (cached in Firestore, shared by all users)
 app.get('/api/daily-word', async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const docRef = db.collection('dailyWords').doc(today);
@@ -684,7 +684,7 @@ Choose a sophisticated but real English word. wrongChoices should be plausible b
   }
 });
 
-// GET /api/challenge/leaderboard?type=global|weekly — top 10 entries
+// GET /api/challenge/leaderboard?type=global|weekly â€” top 10 entries
 app.get('/api/challenge/leaderboard', async (req, res) => {
   const type = req.query.type === 'weekly' ? 'weekly' : 'global';
   try {
@@ -709,7 +709,7 @@ app.get('/api/challenge/leaderboard', async (req, res) => {
   }
 });
 
-// POST /api/challenge/submit — record a completed daily challenge attempt
+// POST /api/challenge/submit â€” record a completed daily challenge attempt
 app.post('/api/challenge/submit', verifyToken, async (req, res) => {
   const uid = req.user.uid;
   const { mcqCorrect, sentenceCorrect, date } = req.body;
@@ -787,7 +787,7 @@ app.post('/api/challenge/submit', verifyToken, async (req, res) => {
   }
 });
 
-// GET /api/challenge/me — get current user's challenge data
+// GET /api/challenge/me â€” get current user's challenge data
 app.get('/api/challenge/me', verifyToken, async (req, res) => {
   try {
     const snap = await db.collection('challengeUsers').doc(req.user.uid).get();
@@ -800,7 +800,7 @@ app.get('/api/challenge/me', verifyToken, async (req, res) => {
 
 
 
-// 404 handler � must be last route
+// 404 handler — must be last route
 app.use((req, res) => {
   if (req.accepts('html')) {
     res.status(404).send(`<!DOCTYPE html>
@@ -808,7 +808,7 @@ app.use((req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 � Page Not Found | Decipher</title>
+  <title>404 – Page Not Found | Decipher</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
