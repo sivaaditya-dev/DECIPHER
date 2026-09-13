@@ -3,3 +3,5 @@
 serviceAccountKey.json
 .DS_Store
 
+
+firebase-config.js
