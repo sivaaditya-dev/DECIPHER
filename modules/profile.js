@@ -1,4 +1,4 @@
-/**
+﻿/**
  * profile.js — User Profile Module
  *
  * Features:
@@ -499,7 +499,7 @@ function _initVoiceSelector(savedVoiceId) {
     testBtn.addEventListener('click', () => {
       const voices = speechSynthesis.getVoices();
       const voice = voices.find(v => v.voiceURI === select.value);
-      const utt = new SpeechSynthesisUtterance('Hello! This is your selected voice for VocabVerse.');
+      const utt = new SpeechSynthesisUtterance('Hello! This is your selected voice for Decipher.');
       if (voice) utt.voice = voice;
       speechSynthesis.cancel();
       speechSynthesis.speak(utt);
@@ -568,3 +568,4 @@ function _showProfileToast(msg) {
     t.style.transform = 'translateX(-50%) translateY(20px)';
   }, 2500);
 }
+

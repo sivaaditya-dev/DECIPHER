@@ -1,4 +1,4 @@
-/**
+﻿/**
  * auth.js — Multi-Provider Auth Module
  * 
  * Supports:
@@ -120,7 +120,7 @@ function _renderModalContent() {
                 fill="none" stroke="#6C8EFF" stroke-width="1.5" stroke-linejoin="round"/>
           <circle cx="18" cy="18" r="3" fill="#6C8EFF" opacity="0.8"/>
         </svg>
-        <span class="am-logo-text">VocabVerse</span>
+        <span class="am-logo-text">Decipher</span>
       </div>
       <button class="am-close-btn" id="amCloseBtn" aria-label="Close">✕</button>
     </div>
@@ -357,3 +357,4 @@ function _friendlyError(err) {
   };
   return map[err.code] || err.message || 'Something went wrong. Please try again.';
 }
+
