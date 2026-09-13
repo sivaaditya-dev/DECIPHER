@@ -2,10 +2,20 @@
 
 > **Upload any text, PDF, image, or YouTube video. AI extracts vocabulary, translates it, and trains you until every word sticks.**
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Gemini AI](https://img.shields.io/badge/Gemini_2.5-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
-[![Firebase](https://img.shields.io/badge/Firebase-FF6F00?logo=firebase&logoColor=white)](https://firebase.google.com/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-decipher--zeta.vercel.app-E8182A?style=flat-square&logo=vercel&logoColor=white)](https://decipher-zeta.vercel.app)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Gemini AI](https://img.shields.io/badge/Gemini_2.5_Flash-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-FF6F00?style=flat-square&logo=firebase&logoColor=white)](https://firebase.google.com/)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000?style=flat-square&logo=vercel)](https://vercel.com)
+
+---
+
+## Live Demo
+
+**[https://decipher-zeta.vercel.app](https://decipher-zeta.vercel.app)**
+
+No installation needed. Try it directly in your browser.
 
 ---
 
@@ -15,18 +25,18 @@
 |---|---|
 | **Any Input** | Paste text, upload PDFs/DOCXs, snap a photo (OCR), or paste a YouTube link |
 | **Deep AI Analysis** | Extracts complex words with definitions, synonyms, and context |
-| **211-Language Translation** | Translates words, highlights cultural nuances, detects cognates |
+| **200+ Language Translation** | Translates words, highlights cultural nuances, detects cognates |
 | **3 Quiz Modes** | Standard, Reverse, and AI-generated Fill-in-the-blank |
 | **Memory Hooks** | AI-generated mnemonics and vocabulary stories |
 | **Pronunciation Coach** | Speak into mic and get scored on native-speaker accuracy |
-| **Socratic AI Tutor** | Slide-out chat to ask questions about your passage |
-| **Daily Challenges** | Ranked system (Iron to Word Master) with leaderboard |
-| **Profile & Galaxy Word Map** | Activity heatmap, mastered words wall, 3D vocabulary star field |
-| **Voice Assistant** | Control every feature hands-free by voice |
+| **Decipher Tutor** | Slide-out AI chat to ask questions about your passage |
+| **ELI5 Simplifier** | Rewrite any text in plain English in one click |
+| **Opposite Day** | Flip every word to its antonym for deeper semantic understanding |
+| **Cloud Library** | Save and revisit past vocabulary sessions (requires Google sign-in) |
 
 ---
 
-## Getting Started
+## Getting Started (Local Development)
 
 ### Prerequisites
 - Node.js 18+
@@ -35,8 +45,8 @@
 
 ### 1. Clone
 ```bash
-git clone https://github.com/YOUR_USERNAME/decipher.git
-cd decipher
+git clone https://github.com/sivaaditya-dev/DECIPHER.git
+cd DECIPHER
 ```
 
 ### 2. Install dependencies
@@ -48,66 +58,84 @@ npm install
 ```bash
 cp .env.example .env
 ```
-Edit `.env` and add your Gemini API Key:
-```
-GEMINI_API_KEY=your_key_here
-APP_URL=http://localhost:3000
-```
+Open `.env` and fill in:
+- `GEMINI_API_KEY` — your Google Gemini API key
+- `FIREBASE_SERVICE_ACCOUNT` — your Firebase Admin SDK service account JSON (for the server)
+- `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`, etc. — your Firebase client config
 
-### 4. Configure Firebase
+### 4. Start the development server
 ```bash
-cp firebase-config.example.js firebase-config.js
+npm run dev
 ```
-Fill in your Firebase credentials from the Firebase Console (Project Settings > General > Your apps > Web app).
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-For the server-side Firebase Admin SDK:
-1. Firebase Console > Project Settings > Service Accounts
-2. Click "Generate new private key"
-3. Save the file as `serviceAccountKey.json` in the project root
+---
 
-> IMPORTANT: Never commit firebase-config.js, serviceAccountKey.json, or .env — they are in .gitignore.
+## Deploying to Vercel
 
-### 5. Run
-```bash
-npm start
-```
-Open http://localhost:3000
+Decipher is deployed and running at [decipher-zeta.vercel.app](https://decipher-zeta.vercel.app).
+
+To deploy your own fork:
+
+1. Fork this repo and import it into [Vercel](https://vercel.com)
+2. Set Framework Preset to **Other** in Vercel project settings
+3. Add all environment variables from `.env.example` in Vercel Dashboard → Settings → Environment Variables
+4. For `FIREBASE_SERVICE_ACCOUNT`, paste the **entire JSON content** of your `serviceAccountKey.json`
+5. Deploy — Vercel will auto-deploy on every push to `main`
 
 ---
 
 ## Project Structure
 
 ```
-decipher/
-├── modules/           # Frontend JS modules
-├── assets/            # Static assets
-├── tests/             # Automated tests
-├── .github/           # GitHub issue/PR templates
-├── server.js          # Express backend
-├── main.js            # Frontend entry point
-├── index.html         # App shell
-├── styles.css         # All styles
-├── firebase-config.example.js
-├── .env.example
-└── package.json
+DECIPHER/
+├── index.html          # Single-page app shell
+├── main.js             # Frontend entry point
+├── styles.css          # All styles
+├── server.js           # Express backend + all API routes
+├── modules/            # Frontend JS modules
+│   ├── auth.js         # Firebase authentication
+│   ├── api.js          # API call helpers
+│   ├── quiz.js         # Quiz logic
+│   ├── profile.js      # User profile + galaxy map
+│   └── ...
+├── api/
+│   └── index.js        # Vercel serverless entry point
+├── assets/             # Static assets (favicon, etc.)
+├── vercel.json         # Vercel routing config
+├── .env.example        # Environment variable template
+└── CONTRIBUTING.md     # Contribution guide
 ```
 
 ---
 
-## Security
+## Tech Stack
 
-Never commit: `.env`, `firebase-config.js`, `serviceAccountKey.json`
-
-See [SECURITY.md](SECURITY.md) for vulnerability reporting.
+| Layer | Technology |
+|---|---|
+| AI Engine | Google Gemini 2.5 Flash |
+| Auth & Database | Firebase Auth + Firestore |
+| Backend | Node.js + Express.js |
+| Deployment | Vercel (serverless) |
+| PDF Parsing | pdf-parse + Mammoth |
+| OCR | Tesseract.js via Gemini Vision |
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
+
+Quick start: fork → clone → set up `.env` → `npm run dev` → make changes → open a PR.
+
+---
+
+## Security
+
+Found a vulnerability? Please read [SECURITY.md](SECURITY.md) before opening a public issue.
 
 ---
 
 ## License
 
-[MIT License](LICENSE)
+[MIT License](LICENSE) &mdash; free to use, fork, and build on.
