@@ -1264,3 +1264,21 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   switchAppView('landing');
 
 })();
+
+
+// ---- TERMS & CONDITIONS MODAL ----
+(function initTermsModal() {
+  function closeTerms() {
+    const m = document.getElementById('termsModal');
+    if (m) m.style.display = 'none';
+  }
+  document.addEventListener('click', (e) => {
+    const closeBtn = e.target.closest('#termsCloseBtn, #termsAcceptBtn');
+    if (closeBtn) closeTerms();
+    // Click outside the box
+    if (e.target.id === 'termsModal') closeTerms();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeTerms();
+  });
+})();

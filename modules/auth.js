@@ -205,7 +205,7 @@ function _renderModalContent() {
     </div>
 
     <!-- Terms (sign up only) -->
-    ${!isSignIn ? `<p class="am-terms">By creating an account you agree to our <a href="#" class="am-link">Terms of Service</a>.</p>` : ''}
+    ${!isSignIn ? `<p class="am-terms">By creating an account you agree to our <a href="#" class="am-link" id="amTermsLink">Terms of Service</a>.</p>` : ''}
   `;
 
   // ── Wire events ──────────────────────────────────────────────────────────────
@@ -235,6 +235,15 @@ function _renderModalContent() {
   const forgotBtn = box.querySelector('#amForgotBtn');
   if (forgotBtn) {
     forgotBtn.addEventListener('click', _doForgotPassword);
+  }
+
+  const termsLink = box.querySelector('#amTermsLink');
+  if (termsLink) {
+    termsLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const m = document.getElementById('termsModal');
+      if (m) m.style.display = 'flex';
+    });
   }
 }
 
