@@ -1,4 +1,5 @@
 import './index.css';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import StartSection from './components/StartSection';
@@ -23,6 +24,7 @@ export default function App() {
           <CtaFooter />
         </div>
       </div>
+      <Analytics />
     </div>
   );
 }
