@@ -293,6 +293,7 @@ html[data-theme="red"] .toast-info    { background: #0d1a2e; border-color: #60a5
     rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
     rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -320,6 +321,7 @@ html[data-theme="red"] .toast-info    { background: #0d1a2e; border-color: #60a5
     rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
     rgba(255,255,255,0.2) 80%, rgba(255,255,255,0.5) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
