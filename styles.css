@@ -481,13 +481,25 @@ html[data-theme="red"] .toast-info    { background: #0d1a2e; border-color: #60a5
 }
 .hero-cta-primary:hover { transform: scale(1.03); }
 .hero-cta-ghost {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: rgba(255,255,255,0.55);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.hero-cta-ghost:hover { color: #fff; }
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 13px 32px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    display: inline-block;
+    letter-spacing: 0.01em;
+  }
+  .hero-cta-ghost:hover {
+    color: #fff;
+    border-color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.06);
+  }
 .hero-stats {
   display: flex;
   align-items: center;
