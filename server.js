@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 3000;
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Multer instances ??? memory storage
+// Multer instances ? memory storage
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 100 * 1024 * 1024 },
@@ -186,7 +186,7 @@ app.post('/api/extract-pdf', upload.single('document'), async (req, res) => {
     }
 
     if (ext === '.epub') {
-      // EPUB is a ZIP with HTML inside ??? basic extraction
+      // EPUB is a ZIP with HTML inside ? basic extraction
       // For now, return a friendly error pointing users toward PDF
       return res.status(422).json({
         error: 'EPUB support is coming soon. Please convert your e-book to PDF first.'
@@ -290,7 +290,7 @@ app.post('/api/mnemonic', async (req, res) => {
   }
   try {
     const prompt = `
-      You are a creative memory coach and linguistics expert. For each vocabulary word, create a vivid, memorable "Memory Hook" ??? a fun mental image, wordplay, or short story that connects the word's sound/spelling directly to its meaning.
+      You are a creative memory coach and linguistics expert. For each vocabulary word, create a vivid, memorable "Memory Hook" ? a fun mental image, wordplay, or short story that connects the word's sound/spelling directly to its meaning.
 
       Rules:
       - Keep each mnemonic to 1-2 punchy sentences.
@@ -298,8 +298,8 @@ app.post('/api/mnemonic', async (req, res) => {
       - The hook should make the meaning instantly recalled.
       - Do NOT just restate the definition. Be creative!
 
-      Example: "Gregarious" (def: sociable, fond of company) ???
-      Mnemonic: "Think of GREG who's always HILARIOUS at parties ??? he never shuts up because he loves being around people!"
+      Example: "Gregarious" (def: sociable, fond of company) ?
+      Mnemonic: "Think of GREG who's always HILARIOUS at parties ? he never shuts up because he loves being around people!"
 
       Words to process:
       ${JSON.stringify(vocabList.map(v => ({ term: v.term, def: v.def })))}
@@ -336,10 +336,10 @@ app.post('/api/simplify', async (req, res) => {
 
   const levelInstruction = level === 'eli5'
     ? 'Rewrite this passage as if explaining to a curious, bright 12-year-old. Use simple everyday words, fun analogies, short sentences, and a conversational tone. Keep ALL the core ideas.'
-    : 'Rewrite this passage in clear, straightforward Modern English (B1???B2 level). Remove jargon, complex syntax, and archaic language. Keep all ideas intact ??? just make them easy to read.';
+    : 'Rewrite this passage in clear, straightforward Modern English (B1?B2 level). Remove jargon, complex syntax, and archaic language. Keep all ideas intact ? just make them easy to read.';
 
   try {
-    const prompt = `${levelInstruction}\n\nPassage:\n"${text}"\n\nReturn ONLY the rewritten passage as plain text ??? no headings, no bullet points, no formatting.`;
+    const prompt = `${levelInstruction}\n\nPassage:\n"${text}"\n\nReturn ONLY the rewritten passage as plain text ? no headings, no bullet points, no formatting.`;
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
@@ -365,10 +365,10 @@ app.post('/api/srs-questions', async (req, res) => {
       - Use ___ (three underscores) to mark exactly where the word goes.
       - The sentence must be realistic: a news headline, business email, academic text, or everyday conversation.
       - Context clues should make the meaning inferable but NOT give away the word directly.
-      - Each sentence must be 10???22 words long.
+      - Each sentence must be 10?22 words long.
       - Do NOT include the actual word anywhere else in the sentence.
 
-      Example: "proliferate" ???
+      Example: "proliferate" ?
       "Social media platforms continue to ___ at an astonishing rate, with millions of new accounts created daily."
 
       Words:
@@ -444,7 +444,7 @@ app.post('/api/chat', async (req, res) => {
   const contextWords = vocabList ? vocabList.map(v => `"${v.term}" (${v.def})`).join('; ') : 'None';
   const passageSnippet = passage ? passage.substring(0, 1000) : 'No passage loaded.';
 
-  const systemPrompt = `You are "Decipher Tutor", the intelligent assistant built into Decipher ??? an AI vocabulary learning app.
+  const systemPrompt = `You are "Decipher Tutor", the intelligent assistant built into Decipher ? an AI vocabulary learning app.
 
 You have two abilities:
 1. ANSWER vocabulary and comprehension questions.
@@ -453,31 +453,31 @@ You have two abilities:
 == AVAILABLE ACTIONS ==
 When you detect ANY navigational or feature-triggering intent, prepend the EXACT action tag at the very start of your reply (before anything else). Choose the single most relevant action:
 
-[ACTION:navStudio]    ??? User wants to go to Studio (analyzer, input text, reading passage)
-[ACTION:navQuiz]      ??? User wants to go to the Quiz page/tab
-[ACTION:navLibrary]   ??? User wants to go to the Library (saved sessions)
-[ACTION:navHome]      ??? User wants to go to the home/landing page
-[ACTION:memoryHooks]  ??? User wants memory hooks, mnemonics, memory aids for words
-[ACTION:quiz]         ??? User wants to start/take/begin the quiz immediately
-[ACTION:translate]    ??? User wants to translate vocabulary words
-[ACTION:story]        ??? User wants to generate a vocabulary story
-[ACTION:simplify]     ??? User wants to simplify/rewrite the passage (ELI5, plain English)
-[ACTION:oppositeDay]  ??? User wants antonyms or the Opposite Day feature
+[ACTION:navStudio]    ? User wants to go to Studio (analyzer, input text, reading passage)
+[ACTION:navQuiz]      ? User wants to go to the Quiz page/tab
+[ACTION:navLibrary]   ? User wants to go to the Library (saved sessions)
+[ACTION:navHome]      ? User wants to go to the home/landing page
+[ACTION:memoryHooks]  ? User wants memory hooks, mnemonics, memory aids for words
+[ACTION:quiz]         ? User wants to start/take/begin the quiz immediately
+[ACTION:translate]    ? User wants to translate vocabulary words
+[ACTION:story]        ? User wants to generate a vocabulary story
+[ACTION:simplify]     ? User wants to simplify/rewrite the passage (ELI5, plain English)
+[ACTION:oppositeDay]  ? User wants antonyms or the Opposite Day feature
 
 == CRITICAL RULES FOR ACTIONS ==
 - Detect intent from ANY language (Tamil, Hindi, Spanish, French, Arabic, etc.) and ANY accent or phrasing variation.
 - Examples of what to recognize:
-  * "memory hooks" / "mnemonic" / "yaad karne ka tarika" / "moyens mn??motechniques" / "aide-m??moire" / "ways to remember" ??? [ACTION:memoryHooks]
-  * "quiz" / "test me" / "pariksha" / "quiz karo" / "interrogation" / "practise" ??? [ACTION:quiz]
-  * "translate" / "anuvad" / "traduire" / "traducir" ??? [ACTION:translate]
-  * "library" / "saved" / "meri library" / "biblioth??que" ??? [ACTION:navLibrary]
-  * "studio" / "analyzer" / "go back" / "input" ??? [ACTION:navStudio]
-  * "simplify" / "ELI5" / "explain simple" / "aasaan bhasha" / "simple karo" ??? [ACTION:simplify]
-  * "story" / "generate story" / "kahani" / "histoire" ??? [ACTION:story]
+  * "memory hooks" / "mnemonic" / "yaad karne ka tarika" / "moyens mnmotechniques" / "aide-mmoire" / "ways to remember" ? [ACTION:memoryHooks]
+  * "quiz" / "test me" / "pariksha" / "quiz karo" / "interrogation" / "practise" ? [ACTION:quiz]
+  * "translate" / "anuvad" / "traduire" / "traducir" ? [ACTION:translate]
+  * "library" / "saved" / "meri library" / "bibliothque" ? [ACTION:navLibrary]
+  * "studio" / "analyzer" / "go back" / "input" ? [ACTION:navStudio]
+  * "simplify" / "ELI5" / "explain simple" / "aasaan bhasha" / "simple karo" ? [ACTION:simplify]
+  * "story" / "generate story" / "kahani" / "histoire" ? [ACTION:story]
 - If NO action is needed (user just asking a vocabulary question), do NOT include any [ACTION:...] tag.
 - NEVER make up action tags. Only use the ones listed above.
 - After the action tag, give a SHORT confirmation (1 sentence) + helpful tip if needed.
-  Example: "[ACTION:memoryHooks] ??? Navigating to Studio and generating Memory Hooks for your words!"
+  Example: "[ACTION:memoryHooks] ? Navigating to Studio and generating Memory Hooks for your words!"
 
 == CONTEXT ==
 Active reading passage (first 1000 chars): "${passageSnippet}"
@@ -485,7 +485,7 @@ Vocabulary words being studied: ${contextWords}
 
 == AS A TUTOR ==
 - Help students understand words with vivid analogies and real-world examples.
-- Use the Socratic method ??? ask occasional follow-up questions.
+- Use the Socratic method ? ask occasional follow-up questions.
 - Keep responses concise (2-4 sentences for simple questions).
 - Always connect word explanations back to the passage context.
 - Respond warmly and encouragingly.`;
@@ -519,7 +519,7 @@ app.post('/api/opposite-day', async (req, res) => {
     ? `Focus on replacing these key words with their opposites: ${vocabList.map(v => v.term).join(', ')}.`
     : '';
   try {
-    const prompt = `Rewrite this passage by replacing vocabulary words with their antonyms or opposite concepts. Make the result subtly absurd and fun ??? the meaning should flip but the sentence structure should stay readable. ${terms}
+    const prompt = `Rewrite this passage by replacing vocabulary words with their antonyms or opposite concepts. Make the result subtly absurd and fun ? the meaning should flip but the sentence structure should stay readable. ${terms}
 
 Original: "${text}"
 
@@ -625,7 +625,7 @@ app.get('/api/history/:id', verifyToken, async (req, res) => {
 // PROFILE ENDPOINTS
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// GET /api/profile â€” fetch user's profile preferences
+// GET /api/profile — fetch user's profile preferences
 app.get('/api/profile', verifyToken, async (req, res) => {
   const uid = req.user.uid;
   try {
@@ -638,7 +638,7 @@ app.get('/api/profile', verifyToken, async (req, res) => {
   }
 });
 
-// POST /api/profile â€” save/update profile preferences (merge)
+// POST /api/profile — save/update profile preferences (merge)
 app.post('/api/profile', verifyToken, async (req, res) => {
   const uid = req.user.uid;
   const allowed = ['displayName', 'avatarId', 'voiceId'];
@@ -679,7 +679,7 @@ app.delete('/api/history', verifyToken, async (req, res) => {
 // DAILY WORD CHALLENGE ENDPOINTS
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// GET /api/daily-word â€” returns today's word (cached in Firestore, shared by all users)
+// GET /api/daily-word — returns today's word (cached in Firestore, shared by all users)
 app.get('/api/daily-word', async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const docRef = db.collection('dailyWords').doc(today);
@@ -716,7 +716,7 @@ Choose a sophisticated but real English word. wrongChoices should be plausible b
   }
 });
 
-// GET /api/challenge/leaderboard?type=global|weekly â€” top 10 entries
+// GET /api/challenge/leaderboard?type=global|weekly — top 10 entries
 app.get('/api/challenge/leaderboard', async (req, res) => {
   const type = req.query.type === 'weekly' ? 'weekly' : 'global';
   try {
@@ -741,7 +741,7 @@ app.get('/api/challenge/leaderboard', async (req, res) => {
   }
 });
 
-// POST /api/challenge/submit â€” record a completed daily challenge attempt
+// POST /api/challenge/submit — record a completed daily challenge attempt
 app.post('/api/challenge/submit', verifyToken, async (req, res) => {
   const uid = req.user.uid;
   const { mcqCorrect, sentenceCorrect, date } = req.body;
@@ -819,7 +819,7 @@ app.post('/api/challenge/submit', verifyToken, async (req, res) => {
   }
 });
 
-// GET /api/challenge/me â€” get current user's challenge data
+// GET /api/challenge/me — get current user's challenge data
 app.get('/api/challenge/me', verifyToken, async (req, res) => {
   try {
     const snap = await db.collection('challengeUsers').doc(req.user.uid).get();
