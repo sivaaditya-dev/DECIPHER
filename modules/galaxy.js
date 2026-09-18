@@ -145,7 +145,7 @@ function _buildStars(words) {
   }
 
   words.forEach((word, i) => {
-    const accuracy = word.accuracy  0.5; // 0..1
+    const accuracy = word.accuracy ?? 0.5; // 0..1
     const size = 0.6 + accuracy * 2.4;   // 0.6 → 3.0
 
     // Color: low accuracy = dim blue, high accuracy = bright gold/white
