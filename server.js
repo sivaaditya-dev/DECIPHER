@@ -1,6 +1,8 @@
 ﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 
 // Polyfill for DOMMatrix missing in Node environments (Vercel)
@@ -48,6 +50,7 @@ const uploadImage = multer({
 });
 
 app.use(cors());
+app.use(helmet({ contentSecurityPolicy: false })); // Basic HTTP security headers, CSP disabled for Vercel/inline scripts
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(__dirname));
 
