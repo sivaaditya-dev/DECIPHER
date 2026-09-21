@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Toast Notification System
  * Replaces all alert() calls with a lightweight, non-intrusive toast UI.
  */
@@ -26,16 +26,16 @@ export function showToast(message, type = 'info', duration = 3500) {
   toast.className = `toast toast-${type}`;
 
   const icons = {
-    success: '✅',
-    error: '❌',
-    warning: '⚠️',
-    info: 'ℹ️',
+    success: 'âœ…',
+    error: 'âŒ',
+    warning: 'âš ï¸',
+    info: 'â„¹ï¸',
   };
 
   toast.innerHTML = `
     <span class="toast-icon">${icons[type] || icons.info}</span>
     <span class="toast-message">${message}</span>
-    <button class="toast-close" aria-label="Dismiss">✕</button>
+    <button class="toast-close" aria-label="Dismiss">âœ•</button>
   `;
 
   toast.querySelector('.toast-close').addEventListener('click', () => dismiss(toast));
