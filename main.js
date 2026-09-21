@@ -1,5 +1,5 @@
-/**
- * main.js — Entry Point Orchestrator
+﻿/**
+ * main.js â€” Entry Point Orchestrator
  * Imports all modules and wires DOM events.
  */
 
@@ -49,7 +49,7 @@ import { initProfile } from './modules/profile.js';
     optionList.innerHTML = '';
     focusedIdx = -1;
     LANGUAGES.forEach((lang, i) => {
-      const text = `${lang.name} — ${lang.native}`;
+      const text = `${lang.name} â€” ${lang.native}`;
       if (q && !lang.name.toLowerCase().includes(q) && !lang.native.toLowerCase().includes(q)) return;
       const li = document.createElement('li');
       li.className = 'lang-option' + (lang.code === selectedCode ? ' lang-option-active' : '');
@@ -123,7 +123,6 @@ import { initProfile } from './modules/profile.js';
   // Initial build
   buildList();
 })();
-
 
 // ======================
 // DOM References
@@ -208,9 +207,9 @@ initAuth(firebase, (user) => {
     loadLibrary();
     // Init challenge view for logged-in user
     initChallenge(user);
-    // Hero button becomes "Get Started" → navigates to Studio
+    // Hero button becomes "Get Started" â†’ navigates to Studio
     if (heroLoginBtn) {
-      heroLoginBtn.textContent = 'Get Started →';
+      heroLoginBtn.textContent = 'Get Started â†’';
       heroLoginBtn.classList.add('logged-in');
     }
     // Hide the guest button once logged in
@@ -236,7 +235,7 @@ authBtn.addEventListener('click', handleAuthButtonClick);
 if (heroLoginBtn) {
   heroLoginBtn.addEventListener('click', () => {
     if (getCurrentUser()) {
-      // Already logged in — go to Studio
+      // Already logged in â€” go to Studio
       switchAppView('studioView');
     } else {
       showAuthModal('signin');
@@ -269,7 +268,7 @@ async function handleFileUpload(file) {
   if (file.size > 100 * 1024 * 1024) {
     showToast('File is too large. Maximum size is 100 MB.', 'error'); return;
   }
-  pdfFileName.textContent = `📎 ${file.name}`;
+  pdfFileName.textContent = `ðŸ“Ž ${file.name}`;
   pdfFileName.style.display = 'inline';
   const orig = pdfUploadBtn.innerHTML;
   pdfUploadBtn.innerHTML = `${SPINNER_SVG} Extracting...`;
@@ -331,7 +330,7 @@ simplifyBtn.addEventListener('click', async () => {
   try {
     const result = await simplifyPassage(text, level);
     simplifyText.textContent = result.simplified;
-    simplifyLevelLabel.textContent = level === 'eli5' ? '🧒 EXPLAINED SIMPLY' : '✨ PLAIN ENGLISH';
+    simplifyLevelLabel.textContent = level === 'eli5' ? 'ðŸ§’ EXPLAINED SIMPLY' : 'âœ¨ PLAIN ENGLISH';
     simplifyResult.style.display = 'block';
     showToast('Passage simplified! Check the result below the textarea.', 'success', 4000);
   } catch (err) {
@@ -342,7 +341,7 @@ simplifyBtn.addEventListener('click', async () => {
   }
 });
 
-// "Use as Input" — copy simplified text into the textarea
+// "Use as Input" â€” copy simplified text into the textarea
 useSimplifiedBtn.addEventListener('click', () => {
   if (simplifyText.textContent) {
     inputText.value = simplifyText.textContent;
@@ -419,7 +418,7 @@ mnemonicBtn.addEventListener('click', async () => {
 
     // Re-render cards with mnemonics shown
     renderResults(currentVocabList, uiElements, currentTranslated.length ? currentTranslated : null, currentLangName, currentMnemonics);
-    showToast('💡 Memory Hooks generated! Expand them on each card.', 'success', 4000);
+    showToast('ðŸ’¡ Memory Hooks generated! Expand them on each card.', 'success', 4000);
   } catch (err) {
     showToast(`Memory Hook generation failed: ${err.message}`, 'error');
   } finally {
@@ -492,7 +491,7 @@ saveBtn.addEventListener('click', async () => {
   saveBtn.disabled = true;
   try {
     await saveSession(snippet, currentVocabList);
-    showToast('Session saved to your library! 📚', 'success');
+    showToast('Session saved to your library! ðŸ“š', 'success');
     await loadLibrary();
   } catch (err) {
     showToast(`Save failed: ${err.message}`, 'error');
@@ -535,7 +534,7 @@ async function loadSession(id) {
       if (window.decipherNav) window.decipherNav('studioView');
       const workspace = document.querySelector('.app-workspace');
       if (workspace) workspace.scrollTop = 0;
-      showToast('Session loaded! 📖', 'success', 2000);
+      showToast('Session loaded! ðŸ“–', 'success', 2000);
     }
   } catch (err) {
     showToast('Could not load session. It may have been deleted.', 'error');
@@ -553,7 +552,6 @@ clearLibBtn.addEventListener('click', async () => {
   }
 });
 
-
 // ======================
 // THEME TOGGLE
 // ======================
@@ -561,7 +559,7 @@ clearLibBtn.addEventListener('click', async () => {
   const saved = localStorage.getItem('decipher-theme') || 'dark';
   // Use data-theme attribute so we never wipe other html classes
   document.documentElement.setAttribute('data-theme', saved);
-  // Mark active button — covers both .theme-btn and .theme-btn-sm
+  // Mark active button â€” covers both .theme-btn and .theme-btn-sm
   document.querySelectorAll('.theme-btn, .theme-btn-sm').forEach(b => {
     if (b.dataset.theme === saved) b.classList.add('active');
   });
@@ -577,7 +575,6 @@ clearLibBtn.addEventListener('click', async () => {
     });
   });
 })();
-
 
 // ======================
 // SOURCE TABS
@@ -600,7 +597,7 @@ if (imageUploadInput) {
   imageUploadInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (imageFileName) { imageFileName.textContent = '📎 ' + file.name; imageFileName.style.display = 'inline'; }
+    if (imageFileName) { imageFileName.textContent = 'ðŸ“Ž ' + file.name; imageFileName.style.display = 'inline'; }
     const orig = imageUploadBtn.innerHTML;
     imageUploadBtn.innerHTML = SPINNER_SVG + ' Extracting text...';
     imageUploadBtn.disabled = true;
@@ -661,7 +658,7 @@ if (oppositeDayBtn) {
       const result = await generateOppositeDay(text, currentVocabList);
       // Show result in storyContainer (reuse it)
       storyContainer.style.display = 'block';
-      storyContainer.innerHTML = '<div class="opposite-label">🔄 Opposite Day — Antonym Rewrite</div><p style="font-size:13px;line-height:1.7;font-style:italic;">' + result.opposite + '</p>';
+      storyContainer.innerHTML = '<div class="opposite-label">ðŸ”„ Opposite Day â€” Antonym Rewrite</div><p style="font-size:13px;line-height:1.7;font-style:italic;">' + result.opposite + '</p>';
       showToast('Opposite Day generated! All words flipped to their antonyms.', 'success', 4000);
     } catch (err) {
       showToast('Opposite Day failed: ' + err.message, 'error');
@@ -687,13 +684,13 @@ function appendTutorMsg(role, content) {
 
 function showTyping() {
   const el = document.createElement('div');
-  el.className = 'tutor-typing'; el.id = 'tutor-typing'; el.textContent = '···';
+  el.className = 'tutor-typing'; el.id = 'tutor-typing'; el.textContent = 'Â·Â·Â·';
   tutorMessages.appendChild(el);
   tutorMessages.scrollTop = tutorMessages.scrollHeight;
 }
 function removeTyping() { const el = document.getElementById('tutor-typing'); if (el) el.remove(); }
 
-// ── TUTOR INTENT DETECTION ───────────────────────────────────────────────────
+// â”€â”€ TUTOR INTENT DETECTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Maps keyword patterns to executable actions so the Decipher Tutor
 // can navigate and trigger features on the user's behalf.
 const TUTOR_INTENTS = [
@@ -715,52 +712,52 @@ function executeTutorIntent(action) {
       if (window.decipherNav) window.decipherNav('studioView');
       if (mnemonicBtn && !mnemonicBtn.disabled) {
         setTimeout(() => { mnemonicBtn.click(); }, 300); // wait for view to render
-        return '✅ Navigating to Studio and generating Memory Hooks for your words!';
+        return 'âœ… Navigating to Studio and generating Memory Hooks for your words!';
       }
-      return '⚠️ Analyze some text in Studio first — then I can generate Memory Hooks for you.';
+      return 'âš ï¸ Analyze some text in Studio first â€” then I can generate Memory Hooks for you.';
     case 'oppositeDay':
       if (window.decipherNav) window.decipherNav('studioView');
       if (oppositeDayBtn && !oppositeDayBtn.disabled) {
         setTimeout(() => { oppositeDayBtn.click(); }, 300);
-        return '✅ Running Opposite Day — flipping all words to their antonyms!';
+        return 'âœ… Running Opposite Day â€” flipping all words to their antonyms!';
       }
-      return '⚠️ Analyze some text in Studio first to use Opposite Day.';
+      return 'âš ï¸ Analyze some text in Studio first to use Opposite Day.';
     case 'story':
       if (window.decipherNav) window.decipherNav('studioView');
       if (generateStoryBtn && !generateStoryBtn.disabled) {
         setTimeout(() => { generateStoryBtn.click(); }, 300);
-        return '✅ Generating your vocabulary story in Studio!';
+        return 'âœ… Generating your vocabulary story in Studio!';
       }
-      return '⚠️ Analyze some text in Studio first to generate a story.';
+      return 'âš ï¸ Analyze some text in Studio first to generate a story.';
     case 'quiz':
-      // Navigate to Quiz tab — dojoStartQuizBtn is the launcher there
+      // Navigate to Quiz tab â€” dojoStartQuizBtn is the launcher there
       if (window.decipherNav) window.decipherNav('dojoView');
-      return '✅ Navigated to the Quiz tab! Click "Start Quiz" to begin.';
+      return 'âœ… Navigated to the Quiz tab! Click "Start Quiz" to begin.';
     case 'translate':
       if (window.decipherNav) window.decipherNav('studioView');
       setTimeout(() => {
         const tb = document.getElementById('translationBar');
         if (tb) { tb.style.display = 'flex'; tb.scrollIntoView({ behavior: 'smooth' }); }
       }, 300);
-      return '✅ Navigated to Studio — scroll to the Translation bar and pick a language!';
+      return 'âœ… Navigated to Studio â€” scroll to the Translation bar and pick a language!';
     case 'simplify':
       if (window.decipherNav) window.decipherNav('studioView');
       setTimeout(() => {
         if (simplifyBtn) simplifyBtn.scrollIntoView({ behavior: 'smooth' });
       }, 300);
-      return '✅ Navigated to Studio — scroll to the Simplify bar and click Rewrite!';
+      return 'âœ… Navigated to Studio â€” scroll to the Simplify bar and click Rewrite!';
     case 'navStudio':
       if (window.decipherNav) window.decipherNav('studioView');
-      return '✅ Navigated to Studio!';
+      return 'âœ… Navigated to Studio!';
     case 'navLibrary':
       if (window.decipherNav) window.decipherNav('libraryView');
-      return '✅ Navigated to your Library!';
+      return 'âœ… Navigated to your Library!';
     case 'navQuiz':
       if (window.decipherNav) window.decipherNav('dojoView');
-      return '✅ Navigated to the Quiz page!';
+      return 'âœ… Navigated to the Quiz page!';
     case 'navHome':
       if (window.decipherNav) window.decipherNav('landing');
-      return '✅ Back to Home!';
+      return 'âœ… Back to Home!';
     default:
       return null;
   }
@@ -772,7 +769,7 @@ async function sendTutorMessage() {
   if (tutorMessages.querySelector('.tutor-empty')) tutorMessages.innerHTML = '';
   tutorInput.value = '';
 
-  // ── Intent detection: check before calling AI ──
+  // â”€â”€ Intent detection: check before calling AI â”€â”€
   for (const intent of TUTOR_INTENTS) {
     if (intent.pattern.test(text)) {
       const result = executeTutorIntent(intent.action);
@@ -781,13 +778,13 @@ async function sendTutorMessage() {
         appendTutorMsg('user', text);
         appendTutorMsg('ai', result);
         chatMessages.push({ role: 'assistant', content: result });
-        return; // Don't call AI — action was handled locally
+        return; // Don't call AI â€” action was handled locally
       }
       break;
     }
   }
 
-  // ── Always call AI — Gemini classifies intent in any language ──
+  // â”€â”€ Always call AI â€” Gemini classifies intent in any language â”€â”€
   chatMessages.push({ role: 'user', content: text });
   appendTutorMsg('user', text);
   showTyping();
@@ -809,7 +806,7 @@ async function sendTutorMessage() {
     }
 
     chatMessages.push({ role: 'assistant', content: reply });
-    appendTutorMsg('ai', reply || '✅ Done!');
+    appendTutorMsg('ai', reply || 'âœ… Done!');
   } catch (err) {
     removeTyping();
     appendTutorMsg('ai', 'Sorry, I had trouble responding. Please try again.');
@@ -828,7 +825,7 @@ if (tutorInput) tutorInput.addEventListener('keydown', (e) => { if (e.key === 'E
 // ======================
 initQuizModeTabs();
 
-// startQuizBtn in Studio — navigate to Quiz tab (not open modal directly)
+// startQuizBtn in Studio â€” navigate to Quiz tab (not open modal directly)
 // The dojoStartQuizBtn is now the sole modal launcher
 startQuizBtn.addEventListener('click', () => {
   if (currentVocabList.length === 0) {
@@ -846,7 +843,7 @@ document.getElementById('restartQuizBtn').addEventListener('click', async () => 
   const btn = document.getElementById('restartQuizBtn');
   if (getMode() === 'srs' && currentVocabList.length >= 4) {
     const orig = btn.innerHTML;
-    btn.innerHTML = '⏳ Generating...';
+    btn.innerHTML = 'â³ Generating...';
     btn.disabled = true;
     try {
       const sentences = await generateSRSQuestions(currentVocabList);
@@ -880,17 +877,17 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     if (match) {
       // Use the global voice sync hook registered by initLangDropdown
       if (window._voiceSetLang) {
-        window._voiceSetLang(match.code, `${match.name} — ${match.native}`);
+        window._voiceSetLang(match.code, `${match.name} â€” ${match.native}`);
       } else {
         // Fallback: update hidden input directly
         const hiddenInput = document.getElementById('langSelect');
         if (hiddenInput) hiddenInput.value = match.code;
         const label = document.getElementById('langDropdownLabel');
-        if (label) label.textContent = `${match.name} — ${match.native}`;
+        if (label) label.textContent = `${match.name} â€” ${match.native}`;
       }
       showToast(`Language set to ${match.name}`, 'success', 2000);
     } else {
-      showToast(`Couldn't match language "${langName}" — please select it manually.`, 'warning', 4000);
+      showToast(`Couldn't match language "${langName}" â€” please select it manually.`, 'warning', 4000);
     }
   }
 
@@ -932,7 +929,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   }
 
   initVoiceAssistant({
-    decipherNav:      () => window.decipherNav,  // getter — resolved at call-time after initAppShell runs
+    decipherNav:      () => window.decipherNav,  // getter â€” resolved at call-time after initAppShell runs
     loadSample:       loadSampleVoice,
     clickAnalyze,
     clickMemoryHooks: () => { if (mnemonicBtn && !mnemonicBtn.disabled) mnemonicBtn.click(); else showToast('Analyze text first.', 'warning'); },
@@ -992,18 +989,17 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   document.querySelectorAll('.reveal-section').forEach(el => revealObserver.observe(el));
 })();
 
-
-// ═══════════════════════════════════════════════════════════════
-// APP SHELL v2 — Top-nav view router + split-pane resizer
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// APP SHELL v2 â€” Top-nav view router + split-pane resizer
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function initAppShell() {
 
-  // ── THEME ────────────────────────────────────────────────────
+  // â”€â”€ THEME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // (theme buttons are already handled by initTheme above; this
-  //  section just keeps sidebar/mobile copies in sync — no-op
+  //  section just keeps sidebar/mobile copies in sync â€” no-op
   //  since we unified to a single set of .theme-btn-sm buttons)
 
-  // ── VIEW ROUTER ───────────────────────────────────────────────
+  // â”€â”€ VIEW ROUTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'challengeView', 'profileView', 'libraryView'];
 
   function switchAppView(viewId) {
@@ -1041,7 +1037,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
       else aboutVid.pause();
     }
 
-    // 5. Nav glass — transparent on landing/about, solid elsewhere
+    // 5. Nav glass â€” transparent on landing/about, solid elsewhere
     const nav = document.getElementById('mainNav');
     if (nav) {
       if (viewId === 'landing' || viewId === 'aboutView') {
@@ -1084,7 +1080,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     }
   }
 
-  // ── ABOUT HERO CHARACTER ANIMATION ─────────────────────────────
+  // â”€â”€ ABOUT HERO CHARACTER ANIMATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let aboutAnimated = false;
   function runAboutAnimations() {
     if (aboutAnimated) return;
@@ -1108,7 +1104,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
       const prevLineChars = lines.slice(0, lineIdx).join(' ').length + (lineIdx > 0 ? lineIdx : 0); // +spaces
 
       words.forEach((word, wordIdx) => {
-        // word wrapper — browser will not break inside this
+        // word wrapper â€” browser will not break inside this
         const wordSpan = document.createElement('span');
         wordSpan.style.cssText = 'display:inline-block; white-space:nowrap;';
 
@@ -1166,14 +1162,14 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     btn.addEventListener('click', () => switchAppView(btn.dataset.view));
   });
 
-  // Logo click → home
+  // Logo click â†’ home
   const navLogoBtn = document.getElementById('navLogoBtn');
   if (navLogoBtn) navLogoBtn.addEventListener('click', (e) => {
     e.preventDefault();
     switchAppView('landing');
   });
 
-  // Quiz view start quiz — guard: must have words extracted
+  // Quiz view start quiz â€” guard: must have words extracted
   const dojoStart = document.getElementById('dojoStartQuizBtn');
   const mainStart = document.getElementById('startQuizBtn');
   if (dojoStart && mainStart) {
@@ -1185,14 +1181,14 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     syncQuizBtn();
     dojoStart.addEventListener('click', async () => {
       if (currentVocabList.length === 0) {
-        showToast('Analyze a passage in Studio first — then come back to quiz!', 'warning', 4000);
+        showToast('Analyze a passage in Studio first â€” then come back to quiz!', 'warning', 4000);
         return;
       }
       const mode = getMode();
       if (mode === 'srs') {
         if (currentVocabList.length < 4) { showToast('You need at least 4 words for Smart Quiz.', 'warning'); return; }
         const origText = dojoStart.textContent;
-        dojoStart.textContent = '⏳ Generating...';
+        dojoStart.textContent = 'â³ Generating...';
         dojoStart.disabled = true;
         try {
           const sentences = await generateSRSQuestions(currentVocabList);
@@ -1210,7 +1206,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     });
   }
 
-  // ── NAV SCROLL (landing only) ─────────────────────────────────
+  // â”€â”€ NAV SCROLL (landing only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const nav = document.getElementById('mainNav');
   if (nav) {
     window.addEventListener('scroll', () => {
@@ -1221,7 +1217,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     }, { passive: true });
   }
 
-  // ── PANE RESIZER (mouse + touch) ──────────────────────────────
+  // â”€â”€ PANE RESIZER (mouse + touch) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const dualPane = document.getElementById('dualPane');
   const resizer  = document.getElementById('paneResizer');
 
@@ -1260,11 +1256,10 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     document.addEventListener('touchend', endDrag);
   }
 
-  // ── INIT ─────────────────────────────────────────────────────
+  // â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   switchAppView('landing');
 
 })();
-
 
 // ---- TERMS & CONDITIONS MODAL ----
 (function initTermsModal() {
