@@ -16,9 +16,7 @@
 import { showToast } from './toast.js';
 import { setAuth } from './api.js';
 
-let auth = null;
-let googleProvider = null;
-let currentUser = null;
+let auth = null, googleProvider = null, currentUser = null;
 let onUserChangedCallback = null;
 let modalEl = null;
 let currentMode = 'signin'; // 'signin' | 'signup'
