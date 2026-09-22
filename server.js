@@ -877,6 +877,49 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
   }
 });
+
+// POST /api/voice-intent — Gemini-powered multilingual voice intent detection
+// Final fallback after local regex intent patterns return nothing.
+app.post('/api/voice-intent', async (req, res) => {
+  const { utterance, lang } = req.body;
+  if (!utterance || typeof utterance !== 'string') {
+    return res.status(400).json({ error: 'utterance is required' });
+  }
+  const prompt = 'You are the intent engine for "Decipher", an AI vocabulary app.
+' +
+    'The user spoke a voice command. Identify their intended action.
+' +
+    'Language (BCP-47): ' + (lang || 'unknown') + '
+' +
+    'Transcript: "' + utterance + '"
+
+' +
+    'Reply with EXACTLY one tag:
+' +
+    '[ACTION:navStudio] [ACTION:navQuiz] [ACTION:navLibrary] [ACTION:navHome]
+' +
+    '[ACTION:navAbout] [ACTION:analyze] [ACTION:translate] [ACTION:memoryHooks]
+' +
+    '[ACTION:story] [ACTION:simplify] [ACTION:oppositeDay] [ACTION:save]
+' +
+    '[ACTION:startQuiz] [ACTION:loadSample] [ACTION:none]
+
+' +
+    'Reply with only the tag.';
+  try {
+    const result = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: [{ role: 'user', parts: [{ text: prompt }] }]
+    });
+    const raw = ((result.response && result.response.candidates && result.response.candidates[0] && result.response.candidates[0].content && result.response.candidates[0].content.parts && result.response.candidates[0].content.parts[0] && result.response.candidates[0].content.parts[0].text) || '').trim();
+    const match = raw.match(/[ACTION:([a-zA-Z]+)]/);
+    res.json({ action: match ? match[1] : 'none' });
+  } catch (err) {
+    console.error('[voice-intent]', err.message);
+    res.status(500).json({ action: 'none', error: 'Intent detection failed.' });
+  }
+});
+
 // Only start the HTTP server when running locally (not on Vercel)
 if (require.main === module) {
   app.listen(PORT, () => console.log('Backend running on http://localhost:' + PORT));
