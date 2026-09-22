@@ -286,6 +286,90 @@ async function runAction(cmd, handlers) {
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MAIN INIT
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+// =====================================================================
+// VOICE LANGUAGE PICKER — build and wire the language selector UI
+// =====================================================================
+function buildLangPicker(recognition, onLangChange) {
+  const btn      = document.getElementById('voiceLangBtn');
+  const dropdown = document.getElementById('voiceLangDropdown');
+  const listEl   = document.getElementById('voiceLangList');
+  const search   = document.getElementById('voiceLangSearch');
+  const labelEl  = document.getElementById('voiceLangLabel');
+
+  if (!btn || !dropdown || !listEl) return; // overlay not in DOM
+
+  let currentCode = getStoredVoiceLang();
+
+  function updateBtnLabel(code) {
+    const lang = getLangByCode(code);
+    if (labelEl) labelEl.textContent = lang ? lang.name : code;
+  }
+  updateBtnLabel(currentCode);
+
+  function renderList(filter = '') {
+    listEl.innerHTML = '';
+    const lower = filter.toLowerCase();
+    let lastRegion = null;
+
+    const filtered = filter
+      ? VOICE_LANGUAGES.filter(l =>
+          l.name.toLowerCase().includes(lower) ||
+          (l.native && l.native.toLowerCase().includes(lower))
+        )
+      : VOICE_LANGUAGES;
+
+    filtered.forEach(lang => {
+      if (lang.region !== lastRegion && !filter) {
+        const hdr = document.createElement('div');
+        hdr.className = 'voice-lang-region';
+        hdr.textContent = lang.region;
+        listEl.appendChild(hdr);
+        lastRegion = lang.region;
+      }
+      const opt = document.createElement('div');
+      opt.className = 'voice-lang-option' + (lang.code === currentCode ? ' active' : '');
+      opt.setAttribute('role', 'option');
+      opt.dataset.code = lang.code;
+      opt.innerHTML = `<span>${lang.name}</span><span class="lang-native">${lang.native || ''}</span>`;
+      opt.addEventListener('click', () => {
+        currentCode = lang.code;
+        recognition.lang = currentCode;
+        setStoredVoiceLang(currentCode);
+        updateBtnLabel(currentCode);
+        dropdown.classList.add('hidden');
+        btn.classList.remove('open');
+        if (onLangChange) onLangChange(currentCode);
+        renderList(); // refresh active state
+      });
+      listEl.appendChild(opt);
+    });
+  }
+
+  renderList();
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = !dropdown.classList.contains('hidden');
+    dropdown.classList.toggle('hidden', isOpen);
+    btn.classList.toggle('open', !isOpen);
+    if (!isOpen && search) { search.value = ''; renderList(); search.focus(); }
+  });
+
+  if (search) {
+    search.addEventListener('input', () => renderList(search.value));
+  }
+
+  document.addEventListener('click', () => {
+    dropdown.classList.add('hidden');
+    btn.classList.remove('open');
+  });
+
+  // Apply stored language immediately
+  recognition.lang = currentCode;
+  return () => currentCode; // expose getter
+}
+
 export function initVoiceAssistant(handlers) {
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -306,7 +390,10 @@ export function initVoiceAssistant(handlers) {
   recognition.interimResults = true;   // fire as user speaks for live transcript
   recognition.maxAlternatives = 1;
   // Accept any language â€” intent parser handles multi-lingual
-  recognition.lang = navigator.language || 'en-US';
+  recognition.lang = getStoredVoiceLang() || navigator.language || 'en-US';
+
+  // Wire the language picker UI (renders dropdown, persists choice)
+  buildLangPicker(recognition, (code) => { recognition.lang = code; });
 
   let isListening = false;
 
