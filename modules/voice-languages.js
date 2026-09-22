@@ -116,3 +116,16 @@ export function getRegions() {
     return acc;
   }, []);
 }
+/** Default language code */
+export const DEFAULT_VOICE_LANG = 'en-US';
+
+/** Get the persisted voice language from localStorage, falls back to en-US */
+export function getStoredVoiceLang() {
+  try { return localStorage.getItem('decipher_voice_lang') || DEFAULT_VOICE_LANG; }
+  catch { return DEFAULT_VOICE_LANG; }
+}
+
+/** Persist the chosen voice language */
+export function setStoredVoiceLang(code) {
+  try { localStorage.setItem('decipher_voice_lang', code); } catch { /* ignore */ }
+}
