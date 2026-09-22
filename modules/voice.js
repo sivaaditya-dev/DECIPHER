@@ -165,19 +165,17 @@ function parseCommands(utterance) {
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // SPEECH SYNTHESIS (TTS)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function speak(text) {
-  if (!window.speechSynthesis) return;
+function speak(text, langCode) {
+  if (!text || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(text);
-  utt.rate  = 1.05;
-  utt.pitch = 1.0;
-  utt.volume = 1.0;
-  // Prefer a natural English voice if available
+  // Use the provided language or fall back to the stored preference
+  const lang = langCode || getStoredVoiceLang() || 'en-US';
+  utt.lang = lang;
+  // Try to find a voice matching the target language
   const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v =>
-    v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google'))
-  ) || voices.find(v => v.lang.startsWith('en')) || null;
-  if (preferred) utt.voice = preferred;
+  const matchedVoice = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
+  if (matchedVoice) utt.voice = matchedVoice;
   window.speechSynthesis.speak(utt);
 }
 
