@@ -470,7 +470,13 @@ export function initVoiceAssistant(handlers) {
     const utterance = finalTranscript.trim();
     const confidence = event.results[event.results.length - 1][0].confidence;
     
-    const queue = parseCommands(utterance);
+    // First try English regex patterns
+    let queue = parseCommands(utterance);
+
+    // If English patterns match nothing, try multilingual keyword patterns
+    if (queue.length === 0) {
+      queue = parseMultilingualCommands(utterance);
+    }
 
     if (queue.length === 0) {
       // Nothing matched â€” forward to the Decipher Tutor as a text message
