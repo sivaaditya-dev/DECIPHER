@@ -478,6 +478,32 @@ export function initVoiceAssistant(handlers) {
       queue = parseMultilingualCommands(utterance);
     }
 
+    // Final fallback: if both English and multilingual regex fail, ask Gemini
+    if (queue.length === 0) {
+      try {
+        const langCode = (typeof recognition !== 'undefined' && recognition) ? recognition.lang : 'en-US';
+        showOverlay('🔍', utterance, 'Detecting intent…');
+        const resp = await fetch('/api/voice-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ utterance, lang: langCode })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.action && data.action !== 'none') {
+            const intentLabels = {
+              navStudio: 'Navigating to Studio', navQuiz: 'Navigating to Quiz',
+              navLibrary: 'Opening Library', navHome: 'Going Home', navAbout: 'Opening About',
+              analyze: 'Analyzing text', translate: 'Translating', memoryHooks: 'Memory Hooks',
+              story: 'Generating Story', simplify: 'Simplifying', oppositeDay: 'Opposite Day',
+              save: 'Saving', startQuiz: 'Starting Quiz', loadSample: 'Loading Sample',
+            };
+            queue.push({ action: data.action, label: intentLabels[data.action] || data.action });
+          }
+        }
+      } catch { /* network error — fall through to tutor */ }
+    }
+
     if (queue.length === 0) {
       // Nothing matched â€” forward to the Decipher Tutor as a text message
       showOverlay('ðŸ¤”', utterance, '');
