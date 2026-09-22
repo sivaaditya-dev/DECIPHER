@@ -1,107 +1,57 @@
-# `voice.js` — Voice Assistant
+﻿# Voice Assistant — Multilingual Support
 
-**File:** `modules/voice.js`
+Decipher's voice assistant supports **100+ world languages** for voice command input, including Tamil, Hindi, Arabic, Spanish, French, Chinese, Japanese, Korean, and many more.
 
-Integrates the **Web Speech API** (SpeechRecognition + SpeechSynthesis) to give Decipher hands-free voice control. No API key needed — everything runs in the browser.
+## How It Works
 
-> **Browser support:** Chrome, Edge, and modern Android browsers. The mic FAB is automatically hidden in unsupported browsers.
+### Three-Layer Intent Detection Pipeline
 
----
+When you speak a command, the system runs it through three layers in sequence:
 
-## Initialization
+1. **English Regex Patterns** (oice.js — VOICE_INTENTS)
+   - Fast, offline, zero-latency matching for English commands.
+   - Examples: "analyze", "go to quiz", "translate to Spanish"
 
-### `initVoiceAssistant(handlers)`
+2. **Multilingual Keyword Fallback** (oice-intents-multilang.js)
+   - Offline regex patterns for 20+ major languages.
+   - Covers Tamil, Hindi, Spanish, French, Arabic, Chinese, Korean, Japanese, and more.
+   - Examples: Tamil "பகுப்பாய்வு" → nalyze, Hindi "परीक्षा" → 
+avQuiz
 
-Call once during app startup.
+3. **Gemini AI Fallback** (/api/voice-intent)
+   - If neither regex layer matches, the transcript is sent to Gemini 2.5 Flash.
+   - Handles any of the 100+ languages with natural phrasing, slang, and mixed-language commands.
+   - Returns one of the structured action tags (e.g., [ACTION:analyze]).
 
-```js
-initVoiceAssistant({
-  loadSample,
-  clickAnalyze,
-  clickMemoryHooks,
-  clickStory,
-  clickOppositeDay,
-  clickSimplify,
-  clickSave,
-  clickTranslate,
-  setLangSelect,
-  clickStartQuiz,
-  clickStartSmartQuiz,
-  currentVocabList,
-  decipherNav,      // () => navFn  (getter — resolved at call time)
-  sendToTutor,
-});
-```
+### Language Picker UI
 
-All `handlers` are optional; missing ones cause the related voice command to silently no-op.
+- A **language selector** appears at the top of the voice overlay.
+- Clicking it opens a searchable dropdown with all 100 languages, grouped by region.
+- The selected language is set as ecognition.lang on the Web Speech API.
+- Your choice is **persisted in localStorage** (decipher_voice_lang) and restored on the next visit.
 
----
+## Supported Languages (Highlights)
 
-## Supported Voice Commands
+| Region | Languages |
+|---|---|
+| South Asia | Tamil, Hindi, Telugu, Kannada, Malayalam, Marathi, Gujarati, Punjabi, Bengali, Urdu |
+| East Asia | Mandarin (Simplified & Traditional), Japanese, Korean, Cantonese |
+| Southeast Asia | Malay, Indonesian, Thai, Vietnamese, Filipino, Burmese, Khmer |
+| Europe | Spanish, French, German, Italian, Portuguese, Dutch, Russian, Polish, Ukrainian, + 20 more |
+| Middle East | Arabic, Persian/Farsi, Hebrew, Turkish |
+| Africa | Swahili, Amharic, Yoruba, Hausa, Zulu |
+| Americas | Spanish (Mexico/Argentina), Portuguese (Brazil), French (Canada) |
 
-The assistant matches spoken phrases to action intents regardless of language or phrasing.
+## Technical Architecture
 
-| Utterance Examples | Action |
-|--------------------|--------|
-| "Studio", "go back", "analyze" | Navigate to Studio |
-| "Quiz", "test me", "dojo" | Navigate to Quiz |
-| "Library", "saved sessions" | Navigate to Library |
-| "Home", "landing", "main page" | Navigate to Home |
-| "Load sample", "open demo" | Load a sample text |
-| "Analyze", "decipher", "extract" | Run vocabulary analysis |
-| "Memory hooks", "mnemonic", "remember" | Generate mnemonics |
-| "Story", "generate story" | Generate vocabulary story |
-| "Opposite day", "antonym" | Run Opposite Day |
-| "Simplify", "ELI5", "plain English" | Simplify passage |
-| "Save", "bookmark" | Save current session |
-| "Translate to Tamil" | Set language + translate |
-| "Smart quiz", "SRS", "fill in the blank" | Start SRS quiz |
-| "Start quiz", "begin test" | Start standard quiz |
+- \modules/voice-languages.js\ — Language data map (100 languages with BCP-47 codes)
+- \modules/voice-intents-multilang.js\ — Multilingual regex keyword patterns
+- \modules/voice.js\ — Core voice assistant (updated for multilingual support)
+- \server.js\ — \POST /api/voice-intent\ Gemini endpoint
 
----
+## Voice Recognition Notes
 
-## Multi-Step Commands
-
-Commands can be chained in a single utterance using conjunctions:
-
-```
-"Load sample, analyze, then translate to French"
-"Use demo and start quiz"
-"Memory hooks, then save"
-```
-
-The assistant parses the utterance into an ordered queue and executes each action sequentially with a 600ms stagger.
-
----
-
-## Translation Language Extraction
-
-When the user says "translate to X", the module extracts the language name from the utterance. It searches a built-in list of 30+ languages and falls back to a regex pattern `/(translate|into|to|in)\s+([a-z]+)/i`.
-
----
-
-## Text-to-Speech
-
-The assistant speaks back a confirmation before executing the action queue:
-
-- **Single action:** `"Translating to Tamil!"`
-- **Multiple actions:** `"Doing everything you asked — Loading a sample text, Analyzing the text."`
-
-It prefers a Neural/Natural English voice from the browser's voice list if available.
-
----
-
-## Fallback to Tutor Chat
-
-If no intent is matched, the utterance is forwarded to the Socratic Tutor chat panel as a text message, and the tutor panel is opened automatically.
-
----
-
-## Global API
-
-After initialization, a global escape hatch is available on `window`:
-
-```js
-window.decipherVoice.start();         // Start listening programmatically
-window.decipherVoice.speak("Hello!"); // Speak text programmatically
-```
+- The Web Speech API's accuracy depends on the browser's built-in language models.
+- Chrome and Edge have the best support for non-English languages.
+- Firefox has limited language support for SpeechRecognition.
+- For best results with Tamil and Indian languages, use Chrome on Android or desktop.
