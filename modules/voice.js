@@ -20,6 +20,11 @@
 // Natural language â†’ action key.  Each entry has several phrase
 // patterns so we match informal, accented, or non-English input.
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+import { showToast } from './toast.js';
+import { setAuth } from './api.js';
+import { VOICE_LANGUAGES, getStoredVoiceLang, setStoredVoiceLang, getLangByCode } from './voice-languages.js';
+import { parseMultilingualCommands } from './voice-intents-multilang.js';
+
 const VOICE_INTENTS = [
   // Navigation
   {
