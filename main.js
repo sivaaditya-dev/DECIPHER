@@ -1,5 +1,5 @@
 ﻿/**
- * main.js â€” Entry Point Orchestrator
+ * main.js — Entry Point Orchestrator
  * Imports all modules and wires DOM events.
  */
 
@@ -49,7 +49,7 @@ import { initProfile } from './modules/profile.js';
     optionList.innerHTML = '';
     focusedIdx = -1;
     LANGUAGES.forEach((lang, i) => {
-      const text = `${lang.name} â€” ${lang.native}`;
+      const text = `${lang.name} — ${lang.native}`;
       if (q && !lang.name.toLowerCase().includes(q) && !lang.native.toLowerCase().includes(q)) return;
       const li = document.createElement('li');
       li.className = 'lang-option' + (lang.code === selectedCode ? ' lang-option-active' : '');
@@ -207,9 +207,9 @@ initAuth(firebase, (user) => {
     loadLibrary();
     // Init challenge view for logged-in user
     initChallenge(user);
-    // Hero button becomes "Get Started" â†’ navigates to Studio
+    // Hero button becomes "Get Started" → navigates to Studio
     if (heroLoginBtn) {
-      heroLoginBtn.textContent = 'Get Started â†’';
+      heroLoginBtn.textContent = 'Get Started →';
       heroLoginBtn.classList.add('logged-in');
     }
     // Hide the guest button once logged in
@@ -235,7 +235,7 @@ authBtn.addEventListener('click', handleAuthButtonClick);
 if (heroLoginBtn) {
   heroLoginBtn.addEventListener('click', () => {
     if (getCurrentUser()) {
-      // Already logged in â€” go to Studio
+      // Already logged in — go to Studio
       switchAppView('studioView');
     } else {
       showAuthModal('signin');
@@ -341,7 +341,7 @@ simplifyBtn.addEventListener('click', async () => {
   }
 });
 
-// "Use as Input" â€” copy simplified text into the textarea
+// "Use as Input" — copy simplified text into the textarea
 useSimplifiedBtn.addEventListener('click', () => {
   if (simplifyText.textContent) {
     inputText.value = simplifyText.textContent;
@@ -559,7 +559,7 @@ clearLibBtn.addEventListener('click', async () => {
   const saved = localStorage.getItem('decipher-theme') || 'dark';
   // Use data-theme attribute so we never wipe other html classes
   document.documentElement.setAttribute('data-theme', saved);
-  // Mark active button â€” covers both .theme-btn and .theme-btn-sm
+  // Mark active button — covers both .theme-btn and .theme-btn-sm
   document.querySelectorAll('.theme-btn, .theme-btn-sm').forEach(b => {
     if (b.dataset.theme === saved) b.classList.add('active');
   });
@@ -658,7 +658,7 @@ if (oppositeDayBtn) {
       const result = await generateOppositeDay(text, currentVocabList);
       // Show result in storyContainer (reuse it)
       storyContainer.style.display = 'block';
-      storyContainer.innerHTML = '<div class="opposite-label">ðŸ”„ Opposite Day â€” Antonym Rewrite</div><p style="font-size:13px;line-height:1.7;font-style:italic;">' + result.opposite + '</p>';
+      storyContainer.innerHTML = '<div class="opposite-label">ðŸ”„ Opposite Day — Antonym Rewrite</div><p style="font-size:13px;line-height:1.7;font-style:italic;">' + result.opposite + '</p>';
       showToast('Opposite Day generated! All words flipped to their antonyms.', 'success', 4000);
     } catch (err) {
       showToast('Opposite Day failed: ' + err.message, 'error');
@@ -714,12 +714,12 @@ function executeTutorIntent(action) {
         setTimeout(() => { mnemonicBtn.click(); }, 300); // wait for view to render
         return 'âœ… Navigating to Studio and generating Memory Hooks for your words!';
       }
-      return 'âš ï¸ Analyze some text in Studio first â€” then I can generate Memory Hooks for you.';
+      return 'âš ï¸ Analyze some text in Studio first — then I can generate Memory Hooks for you.';
     case 'oppositeDay':
       if (window.decipherNav) window.decipherNav('studioView');
       if (oppositeDayBtn && !oppositeDayBtn.disabled) {
         setTimeout(() => { oppositeDayBtn.click(); }, 300);
-        return 'âœ… Running Opposite Day â€” flipping all words to their antonyms!';
+        return 'âœ… Running Opposite Day — flipping all words to their antonyms!';
       }
       return 'âš ï¸ Analyze some text in Studio first to use Opposite Day.';
     case 'story':
@@ -730,7 +730,7 @@ function executeTutorIntent(action) {
       }
       return 'âš ï¸ Analyze some text in Studio first to generate a story.';
     case 'quiz':
-      // Navigate to Quiz tab â€” dojoStartQuizBtn is the launcher there
+      // Navigate to Quiz tab — dojoStartQuizBtn is the launcher there
       if (window.decipherNav) window.decipherNav('dojoView');
       return 'âœ… Navigated to the Quiz tab! Click "Start Quiz" to begin.';
     case 'translate':
@@ -739,13 +739,13 @@ function executeTutorIntent(action) {
         const tb = document.getElementById('translationBar');
         if (tb) { tb.style.display = 'flex'; tb.scrollIntoView({ behavior: 'smooth' }); }
       }, 300);
-      return 'âœ… Navigated to Studio â€” scroll to the Translation bar and pick a language!';
+      return 'âœ… Navigated to Studio — scroll to the Translation bar and pick a language!';
     case 'simplify':
       if (window.decipherNav) window.decipherNav('studioView');
       setTimeout(() => {
         if (simplifyBtn) simplifyBtn.scrollIntoView({ behavior: 'smooth' });
       }, 300);
-      return 'âœ… Navigated to Studio â€” scroll to the Simplify bar and click Rewrite!';
+      return 'âœ… Navigated to Studio — scroll to the Simplify bar and click Rewrite!';
     case 'navStudio':
       if (window.decipherNav) window.decipherNav('studioView');
       return 'âœ… Navigated to Studio!';
@@ -778,13 +778,13 @@ async function sendTutorMessage() {
         appendTutorMsg('user', text);
         appendTutorMsg('ai', result);
         chatMessages.push({ role: 'assistant', content: result });
-        return; // Don't call AI â€” action was handled locally
+        return; // Don't call AI — action was handled locally
       }
       break;
     }
   }
 
-  // â”€â”€ Always call AI â€” Gemini classifies intent in any language â”€â”€
+  // â”€â”€ Always call AI — Gemini classifies intent in any language â”€â”€
   chatMessages.push({ role: 'user', content: text });
   appendTutorMsg('user', text);
   showTyping();
@@ -825,7 +825,7 @@ if (tutorInput) tutorInput.addEventListener('keydown', (e) => { if (e.key === 'E
 // ======================
 initQuizModeTabs();
 
-// startQuizBtn in Studio â€” navigate to Quiz tab (not open modal directly)
+// startQuizBtn in Studio — navigate to Quiz tab (not open modal directly)
 // The dojoStartQuizBtn is now the sole modal launcher
 startQuizBtn.addEventListener('click', () => {
   if (currentVocabList.length === 0) {
@@ -877,17 +877,17 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     if (match) {
       // Use the global voice sync hook registered by initLangDropdown
       if (window._voiceSetLang) {
-        window._voiceSetLang(match.code, `${match.name} â€” ${match.native}`);
+        window._voiceSetLang(match.code, `${match.name} — ${match.native}`);
       } else {
         // Fallback: update hidden input directly
         const hiddenInput = document.getElementById('langSelect');
         if (hiddenInput) hiddenInput.value = match.code;
         const label = document.getElementById('langDropdownLabel');
-        if (label) label.textContent = `${match.name} â€” ${match.native}`;
+        if (label) label.textContent = `${match.name} — ${match.native}`;
       }
       showToast(`Language set to ${match.name}`, 'success', 2000);
     } else {
-      showToast(`Couldn't match language "${langName}" â€” please select it manually.`, 'warning', 4000);
+      showToast(`Couldn't match language "${langName}" — please select it manually.`, 'warning', 4000);
     }
   }
 
@@ -929,7 +929,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   }
 
   initVoiceAssistant({
-    decipherNav:      () => window.decipherNav,  // getter â€” resolved at call-time after initAppShell runs
+    decipherNav:      () => window.decipherNav,  // getter — resolved at call-time after initAppShell runs
     loadSample:       loadSampleVoice,
     clickAnalyze,
     clickMemoryHooks: () => { if (mnemonicBtn && !mnemonicBtn.disabled) mnemonicBtn.click(); else showToast('Analyze text first.', 'warning'); },
@@ -990,13 +990,13 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
 })();
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// APP SHELL v2 â€” Top-nav view router + split-pane resizer
+// APP SHELL v2 — Top-nav view router + split-pane resizer
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function initAppShell() {
 
   // â”€â”€ THEME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // (theme buttons are already handled by initTheme above; this
-  //  section just keeps sidebar/mobile copies in sync â€” no-op
+  //  section just keeps sidebar/mobile copies in sync — no-op
   //  since we unified to a single set of .theme-btn-sm buttons)
 
   // â”€â”€ VIEW ROUTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -1037,7 +1037,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
       else aboutVid.pause();
     }
 
-    // 5. Nav glass â€” transparent on landing/about, solid elsewhere
+    // 5. Nav glass — transparent on landing/about, solid elsewhere
     const nav = document.getElementById('mainNav');
     if (nav) {
       if (viewId === 'landing' || viewId === 'aboutView') {
@@ -1104,7 +1104,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
       const prevLineChars = lines.slice(0, lineIdx).join(' ').length + (lineIdx > 0 ? lineIdx : 0); // +spaces
 
       words.forEach((word, wordIdx) => {
-        // word wrapper â€” browser will not break inside this
+        // word wrapper — browser will not break inside this
         const wordSpan = document.createElement('span');
         wordSpan.style.cssText = 'display:inline-block; white-space:nowrap;';
 
@@ -1162,14 +1162,14 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     btn.addEventListener('click', () => switchAppView(btn.dataset.view));
   });
 
-  // Logo click â†’ home
+  // Logo click → home
   const navLogoBtn = document.getElementById('navLogoBtn');
   if (navLogoBtn) navLogoBtn.addEventListener('click', (e) => {
     e.preventDefault();
     switchAppView('landing');
   });
 
-  // Quiz view start quiz â€” guard: must have words extracted
+  // Quiz view start quiz — guard: must have words extracted
   const dojoStart = document.getElementById('dojoStartQuizBtn');
   const mainStart = document.getElementById('startQuizBtn');
   if (dojoStart && mainStart) {
@@ -1181,7 +1181,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     syncQuizBtn();
     dojoStart.addEventListener('click', async () => {
       if (currentVocabList.length === 0) {
-        showToast('Analyze a passage in Studio first â€” then come back to quiz!', 'warning', 4000);
+        showToast('Analyze a passage in Studio first — then come back to quiz!', 'warning', 4000);
         return;
       }
       const mode = getMode();
