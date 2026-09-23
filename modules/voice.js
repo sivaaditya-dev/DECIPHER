@@ -1,5 +1,5 @@
 ﻿/**
- * voice.js â€” Decipher Voice Assistant
+ * voice.js —” Decipher Voice Assistant
  *
  * Uses the Web Speech API (SpeechRecognition + SpeechSynthesis).
  * No API key required. Works in Chrome, Edge, and modern Android browsers.
@@ -17,7 +17,7 @@
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ACTION INTENT MAP
-// Natural language â†’ action key.  Each entry has several phrase
+// Natural language → action key.  Each entry has several phrase
 // patterns so we match informal, accented, or non-English input.
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import { showToast } from './toast.js';
@@ -53,7 +53,7 @@ const VOICE_INTENTS = [
     label: 'Opening About page',
   },
 
-  // Studio actions â€” order matters: run before generic nav
+  // Studio actions —” order matters: run before generic nav
   {
     patterns: [/\b(load|use|insert|get|open|fetch)\b.{0,20}\b(sample|example|demo|text)\b/i,
                /\b(sample|example|demo)\b/i],
@@ -91,7 +91,7 @@ const VOICE_INTENTS = [
     label: 'Saving the session',
   },
 
-  // Translation â€” capture language name
+  // Translation —” capture language name
   {
     patterns: [/\b(translate|translation)\b/i],
     action: 'translate',
@@ -138,7 +138,7 @@ function extractLanguage(text) {
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// PARSE COMMANDS â€” split utterance into ordered action queue
+// PARSE COMMANDS —” split utterance into ordered action queue
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function parseCommands(utterance) {
   // Split on common conjunctions / punctuation used in chained commands
@@ -205,7 +205,7 @@ async function runAction(cmd, handlers) {
     currentVocabList,
   } = handlers;
 
-  // decipherNav is a getter function â€” resolve it at call-time
+  // decipherNav is a getter function —” resolve it at call-time
   const decipherNav = typeof handlers.decipherNav === 'function'
     ? handlers.decipherNav()
     : handlers.decipherNav;
@@ -392,7 +392,7 @@ export function initVoiceAssistant(handlers) {
   recognition.continuous     = false;  // single utterance
   recognition.interimResults = true;   // fire as user speaks for live transcript
   recognition.maxAlternatives = 1;
-  // Accept any language â€” intent parser handles multi-lingual
+  // Accept any language —” intent parser handles multi-lingual
   recognition.lang = getStoredVoiceLang() || navigator.language || 'en-US';
 
   // Wire the language picker UI (renders dropdown, persists choice)
@@ -407,9 +407,9 @@ export function initVoiceAssistant(handlers) {
     if (voiceFab)     voiceFab.classList.add('voice-active');
     if (voiceStatus) {
       // Build the inner HTML:
-      //   <span class="voice-status-prefix">ðŸŽ¤ Listeningâ€¦</span>
+      //   <span class="voice-status-prefix">ðŸŽ¤ Listening…</span>
       //   <span class="voice-final">confirmed words</span>
-      //   <span class="voice-interim">still speakingâ€¦</span>
+      //   <span class="voice-interim">still speaking…</span>
       let html = '';
       if (statusText)        html += `<span class="voice-status-prefix">${statusText}</span>`;
       if (transcriptFinal)   html += `<span class="voice-final">${transcriptFinal}</span>`;
@@ -431,25 +431,25 @@ export function initVoiceAssistant(handlers) {
     try {
       recognition.start();
     } catch (e) {
-      // recognition already started (race condition) â€” ignore
+      // recognition already started (race condition) —” ignore
     }
   }
 
   recognition.onstart = () => {
     isListening = true;
-    showOverlay('ðŸŽ¤', '', 'Listeningâ€¦ speak now');
+    showOverlay('ðŸŽ¤', '', 'Listening… speak now');
   };
 
   recognition.onspeechstart = () => {
-    showOverlay('ðŸŽ¤', '', 'Hearing youâ€¦');
+    showOverlay('ðŸŽ¤', '', 'Hearing you…');
   };
 
   recognition.onspeechend = () => {
-    showOverlay('â³', '', 'Processingâ€¦');
+    showOverlay('â³', '', 'Processing…');
   };
 
   recognition.onresult = async (event) => {
-    // Collect all results â€” some final, some interim
+    // Collect all results —” some final, some interim
     let finalTranscript   = '';
     let interimTranscript = '';
 
@@ -508,7 +508,7 @@ export function initVoiceAssistant(handlers) {
     }
 
     if (queue.length === 0) {
-      // Nothing matched â€” forward to the Decipher Tutor as a text message
+      // Nothing matched —” forward to the Decipher Tutor as a text message
       showOverlay('ðŸ¤”', utterance, '');
       speak('Let me check that for you.');
       if (handlers.sendToTutor) {
@@ -533,7 +533,7 @@ export function initVoiceAssistant(handlers) {
     const confirmMsg =
       queue.length === 1
         ? `${actionLabels[0]}!`
-        : `Doing everything you asked â€” ${actionLabels.join(', ')}.`;
+        : `Doing everything you asked —” ${actionLabels.join(', ')}.`;
 
     speak(confirmMsg);
     showOverlay('âœ…', utterance, '');
@@ -551,7 +551,7 @@ export function initVoiceAssistant(handlers) {
       'audio-capture':     'Microphone not found.',
       'not-allowed':       'Microphone access denied. Please allow it in browser settings.',
       'network':           'Network error during recognition.',
-      'aborted':           '', // user stopped â€” no message
+      'aborted':           '', // user stopped —” no message
     };
     const msg = userErrors[event.error] || `Voice error: ${event.error}`;
     if (msg) showOverlay(`âš ï¸`, msg, '');
@@ -561,7 +561,7 @@ export function initVoiceAssistant(handlers) {
 
   recognition.onend = () => {
     isListening = false;
-    // Don't call hideOverlay here â€” let onresult / onerror handle it
+    // Don't call hideOverlay here —” let onresult / onerror handle it
   };
 
   // Wire mic button
