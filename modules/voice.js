@@ -22,8 +22,30 @@
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import { showToast } from './toast.js';
 import { setAuth } from './api.js';
-import { VOICE_LANGUAGES, getStoredVoiceLang, setStoredVoiceLang, getLangByCode } from './voice-languages.js';
-import { parseMultilingualCommands } from './voice-intents-multilang.js';
+
+
+// ── Multilingual module stubs (filled by dynamic import at runtime) ───────────
+let VOICE_LANGUAGES = [];
+let getStoredVoiceLang = () => { try { return localStorage.getItem('decipher_voice_lang') || 'en-US'; } catch { return 'en-US'; } };
+let setStoredVoiceLang = (c) => { try { localStorage.setItem('decipher_voice_lang', c); } catch {} };
+let getLangByCode = (c) => VOICE_LANGUAGES.find(l => l.code === c) || null;
+let parseMultilingualCommands = () => [];
+
+// Load multilingual modules without blocking — if they fail, English-only mode is still fully functional
+(async () => {
+  try {
+    const langMod = await import('./voice-languages.js');
+    const intentMod = await import('./voice-intents-multilang.js');
+    VOICE_LANGUAGES = langMod.VOICE_LANGUAGES || [];
+    if (langMod.getStoredVoiceLang) getStoredVoiceLang = langMod.getStoredVoiceLang;
+    if (langMod.setStoredVoiceLang) setStoredVoiceLang = langMod.setStoredVoiceLang;
+    if (langMod.getLangByCode) getLangByCode = langMod.getLangByCode;
+    if (intentMod.parseMultilingualCommands) parseMultilingualCommands = intentMod.parseMultilingualCommands;
+  } catch (e) {
+    console.warn('[Voice] Multilingual modules not available; running in English-only mode.', e);
+  }
+})();
+// ─────────────────────────────────────────────────────────────────────────────
 
 const VOICE_INTENTS = [
   // Navigation
