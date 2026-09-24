@@ -1,4 +1,4 @@
-﻿/**
+/**
  * voice-intents-multilang.js - Multilingual keyword patterns for the Voice Assistant
  *
  * These patterns extend the core English VOICE_INTENTS with keywords from

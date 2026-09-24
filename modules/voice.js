@@ -1,4 +1,4 @@
-﻿/**
+/**
  * voice.js —” Decipher Voice Assistant
  *
  * Uses the Web Speech API (SpeechRecognition + SpeechSynthesis).

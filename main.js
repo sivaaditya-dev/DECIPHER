@@ -1,4 +1,4 @@
-﻿/**
+/**
  * main.js — Entry Point Orchestrator
  * Imports all modules and wires DOM events.
  */

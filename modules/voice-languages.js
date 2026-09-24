@@ -1,4 +1,4 @@
-﻿/**
+/**
  * voice-languages.js — Multi-Language Support Data for the Voice Assistant
  *
  * Contains 100 major world languages with:
