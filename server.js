@@ -79,7 +79,7 @@ const sessionsCollection = db.collection('sessions');
 // Serve Firebase client config from environment variables
 // This keeps the API key out of the repo - configure these in Vercel env settings.
 app.get('/api/firebase-config', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=3600');
   const cfg = {
     apiKey:            process.env.FIREBASE_API_KEY || '',
@@ -89,7 +89,7 @@ app.get('/api/firebase-config', (req, res) => {
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
     appId:             process.env.FIREBASE_APP_ID || ''
   };
-  res.send('const firebaseConfig = ' + JSON.stringify(cfg, null, 2) + ';');
+  res.json(cfg);
 });
 
 // --- MIDDLEWARE ---
