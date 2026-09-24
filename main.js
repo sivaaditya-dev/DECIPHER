@@ -184,6 +184,20 @@ let currentLangName   = '';
 // ======================
 // 1. AUTH
 // ======================
+// Fetch Firebase config from server (config is stored in Vercel env vars, not client code)
+let firebaseConfig;
+try {
+  const _cfgResp = await fetch('/api/firebase-config');
+  if (_cfgResp.ok) {
+    firebaseConfig = await _cfgResp.json();
+  } else {
+    throw new Error('Config fetch failed: ' + _cfgResp.status);
+  }
+} catch (e) {
+  console.error('[Decipher] Could not load Firebase config:', e);
+  showToast('Configuration error — some features may not work.', 'error');
+  firebaseConfig = {};
+}
 firebase.initializeApp(firebaseConfig);
 
 // ?? Challenge Token Provider ??????????????????????????????????????????????????
