@@ -1,4 +1,4 @@
-﻿/**
+/**
  * auth.js — Multi-Provider Auth Module
  * 
  * Supports:

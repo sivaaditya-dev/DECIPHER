@@ -1,4 +1,4 @@
-﻿/**
+/**
  * profile.js — User Profile Module
  *
  * Features:

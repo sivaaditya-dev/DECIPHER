@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Toast Notification System
  * Replaces all alert() calls with a lightweight, non-intrusive toast UI.
  */
