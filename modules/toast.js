@@ -26,16 +26,16 @@ export function showToast(message, type = 'info', duration = 3500) {
   toast.className = `toast toast-${type}`;
 
   const icons = {
-    success: 'âœ…',
-    error: 'âŒ',
-    warning: 'âš ï¸',
-    info: 'â„¹ï¸',
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    info: 'ℹ️',
   };
 
   toast.innerHTML = `
     <span class="toast-icon">${icons[type] || icons.info}</span>
     <span class="toast-message">${message}</span>
-    <button class="toast-close" aria-label="Dismiss">âœ•</button>
+    <button class="toast-close" aria-label="Dismiss">✕</button>
   `;
 
   toast.querySelector('.toast-close').addEventListener('click', () => dismiss(toast));

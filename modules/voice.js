@@ -15,11 +15,11 @@
  *   initVoiceAssistant({ handlers, decipherNav, showToast, ... });
  */
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // ACTION INTENT MAP
 // Natural language → action key.  Each entry has several phrase
 // patterns so we match informal, accented, or non-English input.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 import { showToast } from './toast.js';
 import { setAuth } from './api.js';
 
@@ -133,10 +133,10 @@ const VOICE_INTENTS = [
   },
 ];
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // LANGUAGE EXTRACTION
 // Detect a target language in the utterance for translate action.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 const KNOWN_LANGS = [
   'tamil','hindi','telugu','kannada','malayalam','marathi','bengali','gujarati',
   'punjabi','urdu','spanish','french','german','italian','portuguese','japanese',
@@ -159,9 +159,9 @@ function extractLanguage(text) {
   return null;
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // PARSE COMMANDS —” split utterance into ordered action queue
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 function parseCommands(utterance) {
   // Split on common conjunctions / punctuation used in chained commands
   const chunks = utterance
@@ -189,9 +189,9 @@ function parseCommands(utterance) {
   return queue;
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // SPEECH SYNTHESIS (TTS)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 function speak(text, langCode) {
   if (!text || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
@@ -206,9 +206,9 @@ function speak(text, langCode) {
   window.speechSynthesis.speak(utt);
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // EXECUTE ACTION QUEUE (sequential with delays)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 async function executeQueue(queue, handlers) {
   for (let i = 0; i < queue.length; i++) {
     const cmd = queue[i];
@@ -308,9 +308,9 @@ async function runAction(cmd, handlers) {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 // MAIN INIT
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────
 
 // =====================================================================
 // VOICE LANGUAGE PICKER — build and wire the language selector UI
@@ -429,7 +429,7 @@ export function initVoiceAssistant(handlers) {
     if (voiceFab)     voiceFab.classList.add('voice-active');
     if (voiceStatus) {
       // Build the inner HTML:
-      //   <span class="voice-status-prefix">ðŸŽ¤ Listening…</span>
+      //   <span class="voice-status-prefix">🎤 Listening…</span>
       //   <span class="voice-final">confirmed words</span>
       //   <span class="voice-interim">still speaking…</span>
       let html = '';
@@ -459,15 +459,15 @@ export function initVoiceAssistant(handlers) {
 
   recognition.onstart = () => {
     isListening = true;
-    showOverlay('ðŸŽ¤', '', 'Listening… speak now');
+    showOverlay('🎤', '', 'Listening… speak now');
   };
 
   recognition.onspeechstart = () => {
-    showOverlay('ðŸŽ¤', '', 'Hearing you…');
+    showOverlay('🎤', '', 'Hearing you…');
   };
 
   recognition.onspeechend = () => {
-    showOverlay('â³', '', 'Processing…');
+    showOverlay('⏳', '', 'Processing…');
   };
 
   recognition.onresult = async (event) => {
@@ -486,7 +486,7 @@ export function initVoiceAssistant(handlers) {
 
     // Update live overlay with styled final + interim text
     if (finalTranscript || interimTranscript) {
-      showOverlay('ðŸŽ¤', finalTranscript, interimTranscript);
+      showOverlay('🎤', finalTranscript, interimTranscript);
     }
 
     // Only process commands once we have a final result
@@ -531,7 +531,7 @@ export function initVoiceAssistant(handlers) {
 
     if (queue.length === 0) {
       // Nothing matched —” forward to the Decipher Tutor as a text message
-      showOverlay('ðŸ¤”', utterance, '');
+      showOverlay('🤔', utterance, '');
       speak('Let me check that for you.');
       if (handlers.sendToTutor) {
         handlers.sendToTutor(utterance);
@@ -558,7 +558,7 @@ export function initVoiceAssistant(handlers) {
         : `Doing everything you asked —” ${actionLabels.join(', ')}.`;
 
     speak(confirmMsg);
-    showOverlay('âœ…', utterance, '');
+    showOverlay('✅', utterance, '');
 
     await executeQueue(queue, handlers);
 
@@ -576,7 +576,7 @@ export function initVoiceAssistant(handlers) {
       'aborted':           '', // user stopped —” no message
     };
     const msg = userErrors[event.error] || `Voice error: ${event.error}`;
-    if (msg) showOverlay(`âš ï¸`, msg, '');
+    if (msg) showOverlay(`⚠️`, msg, '');
     speak(msg || '');
     setTimeout(hideOverlay, 2000);
   };
