@@ -885,34 +885,25 @@ app.post('/api/voice-intent', async (req, res) => {
   if (!utterance || typeof utterance !== 'string') {
     return res.status(400).json({ error: 'utterance is required' });
   }
-  const prompt = 'You are the intent engine for "Decipher", an AI vocabulary app.
-' +
-    'The user spoke a voice command. Identify their intended action.
-' +
-    'Language (BCP-47): ' + (lang || 'unknown') + '
-' +
-    'Transcript: "' + utterance + '"
+  const prompt = `You are the intent engine for "Decipher", an AI vocabulary app.
+The user spoke a voice command. Identify their intended action.
+Language (BCP-47): ${lang || 'unknown'}
+Transcript: "${utterance}"
 
-' +
-    'Reply with EXACTLY one tag:
-' +
-    '[ACTION:navStudio] [ACTION:navQuiz] [ACTION:navLibrary] [ACTION:navHome]
-' +
-    '[ACTION:navAbout] [ACTION:analyze] [ACTION:translate] [ACTION:memoryHooks]
-' +
-    '[ACTION:story] [ACTION:simplify] [ACTION:oppositeDay] [ACTION:save]
-' +
-    '[ACTION:startQuiz] [ACTION:loadSample] [ACTION:none]
+Reply with EXACTLY one tag:
+[ACTION:navStudio] [ACTION:navQuiz] [ACTION:navLibrary] [ACTION:navHome]
+[ACTION:navAbout] [ACTION:analyze] [ACTION:translate] [ACTION:memoryHooks]
+[ACTION:story] [ACTION:simplify] [ACTION:oppositeDay] [ACTION:save]
+[ACTION:startQuiz] [ACTION:loadSample] [ACTIOn:none]
 
-' +
-    'Reply with only the tag.';
+Reply with only the tag.`;
   try {
     const result = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
     const raw = ((result.response && result.response.candidates && result.response.candidates[0] && result.response.candidates[0].content && result.response.candidates[0].content.parts && result.response.candidates[0].content.parts[0] && result.response.candidates[0].content.parts[0].text) || '').trim();
-    const match = raw.match(/[ACTION:([a-zA-Z]+)]/);
+    const match = raw.match(/\[ACTION:([a-zA-Z]+)\]/);
     res.json({ action: match ? match[1] : 'none' });
   } catch (err) {
     console.error('[voice-intent]', err.message);
