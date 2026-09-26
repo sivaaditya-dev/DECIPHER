@@ -583,7 +583,9 @@ export function initVoiceAssistant(handlers) {
 
   recognition.onend = () => {
     isListening = false;
-    // Don't call hideOverlay here —” let onresult / onerror handle it
+    // Auto-dismiss after short delay
+    setTimeout(() => hideOverlay(), 1500);
+    // Original: Don't call hideOverlay here —” let onresult / onerror handle it
   };
 
   // Wire mic button
@@ -593,5 +595,9 @@ export function initVoiceAssistant(handlers) {
 
   // Also expose a programmatic trigger
   window.decipherVoice = { start: startListening, speak };
+  window._stopVoiceRecognition = () => { try { recognition.stop(); } catch(e){} hideOverlay(); };
+  window._voiceFabClickHandler = startListening;
 
-  }
+  // Wire new voice pill
+  const voicePill = document.getElementById('voicePill');
+  if (voicePill) voicePill.addEventListener('click', startListening);}
