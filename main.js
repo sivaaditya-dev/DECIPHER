@@ -871,7 +871,10 @@ if (daiLauncher) {
     daiPanel.classList.toggle('hidden');
     daiLauncher.classList.toggle('open', !daiPanel.classList.contains('hidden'));
     daiLauncher.setAttribute('aria-expanded', !daiPanel.classList.contains('hidden'));
-    if (!daiPanel.classList.contains('hidden') && tutorInput) tutorInput.focus();
+    if (!daiPanel.classList.contains('hidden')) {
+      if (tutorInput) tutorInput.focus();
+      if (tutorMessages) tutorMessages.scrollTop = tutorMessages.scrollHeight;
+    }
   });
   daiLauncher.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') daiLauncher.click(); });
 }
