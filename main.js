@@ -166,12 +166,18 @@ const imageFileName    = document.getElementById('imageFileName');
 const youtubeLoadBtn   = document.getElementById('youtubeLoadBtn');
 const youtubeUrl       = document.getElementById('youtubeUrl');
 const ytStatus         = document.getElementById('ytStatus');
-const tutorFab         = document.getElementById('tutorFab');
-const tutorPanel       = document.getElementById('tutorPanel');
-const tutorClose       = document.getElementById('tutorClose');
+// Decipher AI widget references (new Lena-style design)
+const daiLauncher      = document.getElementById('daiLauncher');
+const daiPanel         = document.getElementById('daiPanel');
+const daiPanelClose    = document.getElementById('daiPanelClose');
+const daiTyping        = document.getElementById('daiTyping');
 const tutorMessages    = document.getElementById('tutorMessages');
 const tutorInput       = document.getElementById('tutorInput');
 const tutorSend        = document.getElementById('tutorSend');
+// Voice overlay X button
+const voiceOverlayClose = document.getElementById('voiceOverlayClose');
+// Voice FAB now replaced by voicePill
+const voicePill        = document.getElementById('voicePill');
 
 // ======================
 // State
@@ -689,21 +695,28 @@ if (oppositeDayBtn) {
 let chatMessages = [];
 
 function appendTutorMsg(role, content) {
-  const el = document.createElement('div');
-  el.className = 'tutor-msg ' + role;
-  el.textContent = content;
-  tutorMessages.appendChild(el);
+  // Remove welcome message on first real message
+  const welcome = tutorMessages.querySelector('.dai-welcome');
+  if (welcome) welcome.remove();
+  const wrapper = document.createElement('div');
+  wrapper.className = 'dai-msg ' + (role === 'user' ? 'user' : 'ai');
+  const avatar = document.createElement('div');
+  avatar.className = 'dai-msg-avatar';
+  avatar.textContent = role === 'user' ? '\u{1F464}' : '\u{1F916}';
+  const bubble = document.createElement('div');
+  bubble.className = 'dai-msg-bubble';
+  bubble.textContent = content;
+  wrapper.appendChild(avatar);
+  wrapper.appendChild(bubble);
+  tutorMessages.appendChild(wrapper);
   tutorMessages.scrollTop = tutorMessages.scrollHeight;
 }
 
 function showTyping() {
-  const el = document.createElement('div');
-  el.className = 'tutor-typing'; el.id = 'tutor-typing'; el.textContent = '···';
-  tutorMessages.appendChild(el);
-  tutorMessages.scrollTop = tutorMessages.scrollHeight;
+  if (daiTyping) daiTyping.classList.remove('hidden');
+  if (tutorMessages) tutorMessages.scrollTop = tutorMessages.scrollHeight;
 }
-function removeTyping() { const el = document.getElementById('tutor-typing'); if (el) el.remove(); }
-
+function removeTyping() { if (daiTyping) daiTyping.classList.add('hidden'); }
 // ── TUTOR INTENT DETECTION ───────────────────────────────────────────────────
 // Maps keyword patterns to executable actions so the Decipher Tutor
 // can navigate and trigger features on the user's behalf.
@@ -829,10 +842,38 @@ async function sendTutorMessage() {
   }
 }
 
-if (tutorFab)   tutorFab.addEventListener('click', () => tutorPanel.classList.toggle('open'));
-if (tutorClose) tutorClose.addEventListener('click', () => tutorPanel.classList.remove('open'));
+// Decipher AI widget event handlers
+if (daiLauncher) {
+  daiLauncher.addEventListener('click', () => {
+    daiPanel.classList.toggle('hidden');
+    daiLauncher.classList.toggle('open', !daiPanel.classList.contains('hidden'));
+    daiLauncher.setAttribute('aria-expanded', !daiPanel.classList.contains('hidden'));
+    if (!daiPanel.classList.contains('hidden') && tutorInput) tutorInput.focus();
+  });
+  daiLauncher.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') daiLauncher.click(); });
+}
+if (daiPanelClose) daiPanelClose.addEventListener('click', () => {
+  daiPanel.classList.add('hidden');
+  daiLauncher.classList.remove('open');
+  daiLauncher.setAttribute('aria-expanded', 'false');
+});
 if (tutorSend)  tutorSend.addEventListener('click', sendTutorMessage);
 if (tutorInput) tutorInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTutorMessage(); } });
+
+// Voice pill click handler (replaces old voiceFab)
+if (voicePill) voicePill.addEventListener('click', () => {
+  const voiceFabOld = document.getElementById('voiceFab');
+  if (voiceFabOld) voiceFabOld.click();
+  else if (window._voiceFabClickHandler) window._voiceFabClickHandler();
+});
+
+// Voice overlay X button handler
+if (voiceOverlayClose) voiceOverlayClose.addEventListener('click', () => {
+  const overlay = document.getElementById('voiceOverlay');
+  if (overlay) overlay.classList.add('hidden');
+  // Also stop recognition if running
+  if (window._stopVoiceRecognition) window._stopVoiceRecognition();
+});
 
 // ======================
 // 11. QUIZ EVENTS
