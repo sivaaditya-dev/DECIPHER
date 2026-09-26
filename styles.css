@@ -2554,3 +2554,396 @@ body { overflow-x: hidden; }
   margin-left: auto;
   white-space: nowrap;
 }
+
+/* ============================================================
+   DECIPHER AI ASSISTANT WIDGET — Lena-style floating UI
+   ============================================================ */
+
+/* ── Voice Command Pill (bottom-left) ── */
+.dai-voice-pill {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--glass-bg, rgba(20,20,40,0.85));
+  border: 1px solid rgba(108,142,255,0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 50px;
+  padding: 10px 18px 10px 14px;
+  cursor: pointer;
+  z-index: 220;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  font-weight: 500;
+  user-select: none;
+}
+.dai-voice-pill:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 28px rgba(108,142,255,0.3);
+  border-color: rgba(108,142,255,0.5);
+}
+.dai-voice-pill:active { transform: scale(0.97); }
+.dai-voice-pill-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(108,142,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c8eff;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.dai-voice-pill:hover .dai-voice-pill-icon { background: rgba(108,142,255,0.3); }
+.dai-voice-pill.recording .dai-voice-pill-icon {
+  background: rgba(239,68,68,0.2);
+  color: #f87171;
+  animation: mic-pulse 1s ease-in-out infinite;
+}
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+.dai-voice-pill-label { white-space: nowrap; letter-spacing: 0.01em; }
+
+/* ── Decipher AI Launcher Pill (bottom-right) ── */
+.dai-launcher {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border: 1px solid rgba(165,180,252,0.3);
+  border-radius: 50px;
+  padding: 8px 20px 8px 8px;
+  cursor: pointer;
+  z-index: 220;
+  box-shadow: 0 8px 32px rgba(99,102,241,0.35), 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+  user-select: none;
+  outline: none;
+}
+.dai-launcher:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.5), 0 4px 12px rgba(0,0,0,0.3);
+}
+.dai-launcher:active { transform: scale(0.97); }
+.dai-launcher.open {
+  border-color: rgba(165,180,252,0.6);
+}
+
+/* Robot avatar container */
+.dai-avatar {
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.dai-pulse {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid rgba(165,180,252,0.4);
+  animation: dai-ring 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes dai-ring {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 0; }
+}
+
+/* Launcher text */
+.dai-launcher-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.dai-label-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+.dai-label-sub {
+  font-size: 11px;
+  color: rgba(165,180,252,0.8);
+  letter-spacing: 0.01em;
+}
+
+/* ── Chat Panel ── */
+.dai-panel {
+  position: fixed;
+  bottom: 98px;
+  right: 28px;
+  width: 360px;
+  max-height: 520px;
+  background: var(--glass-bg, rgba(15,17,30,0.95));
+  border: 1px solid rgba(108,142,255,0.2);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(165,180,252,0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  z-index: 210;
+  overflow: hidden;
+  transform-origin: bottom right;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+}
+.dai-panel.hidden {
+  transform: scale(0.85) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Panel header */
+.dai-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(49,46,129,0.15));
+  border-bottom: 1px solid rgba(108,142,255,0.12);
+  flex-shrink: 0;
+}
+.dai-panel-avatar-wrap {
+  width: 36px;
+  height: 36px;
+  background: rgba(99,102,241,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(165,180,252,0.2);
+}
+.dai-panel-header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dai-panel-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.01em;
+}
+.dai-panel-status {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.dai-status-dot {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: status-blink 3s ease-in-out infinite;
+}
+@keyframes status-blink {
+  0%, 80%, 100% { opacity: 1; }
+  40% { opacity: 0.4; }
+}
+.dai-panel-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.dai-panel-close:hover { background: rgba(239,68,68,0.15); color: #f87171; }
+
+/* Messages area */
+.dai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(108,142,255,0.2) transparent;
+}
+.dai-messages::-webkit-scrollbar { width: 4px; }
+.dai-messages::-webkit-scrollbar-thumb { background: rgba(108,142,255,0.2); border-radius: 4px; }
+
+/* Welcome message */
+.dai-welcome {
+  text-align: center;
+  padding: 20px 10px;
+  color: rgba(255,255,255,0.6);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.dai-welcome-icon { font-size: 32px; margin-bottom: 8px; }
+.dai-welcome strong { color: rgba(165,180,252,0.9); }
+
+/* Chat bubbles */
+.dai-msg {
+  display: flex;
+  gap: 8px;
+  max-width: 100%;
+  align-items: flex-end;
+}
+.dai-msg.user { flex-direction: row-reverse; }
+.dai-msg-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(99,102,241,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  border: 1px solid rgba(165,180,252,0.15);
+}
+.dai-msg-bubble {
+  max-width: 78%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  word-break: break-word;
+}
+.dai-msg.ai .dai-msg-bubble {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.88);
+  border-bottom-left-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.dai-msg.user .dai-msg-bubble {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+}
+
+/* Typing indicator */
+.dai-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 16px;
+  flex-shrink: 0;
+}
+.dai-typing-indicator.hidden { display: none; }
+.dai-typing-indicator span {
+  width: 7px;
+  height: 7px;
+  background: rgba(108,142,255,0.6);
+  border-radius: 50%;
+  animation: dai-bounce 1.2s ease-in-out infinite;
+}
+.dai-typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.dai-typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dai-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+/* Input row */
+.dai-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(108,142,255,0.1);
+  background: rgba(255,255,255,0.02);
+  flex-shrink: 0;
+}
+.dai-input {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(108,142,255,0.2);
+  border-radius: 14px;
+  padding: 9px 12px;
+  color: rgba(255,255,255,0.9);
+  font-size: 13.5px;
+  line-height: 1.4;
+  resize: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  max-height: 100px;
+  overflow-y: auto;
+}
+.dai-input::placeholder { color: rgba(255,255,255,0.3); }
+.dai-input:focus {
+  outline: none;
+  border-color: rgba(108,142,255,0.5);
+  background: rgba(255,255,255,0.08);
+}
+.dai-send {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+}
+.dai-send:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(99,102,241,0.5); }
+.dai-send:active { transform: scale(0.95); }
+.dai-send:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+/* Voice overlay close button */
+.voice-overlay-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: background 0.15s, color 0.15s;
+  z-index: 1;
+}
+.voice-overlay-close:hover { background: rgba(239,68,68,0.3); color: white; }
+
+/* Voice overlay needs relative positioning for the X button */
+.voice-overlay { position: fixed; }
+
+/* Responsive: smaller panel on small screens */
+@media (max-width: 440px) {
+  .dai-panel { width: calc(100vw - 24px); right: 12px; bottom: 90px; }
+  .dai-launcher { right: 12px; bottom: 16px; padding: 7px 14px 7px 7px; }
+  .dai-voice-pill { left: 12px; bottom: 16px; }
+}
