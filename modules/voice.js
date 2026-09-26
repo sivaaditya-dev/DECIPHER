@@ -446,11 +446,12 @@ export function initVoiceAssistant(handlers) {
   }
 
   function startListening() {
-    if (isListening) {
-      recognition.stop();
-      return;
-    }
-    try {
+  if (isListening) {
+    recognition.stop();
+    return;
+  }
+  if (voiceStatus) voiceStatus.innerHTML = '🎙️ Starting...';
+  try {
       recognition.start();
     } catch (e) {
       // recognition already started (race condition) —” ignore
