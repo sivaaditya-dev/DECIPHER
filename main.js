@@ -875,11 +875,15 @@ if (daiLauncher) {
   });
   daiLauncher.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') daiLauncher.click(); });
 }
-if (daiPanelClose) daiPanelClose.addEventListener('click', () => {
-  daiPanel.classList.add('hidden');
-  daiLauncher.classList.remove('open');
-  daiLauncher.setAttribute('aria-expanded', 'false');
-});
+if (daiPanelClose) {
+  const closeChat = () => {
+    daiPanel.classList.add('hidden');
+    daiLauncher.classList.remove('open');
+    daiLauncher.setAttribute('aria-expanded', 'false');
+  };
+  daiPanelClose.addEventListener('click', closeChat);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !daiPanel.classList.contains('hidden')) closeChat(); });
+}
 if (tutorSend)  tutorSend.addEventListener('click', sendTutorMessage);
 if (tutorInput) tutorInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTutorMessage(); } });
 
