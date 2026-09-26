@@ -814,7 +814,9 @@ function executeTutorIntent(action) {
 async function sendTutorMessage() {
   const text = tutorInput.value.trim();
   if (!text) return;
-  if (tutorMessages.querySelector('.tutor-empty')) tutorMessages.innerHTML = '';
+  // Clear welcome/empty state
+  const emptyEl = tutorMessages.querySelector('.tutor-empty, .dai-welcome');
+  if (emptyEl) emptyEl.remove();
   tutorInput.value = '';
 
   // ── Intent detection: check before calling AI ──
