@@ -721,15 +721,23 @@ function removeTyping() { if (daiTyping) daiTyping.classList.add('hidden'); }
 // Maps keyword patterns to executable actions so the Decipher Tutor
 // can navigate and trigger features on the user's behalf.
 const TUTOR_INTENTS = [
-  { pattern: /memory hook|mnemonic/i,    action: 'memoryHooks',   label: 'Memory Hooks' },
-  { pattern: /opposite day|antonym/i,    action: 'oppositeDay',   label: 'Opposite Day' },
-  { pattern: /story|generate story/i,    action: 'story',         label: 'Story Generator' },
-  { pattern: /quiz|test me|start quiz/i, action: 'quiz',          label: 'Quiz' },
-  { pattern: /translate|translation/i,   action: 'translate',     label: 'Translator' },
-  { pattern: /simplify|eli5|rewrite/i,   action: 'simplify',      label: 'Simplifier' },
-  { pattern: /studio|analyzer|analyse/i, action: 'navStudio',     label: 'Studio' },
-  { pattern: /library|saved/i,           action: 'navLibrary',    label: 'Library' },
-  { pattern: /quiz view|dojo|quiz page/i,action: 'navQuiz',       label: 'Quiz page' },
+  // Navigation intents
+  { pattern: /memory hook|mnemonic/i,              action: 'memoryHooks', label: 'Memory Hooks' },
+  { pattern: /opposite day|antonym/i,              action: 'oppositeDay', label: 'Opposite Day' },
+  { pattern: /\bstory\b|generate story/i,           action: 'story',       label: 'Story Generator' },
+  { pattern: /\bquiz\b|test me|start quiz/i,        action: 'quiz',        label: 'Quiz' },
+  { pattern: /translat/i,                          action: 'translate',   label: 'Translator' },
+  { pattern: /simplif|eli5|rewrite/i,              action: 'simplify',    label: 'Simplifier' },
+  { pattern: /studio|analyzer|analyz/i,            action: 'navStudio',   label: 'Studio' },
+  { pattern: /\blibrary\b|saved session/i,          action: 'navLibrary',  label: 'Library' },
+  { pattern: /quiz view|dojo|quiz page/i,          action: 'navQuiz',     label: 'Quiz page' },
+  { pattern: /load sample|try sample|example text/i, action: 'loadSample', label: 'Sample Text' },
+  // Casual/social intents — handled locally without AI call
+  { pattern: /^\s*(hi|hey|hello|hiya|sup|yo|namaste|vanakkam|bonjour|hola|salut|ciao|merhaba|你好|こんにちは|안녕)\s*[!.?]*\s*$/i, action: 'greet',     label: 'Greeting' },
+  { pattern: /how are you|how r u|how do you do|you doing|u ok|are you ok/i,  action: 'howAreYou', label: 'Wellbeing' },
+  { pattern: /what can you do|what do you do|your features|your abilities|help me|how to use/i, action: 'capabilities', label: 'Capabilities' },
+  { pattern: /who are you|what are you|your name|who made you|are you ai|are you real/i, action: 'whoAmI', label: 'Identity' },
+  { pattern: /thank|thanks|thx|ty|cheers|gracias|merci|shukriya|dhanyavaad/i, action: 'thanks', label: 'Thanks' },
 ];
 
 function executeTutorIntent(action) {
@@ -785,6 +793,19 @@ function executeTutorIntent(action) {
     case 'navHome':
       if (window.decipherNav) window.decipherNav('landing');
       return '✅ Back to Home!';
+    case 'greet':
+      return '👋 Hey there! Great to see you! I\'m Decipher AI — here to help you master vocabulary, navigate the app, and just chat. What\'s up?';
+    case 'howAreYou':
+      return '🚀 Doing fantastic, thanks for asking! Running on Gemini AI and ready to decode some vocabulary with you. How about you?';
+    case 'capabilities':
+      return '✨ I can: explain any word, navigate to any section, generate quizzes, translate vocab, create memory hooks, write stories, simplify complex text, and much more! Try asking me anything 😎';
+    case 'whoAmI':
+      return '🤖 I\'m Decipher AI — your built-in vocabulary tutor powered by Gemini. Designed to make learning words fun, fast, and effective. Not just an AI — your study partner!';
+    case 'thanks':
+      return '😊 You\'re welcome! That\'s what I\'m here for. Keep up the great vocabulary work!';
+    case 'loadSample':
+      if (window.decipherLoadSample) { window.decipherLoadSample(); return '📝 Loading a sample passage for you — head to Studio to see it!'; }
+      return '📝 Go to Studio and click "Load Sample" to try a sample passage!';
     default:
       return null;
   }
