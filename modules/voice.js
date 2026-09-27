@@ -400,12 +400,14 @@ export function initVoiceAssistant(handlers) {
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
   const voiceFab     = document.getElementById('voiceFab');
+  const voicePill    = document.getElementById('voicePill'); // NEW PILL
   const voiceOverlay = document.getElementById('voiceOverlay');
   const voiceStatus  = document.getElementById('voiceStatus');
 
   // Hide mic FAB if browser doesn't support Web Speech API
   if (!SpeechRecognition) {
     if (voiceFab) voiceFab.style.display = 'none';
+    if (voicePill) voicePill.style.display = 'none';
     console.warn('[Voice] SpeechRecognition not supported in this browser.');
     return;
   }
@@ -427,6 +429,7 @@ export function initVoiceAssistant(handlers) {
   function showOverlay(statusText, transcriptFinal = '', transcriptInterim = '') {
     if (voiceOverlay) voiceOverlay.classList.remove('hidden');
     if (voiceFab)     voiceFab.classList.add('voice-active');
+    if (voicePill)    voicePill.classList.add('recording');
     if (voiceStatus) {
       // Build the inner HTML:
       //   <span class="voice-status-prefix">🎤 Listening…</span>
@@ -443,6 +446,7 @@ export function initVoiceAssistant(handlers) {
   function hideOverlay() {
     if (voiceOverlay) voiceOverlay.classList.add('hidden');
     if (voiceFab)     voiceFab.classList.remove('voice-active');
+    if (voicePill)    voicePill.classList.remove('recording');
   }
 
   function startListening() {
