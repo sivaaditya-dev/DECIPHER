@@ -62,10 +62,10 @@
       <button class="nav-link" data-view="libraryView" id="navLibrary">Library</button>
       <div class="nav-divider"></div>
       <!-- Theme switcher -->
-      <div class="theme-switcher-pill">
-        <button class="theme-btn-sm active" data-theme="dark" title="Cyber Dark">🌐™</button>
-        <button class="theme-btn-sm" data-theme="light" title="Sakura Light">🌐¸</button>
-        <button class="theme-btn-sm" data-theme="red" title="Matte Red">🔴</button>
+      <div class="theme-switcher-pill" style="margin-right:8px;">
+        <button class="theme-btn-sm active" data-theme="dark" title="Dark Mode">🌙</button>
+        <button class="theme-btn-sm" data-theme="light" title="Light Mode">☀️</button>
+        <button class="theme-btn-sm" data-theme="red" title="Crimson Mode">🔴</button>
       </div>
       <div class="nav-divider"></div>
       <button id="navProfileBtn" class="nav-link nav-profile-btn" data-view="profileView" style="display:none;">Profile</button>
@@ -75,9 +75,9 @@
     <!-- Mobile: just auth + hamburger -->
     <div class="nav-mobile-right">
       <div class="theme-switcher-pill" style="margin-right:8px;">
-        <button class="theme-btn-sm active" data-theme="dark">🌐™</button>
-        <button class="theme-btn-sm" data-theme="light">🌐¸</button>
-        <button class="theme-btn-sm" data-theme="red">🔴</button>
+        <button class="theme-btn-sm active" data-theme="dark" title="Dark Mode">🌙</button>
+        <button class="theme-btn-sm" data-theme="light" title="Light Mode">☀️</button>
+        <button class="theme-btn-sm" data-theme="red" title="Crimson Mode">🔴</button>
       </div>
       <button id="authBtnMobile" class="nav-cta-btn" style="display:none;">Sign In</button>
     </div>
@@ -591,17 +591,9 @@
 <!-- Decipher AI Launcher (Lena-style pill, bottom-right) -->
 <div class="dai-launcher" id="daiLauncher" role="button" tabindex="0" aria-expanded="false" aria-controls="daiPanel" title="Chat with Decipher AI">
   <div class="dai-avatar">
-    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
-      <rect x="8" y="10" width="24" height="20" rx="5" fill="#6366f1"/>
-      <circle cx="15" cy="19" r="3" fill="white"/>
-      <circle cx="25" cy="19" r="3" fill="white"/>
-      <circle cx="15.8" cy="19.8" r="1.4" fill="#1e1b4b"/>
-      <circle cx="25.8" cy="19.8" r="1.4" fill="#1e1b4b"/>
-      <line x1="20" y1="10" x2="20" y2="4" stroke="#6366f1" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="20" cy="3" r="2" fill="#a5b4fc"/>
-      <path d="M14 26 Q20 30 26 26" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-      <rect x="4" y="15" width="4" height="8" rx="2" fill="#6366f1"/>
-      <rect x="32" y="15" width="4" height="8" rx="2" fill="#6366f1"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36">
+      <rect width="32" height="32" rx="7" fill="#6366f1"/>
+      <text x="16" y="24" font-family="Georgia, serif" font-size="22" font-style="italic" font-weight="bold" fill="white" text-anchor="middle">D</text>
     </svg>
     <span class="dai-pulse" id="daiPulse"></span>
   </div>
@@ -615,15 +607,9 @@
 <div class="dai-panel hidden" id="daiPanel" role="dialog" aria-modal="false" aria-label="Decipher AI Chat">
   <div class="dai-panel-header">
     <div class="dai-panel-avatar-wrap">
-      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
-        <rect x="6" y="8" width="20" height="16" rx="4" fill="#6366f1"/>
-        <circle cx="12" cy="15" r="2.5" fill="white"/>
-        <circle cx="20" cy="15" r="2.5" fill="white"/>
-        <circle cx="12.7" cy="15.7" r="1.1" fill="#1e1b4b"/>
-        <circle cx="20.7" cy="15.7" r="1.1" fill="#1e1b4b"/>
-        <line x1="16" y1="8" x2="16" y2="3" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="16" cy="2.5" r="1.5" fill="#a5b4fc"/>
-        <path d="M11 21 Q16 24 21 21" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28">
+        <rect width="32" height="32" rx="7" fill="#6366f1"/>
+        <text x="16" y="24" font-family="Georgia, serif" font-size="22" font-style="italic" font-weight="bold" fill="white" text-anchor="middle">D</text>
       </svg>
     </div>
     <div class="dai-panel-header-info">
