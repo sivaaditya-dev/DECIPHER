@@ -741,7 +741,15 @@ function appendTutorMsg(role, content) {
   avatar.textContent = role === 'user' ? '\u{1F464}' : '\u{1F916}';
   const bubble = document.createElement('div');
   bubble.className = 'dai-msg-bubble';
-  bubble.textContent = content;
+  bubble.innerHTML = content;
+  if(role === 'ai') {
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'dai-copy-btn';
+    copyBtn.innerHTML = '📋';
+    copyBtn.title = 'Copy message';
+    copyBtn.onclick = () => window.copyChatMsg(content, copyBtn);
+    bubble.appendChild(copyBtn);
+  }
   wrapper.appendChild(avatar);
   wrapper.appendChild(bubble);
   tutorMessages.appendChild(wrapper);
