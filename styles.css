@@ -594,26 +594,6 @@ html[data-theme="red"] .scan-line-anim{background:linear-gradient(90deg,transpar
 .pronun-badge.miss{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.3);}
 
 /* ═══ TUTOR CHAT PANEL ═══ */
-.tutor-fab{position:fixed;bottom:28px;left:28px;width:50px;height:50px;border-radius:50%;background:var(--tutor-fab-accent, var(--accent));border:none;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;z-index:200;box-shadow:0 4px 22px var(--accent-glow);transition:transform .2s,box-shadow .2s,background .3s;color:#fff;}
-.tutor-fab:hover{transform:scale(1.08);box-shadow:0 8px 32px var(--accent-glow);}
-.tutor-panel{position:fixed;bottom:0;left:0;width:360px;max-width:95vw;height:510px;max-height:78vh;background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;z-index:300;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .38s cubic-bezier(.34,1.1,.64,1);box-shadow:0 -8px 40px rgba(0,0,0,.5);}
-.tutor-panel.open{transform:translateY(0);}
-.tutor-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--tutor-header-bg, transparent);border-radius:20px 20px 0 0;}
-.tutor-title{font-family:'Instrument Serif',sans-serif;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;}
-.tutor-close{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;transition:color .2s;padding:4px;}
-.tutor-close:hover{color:var(--text-main);}
-.tutor-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px;}
-.tutor-msg{max-width:86%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;animation:fadeUp .22s ease;}
-.tutor-msg.user{background:var(--accent-muted);border:1px solid var(--border);align-self:flex-end;border-radius:12px 12px 4px 12px;}
-.tutor-msg.ai{background:rgba(255,255,255,0.05);border:1px solid var(--border);align-self:flex-start;border-radius:12px 12px 12px 4px;}
-.tutor-typing{font-size:18px;letter-spacing:3px;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;align-self:flex-start;animation:fadeUp .22s ease;}
-.tutor-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0;}
-.tutor-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text-main);font-size:13px;font-family:'Barlow',sans-serif;resize:none;transition:border-color .2s;}
-.tutor-input:focus{outline:none;border-color:var(--accent);}
-.tutor-send{background:var(--tutor-send-bg, var(--accent));border:none;border-radius:8px;padding:0 14px;cursor:pointer;font-size:15px;transition:background .2s, filter .2s;flex-shrink:0;color:var(--tutor-send-color, #fff);}
-/* Light theme panel override — sakura pink */
-html[data-theme="light"] .tutor-panel{background:#fff8f9;border-color:rgba(255,155,181,0.25);}
-.tutor-send:hover{filter:brightness(0.88);}
 .tutor-empty{text-align:center;color:var(--text-muted);font-size:12px;padding:20px 10px;line-height:1.7;}
 
 /* ═══ VOICE ASSISTANT ═══ */
