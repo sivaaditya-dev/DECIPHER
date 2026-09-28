@@ -2992,3 +2992,10 @@ body { overflow-x: hidden; }
 .dai-msg-bubble { position: relative; padding-right: 30px; }
 .dai-msg-bubble:hover .dai-copy-btn { opacity: 1; }
 .dai-copy-btn:hover { background: rgba(255,255,255,0.25); }
+
+
+/* Markdown Formatting */
+.dai-msg-bubble strong { color: #a5b4fc; }
+.dai-msg-bubble em { font-style: italic; color: #e0e7ff; }
+.dai-msg-bubble ul { margin-left: 15px; margin-top: 5px; margin-bottom: 5px; }
+.dai-msg-bubble li { margin-bottom: 2px; }
