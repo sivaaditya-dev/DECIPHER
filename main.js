@@ -1412,3 +1412,15 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     if (e.key === 'Escape') closeTerms();
   });
 })();
+
+
+window.copyChatMsg = function(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '✅';
+        if (window.showToast) window.showToast('Message copied to clipboard!', 'success');
+        setTimeout(() => btn.innerHTML = oldHtml, 2000);
+    }).catch(err => {
+        if (window.showToast) window.showToast('Failed to copy', 'error');
+    });
+};
