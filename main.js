@@ -887,6 +887,12 @@ if (daiPanelClose) {
   daiPanelClose.addEventListener('click', closeChat);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !daiPanel.classList.contains('hidden')) closeChat(); });
 }
+
+const daiPanelClear = document.getElementById('daiPanelClear');
+if (daiPanelClear) daiPanelClear.addEventListener('click', () => {
+  const msgs = document.getElementById('tutorMessages');
+  if (msgs) msgs.innerHTML = '<div class="dai-welcome"><div class="dai-welcome-icon">&#x1F44B;</div><p>Hey! I\'m <strong>Decipher AI</strong>. Ask me about any word, navigate the app, or just chat!</p></div>';
+});
 if (tutorSend)  tutorSend.addEventListener('click', sendTutorMessage);
 if (tutorInput) tutorInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTutorMessage(); } });
 
