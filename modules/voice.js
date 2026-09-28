@@ -404,10 +404,20 @@ export function initVoiceAssistant(handlers) {
   const voiceOverlay = document.getElementById('voiceOverlay');
   const voiceStatus  = document.getElementById('voiceStatus');
 
-  // Hide mic FAB if browser doesn't support Web Speech API
+  // If browser doesn't support Web Speech API, keep pill visible but show error
   if (!SpeechRecognition) {
     if (voiceFab) voiceFab.style.display = 'none';
-    if (voicePill) voicePill.style.display = 'none';
+    if (voicePill) {
+      voicePill.addEventListener('click', () => {
+        if (window.showToast) {
+          window.showToast('Voice Assistant is not supported in your browser.', 'error');
+        } else {
+          alert('Voice Assistant is not supported in your browser (try Chrome/Edge or ensure you are on HTTPS).');
+        }
+      });
+      // Optionally dim it
+      voicePill.style.opacity = '0.6';
+    }
     console.warn('[Voice] SpeechRecognition not supported in this browser.');
     return;
   }
