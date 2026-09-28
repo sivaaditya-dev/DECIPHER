@@ -604,5 +604,5 @@ export function initVoiceAssistant(handlers) {
   window._voiceFabClickHandler = startListening;
 
   // Wire new voice pill
-  const voicePill = document.getElementById('voicePill');
-  if (voicePill) voicePill.addEventListener('click', startListening);}
+  if (voicePill) voicePill.addEventListener('click', startListening);
+}
