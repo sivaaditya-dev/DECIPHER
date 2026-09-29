@@ -741,7 +741,7 @@ function appendTutorMsg(role, content) {
   avatar.textContent = role === 'user' ? '\u{1F464}' : '\u{1F916}';
   const bubble = document.createElement('div');
   bubble.className = 'dai-msg-bubble';
-  bubble.innerHTML = content;
+  bubble.innerHTML = window.parseChatMarkdown ? window.parseChatMarkdown(content) : content;
   if(role === 'ai') {
     const copyBtn = document.createElement('button');
     copyBtn.className = 'dai-copy-btn';
@@ -1423,4 +1423,11 @@ window.copyChatMsg = function(text, btn) {
     }).catch(err => {
         if (window.showToast) window.showToast('Failed to copy', 'error');
     });
+};
+
+
+window.parseChatMarkdown = function(text) {
+    let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    return html;
 };
