@@ -1429,5 +1429,7 @@ window.copyChatMsg = function(text, btn) {
 window.parseChatMarkdown = function(text) {
     let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.replace(/^[-*]\s+(.*)$/gm, '<ul><li>$1</li></ul>');
+    html = html.replace(/<\/ul>\s*<ul>/g, ''); // merge adjacent lists
     return html;
 };
