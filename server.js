@@ -938,4 +938,38 @@ if (require.main === module) {
   app.listen(PORT, () => console.log('Backend running on http://localhost:' + PORT));
 }
 
+
+
+// ============================================================
+// CENTRALIZED ERROR HANDLING MIDDLEWARE
+// ============================================================
+
+// 404 handler for unknown API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `API endpoint ${req.method} ${req.originalUrl} does not exist.`,
+    availableEndpoints: [
+      'POST /api/analyze', 'POST /api/chat', 'POST /api/quiz',
+      'POST /api/translate', 'POST /api/simplify', 'POST /api/story',
+      'POST /api/memory-hooks', 'POST /api/opposite-day',
+      'GET /api/challenge/daily-word', 'GET /api/challenge/leaderboard',
+      'POST /api/challenge/submit'
+    ]
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('[Server Error]', err.stack || err);
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({
+    error: statusCode === 500 ? 'Internal Server Error' : err.message,
+    message: process.env.NODE_ENV === 'production'
+      ? 'Something went wrong. Please try again later.'
+      : err.message || 'Unknown error',
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+  });
+});
+
 module.exports = app;
