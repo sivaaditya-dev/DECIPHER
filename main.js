@@ -750,6 +750,10 @@ function appendTutorMsg(role, content) {
     copyBtn.onclick = () => window.copyChatMsg(content, copyBtn);
     bubble.appendChild(copyBtn);
   }
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'dai-msg-time';
+  timeSpan.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  bubble.appendChild(timeSpan);
   wrapper.appendChild(avatar);
   wrapper.appendChild(bubble);
   tutorMessages.appendChild(wrapper);
