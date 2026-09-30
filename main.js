@@ -1,3 +1,39 @@
+
+
+// ============================================================
+// GLOBAL ERROR BOUNDARY — catch unhandled errors gracefully
+// ============================================================
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error('[Decipher Error]', { message, source, lineno, colno, error });
+  // Only show toast for non-trivial errors (skip ResizeObserver, script errors, etc.)
+  if (message && !String(message).includes('ResizeObserver') && !String(message).includes('Script error')) {
+    if (window.showToast) {
+      window.showToast('Something went wrong. Please try again.', 'error');
+    }
+  }
+  return true; // Prevent default browser error display
+};
+
+window.addEventListener('unhandledrejection', function(event) {
+  console.error('[Decipher Unhandled Promise]', event.reason);
+  if (event.reason && event.reason.message && !event.reason.message.includes('Failed to fetch')) {
+    if (window.showToast) {
+      window.showToast('A network error occurred. Check your connection.', 'error');
+    }
+  }
+  event.preventDefault();
+});
+
+// OFFLINE / ONLINE DETECTION
+window.addEventListener('offline', () => {
+  if (window.showToast) window.showToast('You are offline. Some features may not work.', 'warning');
+  document.body.classList.add('app-offline');
+});
+window.addEventListener('online', () => {
+  if (window.showToast) window.showToast('Back online!', 'success');
+  document.body.classList.remove('app-offline');
+});
+
 /**
  * main.js — Entry Point Orchestrator
  * Imports all modules and wires DOM events.
