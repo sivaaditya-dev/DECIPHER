@@ -2999,3 +2999,14 @@ body { overflow-x: hidden; }
 .dai-msg-bubble em { font-style: italic; color: #e0e7ff; }
 .dai-msg-bubble ul { margin-left: 15px; margin-top: 5px; margin-bottom: 5px; }
 .dai-msg-bubble li { margin-bottom: 2px; }
+
+
+/* Chat Timestamps */
+.dai-msg-time {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+  display: block;
+  text-align: right;
+}
+.dai-msg.user .dai-msg-time { text-align: right; color: rgba(255,255,255,0.6); }
