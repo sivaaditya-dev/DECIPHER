@@ -52,6 +52,53 @@ const uploadImage = multer({
 app.use(cors());
 app.use(helmet({ contentSecurityPolicy: false })); // Basic HTTP security headers, CSP disabled for Vercel/inline scripts
 app.use(express.json({ limit: '10mb' }));
+
+// ============================================================
+// SIMPLE IN-MEMORY RATE LIMITER (no extra deps)
+// ============================================================
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX = 30; // max requests per window per IP
+
+function rateLimiter(req, res, next) {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  
+  if (!rateLimitMap.has(ip)) {
+    rateLimitMap.set(ip, { count: 1, start: now });
+    return next();
+  }
+  
+  const entry = rateLimitMap.get(ip);
+  if (now - entry.start > RATE_LIMIT_WINDOW) {
+    // Reset window
+    entry.count = 1;
+    entry.start = now;
+    return next();
+  }
+  
+  entry.count++;
+  if (entry.count > RATE_LIMIT_MAX) {
+    return res.status(429).json({
+      error: 'Too Many Requests',
+      message: 'You are sending too many requests. Please wait a moment and try again.',
+      retryAfter: Math.ceil((RATE_LIMIT_WINDOW - (now - entry.start)) / 1000)
+    });
+  }
+  
+  next();
+}
+
+// Clean up stale entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now - entry.start > RATE_LIMIT_WINDOW * 2) rateLimitMap.delete(ip);
+  }
+}, 5 * 60 * 1000);
+
+// Apply rate limiter to all API routes
+app.use('/api/', rateLimiter);
 app.use(express.static(__dirname));
 
 // --- CONNECT TO FIREBASE ---
