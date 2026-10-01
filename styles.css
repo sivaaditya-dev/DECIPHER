@@ -3018,3 +3018,9 @@ body { overflow-x: hidden; }
   width: 6px;
   height: 6px;
 }
+
+
+@media (max-width: 440px) {
+  .dai-msg-bubble { font-size: 14px; padding: 12px; }
+  .dai-copy-btn { top: 2px; right: 2px; }
+}
