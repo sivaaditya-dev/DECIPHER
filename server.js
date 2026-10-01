@@ -78,6 +78,24 @@ const sessionsCollection = db.collection('sessions');
 
 // Serve Firebase client config from environment variables
 // This keeps the API key out of the repo - configure these in Vercel env settings.
+
+// ============================================================
+// HEALTH CHECK ENDPOINT
+// ============================================================
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: require('./package.json').version || '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    memory: {
+      heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + ' MB',
+      heapTotal: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + ' MB',
+    }
+  });
+});
+
 app.get('/api/firebase-config', (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=3600');
