@@ -25,3 +25,13 @@ export function playBeep(freq, type, duration, vol) {
         osc.stop(ctx.currentTime + duration);
     } catch(e) {}
 }
+
+
+export function playVoiceStart() {
+    playBeep(600, 'sine', 0.15, 0.1);
+    setTimeout(() => playBeep(800, 'sine', 0.15, 0.1), 100);
+}
+
+export function playVoiceStop() {
+    playBeep(400, 'sine', 0.15, 0.1);
+}
