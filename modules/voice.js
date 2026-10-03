@@ -600,6 +600,7 @@ export function initVoiceAssistant(handlers) {
 
   recognition.onend = () => {
     isListening = false;
+    if (!window._voiceMuted) playVoiceStop();
     // Auto-dismiss after short delay
     setTimeout(() => hideOverlay(), 1500);
     // Original: Don't call hideOverlay here —” let onresult / onerror handle it
