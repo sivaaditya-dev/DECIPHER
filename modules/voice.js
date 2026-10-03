@@ -395,6 +395,8 @@ function buildLangPicker(recognition, onLangChange) {
   return () => currentCode; // expose getter
 }
 
+import { playVoiceStart, playVoiceStop } from './audio.js';
+
 export function initVoiceAssistant(handlers) {
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
