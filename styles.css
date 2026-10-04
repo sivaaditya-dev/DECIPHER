@@ -3024,3 +3024,25 @@ body { overflow-x: hidden; }
   .dai-msg-bubble { font-size: 14px; padding: 12px; }
   .dai-copy-btn { top: 2px; right: 2px; }
 }
+
+
+.voice-overlay-settings {
+  position: absolute;
+  top: 12px;
+  right: 50px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.15s;
+  z-index: 1;
+}
+.voice-overlay-settings:hover { background: rgba(255,255,255,0.2); }
+.voice-overlay-settings.muted { opacity: 0.5; }
