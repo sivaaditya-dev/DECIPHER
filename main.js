@@ -1437,3 +1437,12 @@ window.parseChatMarkdown = function(text) {
     html = html.replace(/<\/ul>\s*<ul>/g, ''); // merge adjacent lists
     return html;
 };
+
+
+// Voice Assistant Global Shortcut (Ctrl+Shift+V)
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        if (window.decipherVoice) window.decipherVoice.start();
+    }
+});
