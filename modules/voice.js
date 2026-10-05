@@ -618,4 +618,15 @@ export function initVoiceAssistant(handlers) {
 
   // Wire new voice pill
   if (voicePill) voicePill.addEventListener('click', startListening);
+
+
+  const voiceOverlaySettings = document.getElementById('voiceOverlaySettings');
+  if (voiceOverlaySettings) {
+    voiceOverlaySettings.addEventListener('click', () => {
+        window._voiceMuted = !window._voiceMuted;
+        voiceOverlaySettings.innerHTML = window._voiceMuted ? '🔇' : '🔊';
+        voiceOverlaySettings.classList.toggle('muted', window._voiceMuted);
+    });
+  }
+
 }
