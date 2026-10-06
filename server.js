@@ -99,6 +99,42 @@ setInterval(() => {
 
 // Apply rate limiter to all API routes
 app.use('/api/', rateLimiter);
+
+// ============================================================
+// INPUT SANITIZATION — prevent XSS and injection attacks
+// ============================================================
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+function sanitizeObject(obj) {
+  if (typeof obj === 'string') return sanitizeInput(obj);
+  if (Array.isArray(obj)) return obj.map(sanitizeObject);
+  if (obj && typeof obj === 'object') {
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[sanitizeInput(key)] = sanitizeObject(value);
+    }
+    return result;
+  }
+  return obj;
+}
+
+// Security headers middleware
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
 app.use(express.static(__dirname));
 
 // --- CONNECT TO FIREBASE ---
