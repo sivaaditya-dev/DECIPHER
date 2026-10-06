@@ -3064,3 +3064,13 @@ body { overflow-x: hidden; }
   box-shadow: 0 12px 40px rgba(99,102,241,0.25);
   border-color: var(--accent);
 }
+
+
+/* Results Box Reveal Animation */
+@keyframes resultsReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#resultsBox.visible {
+  animation: resultsReveal 0.45s cubic-bezier(0.22,1,0.36,1) both;
+}
