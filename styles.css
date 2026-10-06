@@ -3046,3 +3046,10 @@ body { overflow-x: hidden; }
 }
 .voice-overlay-settings:hover { background: rgba(255,255,255,0.2); }
 .voice-overlay-settings.muted { opacity: 0.5; }
+
+
+/* Markdown Bold Glow */
+.dai-msg-bubble strong:hover {
+  text-shadow: 0 0 5px rgba(165,180,252,0.8);
+  cursor: default;
+}
