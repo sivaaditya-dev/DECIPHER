@@ -3053,3 +3053,14 @@ body { overflow-x: hidden; }
   text-shadow: 0 0 5px rgba(165,180,252,0.8);
   cursor: default;
 }
+
+
+/* Enhanced Card Hover Effects */
+.library-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.library-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.25);
+  border-color: var(--accent);
+}
