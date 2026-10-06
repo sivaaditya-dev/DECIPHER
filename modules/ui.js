@@ -28,6 +28,7 @@ export function renderResults(vocabArray, elements, translated = null, langName 
 
   resultsBox.innerHTML = vocabArray.map((item, i) => {
     const t = translatedMap[item.term.toLowerCase()] || null;
+  setTimeout(() => resultsBox && resultsBox.classList.add('visible'), 10);
     const mn = mnemonicMap[item.term.toLowerCase()] || null;
     const hasTranslation = !!t;
     const hasCulturalNote = hasTranslation && t.culturalNote && t.culturalNote.trim();
