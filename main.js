@@ -1446,3 +1446,14 @@ document.addEventListener('keydown', (e) => {
         if (window.decipherVoice) window.decipherVoice.start();
     }
 });
+
+
+// Time-aware greeting for Decipher AI chat panel
+window.getDecipherGreeting = function() {
+    const h = new Date().getHours();
+    if (h < 5)  return 'Burning the midnight oil? 🌙';
+    if (h < 12) return 'Good morning! 🌅';
+    if (h < 17) return 'Good afternoon! ☀️';
+    if (h < 21) return 'Good evening! 🌆';
+    return 'Hey, night owl! 🌙';
+};
