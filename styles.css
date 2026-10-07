@@ -3074,3 +3074,6 @@ body { overflow-x: hidden; }
 #resultsBox.visible {
   animation: resultsReveal 0.45s cubic-bezier(0.22,1,0.36,1) both;
 }
+
+/* Emoji rendering refinement */
+.dai-msg-bubble .emoji { font-size: 1.35em; line-height: 1; display: inline-block; vertical-align: middle; }
