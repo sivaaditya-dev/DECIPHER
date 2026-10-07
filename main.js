@@ -1457,3 +1457,6 @@ window.getDecipherGreeting = function() {
     if (h < 21) return 'Good evening! 🌆';
     return 'Hey, night owl! 🌙';
 };
+
+// Greeting hook stub
+if (document.getElementById('daiPanel')) { /* greeting applied in openChat */ }
