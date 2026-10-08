@@ -3077,3 +3077,6 @@ body { overflow-x: hidden; }
 
 /* Emoji rendering refinement */
 .dai-msg-bubble .emoji { font-size: 1.35em; line-height: 1; display: inline-block; vertical-align: middle; }
+
+/* Chat session badge -- shows saved indicator */
+.dai-panel-header::after { content: ''; }
