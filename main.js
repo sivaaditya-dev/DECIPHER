@@ -1460,3 +1460,18 @@ window.getDecipherGreeting = function() {
 
 // Greeting hook stub
 if (document.getElementById('daiPanel')) { /* greeting applied in openChat */ }
+
+// ---- Chat History Persistence (Oct 8) ----
+window.saveChatHistory = function() {
+    try {
+        const msgs = document.getElementById('tutorMessages');
+        if (msgs) sessionStorage.setItem('decipherChat', msgs.innerHTML);
+    } catch(e) {}
+};
+window.restoreChatHistory = function() {
+    try {
+        const saved = sessionStorage.getItem('decipherChat');
+        const msgs = document.getElementById('tutorMessages');
+        if (saved && msgs && msgs.querySelector('.dai-msg') === null) msgs.innerHTML = saved;
+    } catch(e) {}
+};
