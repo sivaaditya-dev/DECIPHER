@@ -1475,3 +1475,8 @@ window.restoreChatHistory = function() {
         if (saved && msgs && msgs.querySelector('.dai-msg') === null) msgs.innerHTML = saved;
     } catch(e) {}
 };
+
+// Auto-save on every message append
+document.addEventListener('decipherMsgAdded', function() {
+    if (window.saveChatHistory) window.saveChatHistory();
+});
