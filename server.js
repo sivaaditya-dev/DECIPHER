@@ -103,6 +103,7 @@ app.use('/api/', rateLimiter);
 // ============================================================
 // INPUT SANITIZATION — prevent XSS and injection attacks
 // ============================================================
+/** Sanitizes a string by escaping HTML special characters to prevent XSS attacks. */
 function sanitizeInput(str) {
   if (typeof str !== 'string') return str;
   return str
@@ -114,6 +115,7 @@ function sanitizeInput(str) {
     .replace(/\//g, '&#x2F;');
 }
 
+/** Recursively sanitizes all string values in an object, array or primitive. */
 function sanitizeObject(obj) {
   if (typeof obj === 'string') return sanitizeInput(obj);
   if (Array.isArray(obj)) return obj.map(sanitizeObject);
