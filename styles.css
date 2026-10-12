@@ -3178,3 +3178,12 @@ body { overflow-x: hidden; }
   border-radius: 3px;
   transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
 }
+
+/* Global Focus Ring -- Accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+button:focus-visible,
+a:focus-visible { outline-offset: 4px; }
