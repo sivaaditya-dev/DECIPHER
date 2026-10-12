@@ -3193,3 +3193,12 @@ a:focus-visible { outline-offset: 4px; }
 ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
 ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.4); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.7); }
+
+/* Button Active Micro-interaction */
+.btn-primary:active,
+.nav-cta-btn:active,
+#analyzeBtn:active,
+.voice-overlay-close:active {
+  transform: scale(0.96);
+  transition: transform 0.08s ease;
+}
