@@ -1,4 +1,10 @@
 /**
+ * @module challenge
+ * @description Daily vocabulary challenge engine.
+ * Tracks user streaks, calculates rank tiers, and manages
+ * daily challenge state via Firebase Firestore.
+ */
+/**
 * challenge.js — Daily Word Challenge Module
 * 
 * Features:
