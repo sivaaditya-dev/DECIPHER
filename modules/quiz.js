@@ -1,4 +1,10 @@
 /**
+ * @module quiz
+ * @description SRS-powered quiz engine for Decipher AI.
+ * Handles question generation, answer validation, scoring,
+ * streak tracking, and quiz mode (multiple-choice vs typing).
+ */
+/**
  * Quiz Module — Standard + Reverse + SRS (Spaced Repetition) Modes
  *
  * Standard Mode:  Show English term → select correct definition.
