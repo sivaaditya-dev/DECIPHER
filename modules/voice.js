@@ -1,4 +1,10 @@
 /**
+ * @module voice
+ * @description Multi-language voice assistant using Web Speech API.
+ * Supports 100+ languages, acoustic start/stop cues,
+ * live transcript display, and programmatic controls.
+ */
+/**
  * voice.js —” Decipher Voice Assistant
  *
  * Uses the Web Speech API (SpeechRecognition + SpeechSynthesis).
