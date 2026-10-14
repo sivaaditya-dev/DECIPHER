@@ -3217,3 +3217,9 @@ a:focus-visible { outline-offset: 4px; }
 .skeleton-card { height: 160px; margin-bottom: 16px; }
 .skeleton-text { height: 14px; margin: 8px 0; }
 .skeleton-text.short { width: 60%; }
+
+/* Toast Icon Variant Improvements */
+.toast.success::before { content: '? '; }
+.toast.error::before   { content: '? '; }
+.toast.warning::before { content: '?? '; }
+.toast.info::before    { content: '?? '; }
