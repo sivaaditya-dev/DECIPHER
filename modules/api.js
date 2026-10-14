@@ -1,4 +1,11 @@
 /**
+ * @module api
+ * @description Centralized API client for Decipher AI backend.
+ * All functions communicate with the Express server which
+ * proxies requests to Google Gemini and Firebase services.
+ * @version 2.0
+ */
+/**
  * API Module
  * Centralizes all server communication. Every fetch call lives here.
  */
