@@ -3202,3 +3202,18 @@ a:focus-visible { outline-offset: 4px; }
   transform: scale(0.96);
   transition: transform 0.08s ease;
 }
+
+/* Skeleton Loading Animation */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 8px;
+}
+.skeleton-card { height: 160px; margin-bottom: 16px; }
+.skeleton-text { height: 14px; margin: 8px 0; }
+.skeleton-text.short { width: 60%; }
