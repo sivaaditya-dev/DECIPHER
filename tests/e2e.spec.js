@@ -27,6 +27,15 @@ test.describe('Landing Page', () => {
     const hero = page.locator('#landing');
     await expect(hero).toBeVisible();
   });
+
+  test('Continue as Guest button navigates to Studio view', async ({ page }) => {
+    await page.goto(BASE_URL);
+    const guestBtn = page.locator('.hero-cta-ghost[data-view="studioView"]');
+    await expect(guestBtn).toBeVisible();
+    await guestBtn.click();
+    const studio = page.locator('#studioView');
+    await expect(studio).toBeVisible({ timeout: 5000 });
+  });
 });
 
 test.describe('Auth Modal', () => {
