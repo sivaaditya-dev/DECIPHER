@@ -139,27 +139,41 @@ app.use((req, res, next) => {
 });
 app.use(express.static(__dirname));
 
-// --- CONNECT TO FIREBASE ---
-  // --- CONNECT TO FIREBASE ---
-  try {
-    let serviceAccount;
-    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+// --- CONNECT TO FIREBASE (SAFE & RESILIENT) ---
+let db = null;
+let sessionsCollection = null;
+
+try {
+  let serviceAccount = null;
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    try {
       serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    } else {
-      serviceAccount = require("./serviceAccountKey.json");
+    } catch (e) {
+      console.warn("⚠️ Invalid FIREBASE_SERVICE_ACCOUNT JSON string:", e.message);
     }
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
-    console.log("Connected to Firebase Firestore!");
-  } catch (error) {
-    console.error("ERROR: Could not load Firebase credentials.");
-    console.error(error);
-    process.exit(1);
+  } else {
+    try {
+      serviceAccount = require("./serviceAccountKey.json");
+    } catch (e) {
+      // serviceAccountKey.json is not present (standard on Vercel preview/production without file)
+    }
   }
 
-const db = admin.firestore();
-const sessionsCollection = db.collection('sessions'); 
+  if (serviceAccount) {
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    }
+    db = admin.firestore();
+    sessionsCollection = db.collection('sessions');
+    console.log("Connected to Firebase Firestore!");
+  } else {
+    console.warn("⚠️ Firebase service account not configured. Running in Guest/Offline mode.");
+  }
+} catch (error) {
+  console.warn("⚠️ Firebase initialization bypassed. Running in Guest/Offline mode:", error.message);
+} 
 
 // Serve Firebase client config from environment variables
 // This keeps the API key out of the repo - configure these in Vercel env settings.
@@ -836,7 +850,7 @@ Choose a sophisticated but real English word. wrongChoices should be plausible b
     const wordData = JSON.parse(jsonStr);
     wordData.date = today;
     wordData.generatedAt = new Date().toISOString();
-    await docRef.set(wordData);
+    if (docRef) await docRef.set(wordData);
     res.json(wordData);
   } catch (err) {
     console.error('Error generating daily word:', err);
@@ -1048,7 +1062,7 @@ if (require.main === module) {
 // ============================================================
 
 // 404 handler for unknown API routes
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res) => {
   res.status(404).json({
     error: 'Not Found',
     message: `API endpoint ${req.method} ${req.originalUrl} does not exist.`,
