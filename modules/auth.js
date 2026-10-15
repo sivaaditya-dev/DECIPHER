@@ -23,19 +23,33 @@ let currentMode = 'signin'; // 'signin' | 'signup'
 
 // ─── Init ──────────────────────────────────────────────────────────────────────
 export function initAuth(firebaseApp, onUserChanged) {
-  auth = firebaseApp.auth();
-  googleProvider = new firebase.auth.GoogleAuthProvider();
-
-  setAuth(auth);
   onUserChangedCallback = onUserChanged;
+  try {
+    _buildModal();
+    if (!firebaseApp || typeof firebaseApp.auth !== 'function') {
+      console.warn('[Auth] Firebase App or Auth is not initialized. Operating in Guest mode.');
+      auth = null;
+      currentUser = null;
+      if (typeof onUserChanged === 'function') onUserChanged(null);
+      return;
+    }
+    auth = firebaseApp.auth();
+    googleProvider = new firebase.auth.GoogleAuthProvider();
 
-  auth.onAuthStateChanged((user) => {
-    currentUser = user;
-    onUserChanged(user);
-  });
+    setAuth(auth);
 
-  // Build the modal DOM once
-  _buildModal();
+    auth.onAuthStateChanged((user) => {
+      currentUser = user;
+      if (typeof onUserChanged === 'function') onUserChanged(user);
+    });
+  } catch (err) {
+    console.warn('[Auth] Firebase Auth failed to initialize (falling back to Guest mode):', err);
+    auth = null;
+    currentUser = null;
+    if (typeof onUserChanged === 'function') {
+      try { onUserChanged(null); } catch (e) { console.error(e); }
+    }
+  }
 }
 
 export function getCurrentUser() {
@@ -54,8 +68,8 @@ export function showAuthModal(mode = 'signin') {
   _renderModalContent();
   modalEl.classList.add('auth-modal-open');
   document.body.style.overflow = 'hidden';
-  // Focus first input after animation
-  setTimeout(() => modalEl.querySelector('input')?.focus(), 300);
+  // Focus first input or button after animation
+  setTimeout(() => modalEl.querySelector('input, button')?.focus(), 300);
 }
 
 export function hideAuthModal() {
@@ -75,6 +89,12 @@ export function handleAuthButtonClick() {
 
 // ─── Sign Out ──────────────────────────────────────────────────────────────────
 function _doSignOut() {
+  if (!auth) {
+    currentUser = null;
+    if (onUserChangedCallback) onUserChangedCallback(null);
+    showToast('Signed out successfully.', 'info');
+    return;
+  }
   auth.signOut()
     .then(() => showToast('Signed out successfully.', 'info'))
     .catch((err) => {
@@ -107,6 +127,40 @@ function _buildModal() {
 function _renderModalContent() {
   const box = modalEl.querySelector('.auth-modal-box');
   const isSignIn = currentMode === 'signin';
+
+  if (!auth) {
+    box.innerHTML = `
+    <!-- Header -->
+    <div class="am-header">
+      <div class="am-logo">
+        <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+          <circle cx="18" cy="18" r="17" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+          <path d="M18 8 L22 14 L30 15 L24 21 L26 29 L18 25 L10 29 L12 21 L6 15 L14 14 Z" 
+                fill="none" stroke="#6C8EFF" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="18" cy="18" r="3" fill="#6C8EFF" opacity="0.8"/>
+        </svg>
+        <span class="am-logo-text">Decipher</span>
+      </div>
+      <button class="am-close-btn" id="amCloseBtn" aria-label="Close">&times;</button>
+    </div>
+
+    <!-- Title -->
+    <h2 class="am-title">Guest Mode Active</h2>
+    <p class="am-subtitle">Firebase credentials are not configured on this environment. You can explore all Decipher features freely as a guest!</p>
+
+    <div style="margin: 20px 0; padding: 14px; background: rgba(108,142,255,0.08); border: 1px solid rgba(108,142,255,0.25); border-radius: 12px; font-size: 0.9rem; line-height: 1.5; color: rgba(255,255,255,0.85); text-align: left;">
+      ✨ <strong>Vocab Studio, Smart Dojo Quizzes, Challenges, and Voice Command</strong> are 100% active and saved in your local browser session.
+    </div>
+
+    <button type="button" class="am-submit-btn" id="amGuestContinueBtn" style="width:100%; padding:14px; margin-bottom:12px; cursor:pointer;">
+      Continue as Guest &rarr;
+    </button>
+    `;
+
+    box.querySelector('#amCloseBtn')?.addEventListener('click', hideAuthModal);
+    box.querySelector('#amGuestContinueBtn')?.addEventListener('click', hideAuthModal);
+    return;
+  }
 
   box.innerHTML = `
     <!-- Header -->
