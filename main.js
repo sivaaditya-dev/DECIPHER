@@ -223,24 +223,206 @@ let currentTranslated = [];
 let currentMnemonics  = [];
 let currentLangName   = '';
 
+// ============================================================
+// VIEW ROUTER (Top-level & resilient: ensures buttons ALWAYS work)
+// ============================================================
+const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'challengeView', 'profileView', 'libraryView'];
+
+export function switchAppView(viewId) {
+  // 1. Hide every view
+  VIEWS.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('active');
+    el.classList.add('hidden');
+  });
+
+  // 2. Show the target view
+  const target = document.getElementById(viewId);
+  if (target) {
+    target.classList.remove('hidden');
+    target.classList.add('active');
+  }
+
+  // 3. Update nav link active states
+  document.querySelectorAll('.nav-link[data-view]').forEach(btn => {
+    btn.classList.toggle('nav-link-active', btn.dataset.view === viewId);
+  });
+
+  // 4. Manage hero landing video
+  const vid = document.querySelector('.hero-bg-video');
+  if (vid) {
+    if (viewId === 'landing') vid.play().catch(() => {});
+    else vid.pause();
+  }
+
+  // 4b. Manage about background video
+  const aboutVid = document.getElementById('aboutBgVideo');
+  if (aboutVid) {
+    if (viewId === 'aboutView') aboutVid.play().catch(() => {});
+    else aboutVid.pause();
+  }
+
+  // 5. Nav glass — transparent on landing/about, solid elsewhere
+  const nav = document.getElementById('mainNav');
+  if (nav) {
+    if (viewId === 'landing' || viewId === 'aboutView') {
+      nav.classList.add('nav-on-landing');
+      nav.classList.remove('nav-solid');
+    } else {
+      nav.classList.remove('nav-on-landing');
+      nav.classList.add('nav-solid');
+    }
+  }
+
+  // 6. Trigger about page animations when entering About view
+  if (viewId === 'aboutView') {
+    runAboutAnimations();
+  }
+
+  // 7. Sync Quiz view state whenever it becomes visible
+  if (viewId === 'dojoView') {
+    const dojoStart = document.getElementById('dojoStartQuizBtn');
+    const dojoDesc  = document.querySelector('.dojo-hero-desc');
+    if (dojoStart) {
+      const hasWords = currentVocabList.length > 0;
+      dojoStart.disabled = !hasWords;
+      if (dojoDesc) {
+        dojoDesc.textContent = hasWords
+          ? `${currentVocabList.length} words loaded and ready. Choose a quiz mode below and hit Start!`
+          : 'Analyze a passage in Studio first, then return here to test your mastery across three progressively harder quiz modes.';
+      }
+    }
+  }
+
+  // 8. Init challenge view whenever user navigates to it
+  if (viewId === 'challengeView') {
+    initChallenge(getCurrentUser());
+  }
+
+  // 9. Init profile view whenever user navigates to it
+  if (viewId === 'profileView') {
+    initProfile(getCurrentUser());
+  }
+}
+
+// Expose globally
+window.switchAppView = switchAppView;
+window.decipherNav = switchAppView;
+
+// ABOUT HERO CHARACTER ANIMATION
+let aboutAnimated = false;
+function runAboutAnimations() {
+  if (aboutAnimated) return;
+  aboutAnimated = true;
+
+  const titleEl = document.getElementById('aboutHeroTitle');
+  const subEl   = document.getElementById('aboutHeroSub');
+  const btnsEl  = document.getElementById('aboutHeroBtns');
+  const tagEl   = document.getElementById('aboutTagCard')?.closest('.about-hero-right');
+  if (!titleEl) return;
+
+  const lines = ['Where words unlock', 'worlds of meaning.'];
+  const charDelay = 28;
+  const initDelay = 200;
+  titleEl.innerHTML = '';
+
+  lines.forEach((line, lineIdx) => {
+    const words = line.split(' ');
+    const prevLineChars = lines.slice(0, lineIdx).join(' ').length + (lineIdx > 0 ? lineIdx : 0);
+
+    words.forEach((word, wordIdx) => {
+      const wordSpan = document.createElement('span');
+      wordSpan.style.cssText = 'display:inline-block; white-space:nowrap;';
+
+      if (wordIdx > 0) {
+        const spaceSpan = document.createElement('span');
+        spaceSpan.style.cssText = 'display:inline-block; white-space:nowrap;';
+        spaceSpan.textContent = '\u00A0';
+        titleEl.appendChild(spaceSpan);
+      }
+
+      [...word].forEach((char, charIdx) => {
+        const charsSoFar = prevLineChars +
+          words.slice(0, wordIdx).join('').length + wordIdx + charIdx;
+        const delay = initDelay + charsSoFar * charDelay;
+        const span = document.createElement('span');
+        span.className = 'about-char hidden-char';
+        span.textContent = char;
+        setTimeout(() => {
+          span.classList.remove('hidden-char');
+          span.classList.add('visible-char');
+        }, delay);
+        wordSpan.appendChild(span);
+      });
+
+      titleEl.appendChild(wordSpan);
+    });
+
+    if (lineIdx < lines.length - 1) titleEl.appendChild(document.createElement('br'));
+  });
+
+  const totalChars = lines.join(' ').length;
+  const subDelay  = initDelay + totalChars * charDelay + 80;
+  const btnsDelay = subDelay  + 380;
+  const tagDelay  = btnsDelay + 380;
+
+  setTimeout(() => { if (subEl)  subEl.classList.add('visible');  }, subDelay);
+  setTimeout(() => { if (btnsEl) btnsEl.classList.add('visible'); }, btnsDelay);
+  setTimeout(() => { if (tagEl)  tagEl.classList.add('visible');  }, tagDelay);
+}
+
+// Synchronously wire navigation buttons immediately
+function initNavigationHandlers() {
+  document.querySelectorAll('.nav-link[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => switchAppView(btn.dataset.view));
+  });
+
+  document.querySelectorAll('.nav-view-btn[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => switchAppView(btn.dataset.view));
+  });
+
+  const navLogoBtn = document.getElementById('navLogoBtn');
+  if (navLogoBtn) {
+    navLogoBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchAppView('landing');
+    });
+  }
+}
+initNavigationHandlers();
+switchAppView('landing');
+
+
 // ======================
 // 1. AUTH
 // ======================
 // Fetch Firebase config from server (config is stored in Vercel env vars, not client code)
-let firebaseConfig;
+let firebaseConfig = null;
 try {
   const _cfgResp = await fetch('/api/firebase-config');
   if (_cfgResp.ok) {
-    firebaseConfig = await _cfgResp.json();
+    const data = await _cfgResp.json();
+    if (data && data.apiKey) {
+      firebaseConfig = data;
+    }
   } else {
-    throw new Error('Config fetch failed: ' + _cfgResp.status);
+    console.warn('[Decipher] Firebase config endpoint returned status:', _cfgResp.status);
   }
 } catch (e) {
-  console.error('[Decipher] Could not load Firebase config:', e);
-  showToast('Configuration error — some features may not work.', 'error');
-  firebaseConfig = {};
+  console.warn('[Decipher] Could not load Firebase config from server (running in Guest mode):', e);
 }
-firebase.initializeApp(firebaseConfig);
+
+let firebaseAppInstance = null;
+if (firebaseConfig && firebaseConfig.apiKey && typeof firebase !== 'undefined') {
+  try {
+    firebaseAppInstance = (firebase.apps && firebase.apps.length > 0)
+      ? firebase.app()
+      : firebase.initializeApp(firebaseConfig);
+  } catch (e) {
+    console.warn('[Decipher] Firebase initialization failed:', e);
+  }
+}
 
 // ?? Challenge Token Provider ??????????????????????????????????????????????????
 setTokenProvider(async () => {
@@ -253,7 +435,7 @@ const heroLoginBtn  = document.getElementById('heroLoginBtn');
 const heroGuestBtn  = document.querySelector('[data-view="studioView"].hero-cta-ghost');
 const navProfileBtn = document.getElementById('navProfileBtn');
 
-initAuth(firebase, (user) => {
+initAuth(firebaseAppInstance, (user) => {
   if (user) {
     authBtn.textContent = 'Log Out';
     // Show Profile nav button instead of greeting
