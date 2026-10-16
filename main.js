@@ -62,6 +62,9 @@ import { SAMPLE_TEXTS } from './modules/samples.js';
 import { initVoiceAssistant } from './modules/voice.js';
 import { initChallenge, setTokenProvider, calculateRank } from './modules/challenge.js';
 import { initProfile } from './modules/profile.js';
+import { initCommandPalette, openCommandPalette } from './modules/palette.js';
+import { initGlobalShortcuts } from './modules/shortcuts.js';
+
 
 // ======================
 // ======================
@@ -309,6 +312,16 @@ export function switchAppView(viewId) {
 // Expose globally
 window.switchAppView = switchAppView;
 window.decipherNav = switchAppView;
+
+  // Initialize Command Palette & Global Power Shortcuts
+  try {
+    initCommandPalette();
+    initGlobalShortcuts(switchAppView);
+    window.openCommandPalette = openCommandPalette;
+  } catch (err) {
+    console.warn('[Shortcuts] Init failed:', err);
+  }
+
 
 // ABOUT HERO CHARACTER ANIMATION
 let aboutAnimated = false;
@@ -1472,6 +1485,16 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
 
   // Expose switchAppView globally for Decipher Tutor navigation
   window.decipherNav = switchAppView;
+
+  // Initialize Command Palette & Global Power Shortcuts
+  try {
+    initCommandPalette();
+    initGlobalShortcuts(switchAppView);
+    window.openCommandPalette = openCommandPalette;
+  } catch (err) {
+    console.warn('[Shortcuts] Init failed:', err);
+  }
+
 
   // Wire nav pill buttons (data-view attribute)
   document.querySelectorAll('.nav-link[data-view]').forEach(btn => {
