@@ -63,6 +63,8 @@ import { initVoiceAssistant } from './modules/voice.js';
 import { initChallenge, setTokenProvider, calculateRank } from './modules/challenge.js';
 import { initProfile } from './modules/profile.js';
 import { initCommandPalette, openCommandPalette } from './modules/palette.js';
+import { initAudioStudio, openAudioStudio } from './modules/audio-studio.js';
+
 import { initGlobalShortcuts } from './modules/shortcuts.js';
 
 
@@ -318,6 +320,15 @@ window.decipherNav = switchAppView;
     initCommandPalette();
     initGlobalShortcuts(switchAppView);
     window.openCommandPalette = openCommandPalette;
+
+  // Initialize Pronunciation Studio
+  try {
+    initAudioStudio();
+    window.openAudioStudio = openAudioStudio;
+  } catch (err) {
+    console.warn('[AudioStudio] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[Shortcuts] Init failed:', err);
   }
@@ -1491,6 +1502,15 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     initCommandPalette();
     initGlobalShortcuts(switchAppView);
     window.openCommandPalette = openCommandPalette;
+
+  // Initialize Pronunciation Studio
+  try {
+    initAudioStudio();
+    window.openAudioStudio = openAudioStudio;
+  } catch (err) {
+    console.warn('[AudioStudio] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[Shortcuts] Init failed:', err);
   }
