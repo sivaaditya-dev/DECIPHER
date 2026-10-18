@@ -64,6 +64,8 @@ import { initChallenge, setTokenProvider, calculateRank } from './modules/challe
 import { initProfile } from './modules/profile.js';
 import { initCommandPalette, openCommandPalette } from './modules/palette.js';
 import { initAudioStudio, openAudioStudio } from './modules/audio-studio.js';
+import { initFlashcards, openFlashcards } from './modules/flashcards.js';
+
 
 import { initGlobalShortcuts } from './modules/shortcuts.js';
 
@@ -325,6 +327,15 @@ window.decipherNav = switchAppView;
   try {
     initAudioStudio();
     window.openAudioStudio = openAudioStudio;
+
+  // Initialize 3D Flashcards SRS
+  try {
+    initFlashcards();
+    window.openFlashcards = openFlashcards;
+  } catch (err) {
+    console.warn('[Flashcards] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[AudioStudio] Init failed:', err);
   }
@@ -1507,6 +1518,15 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   try {
     initAudioStudio();
     window.openAudioStudio = openAudioStudio;
+
+  // Initialize 3D Flashcards SRS
+  try {
+    initFlashcards();
+    window.openFlashcards = openFlashcards;
+  } catch (err) {
+    console.warn('[Flashcards] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[AudioStudio] Init failed:', err);
   }
