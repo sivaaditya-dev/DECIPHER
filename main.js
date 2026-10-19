@@ -65,6 +65,8 @@ import { initProfile } from './modules/profile.js';
 import { initCommandPalette, openCommandPalette } from './modules/palette.js';
 import { initAudioStudio, openAudioStudio } from './modules/audio-studio.js';
 import { initFlashcards, openFlashcards } from './modules/flashcards.js';
+import { initGrammarExplainer, openGrammarExplainer } from './modules/grammar-explainer.js';
+
 
 
 import { initGlobalShortcuts } from './modules/shortcuts.js';
@@ -332,6 +334,15 @@ window.decipherNav = switchAppView;
   try {
     initFlashcards();
     window.openFlashcards = openFlashcards;
+
+  // Initialize AI Grammar & Nuance Explainer
+  try {
+    initGrammarExplainer();
+    window.openGrammarExplainer = openGrammarExplainer;
+  } catch (err) {
+    console.warn('[GrammarExplainer] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[Flashcards] Init failed:', err);
   }
@@ -1523,6 +1534,15 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   try {
     initFlashcards();
     window.openFlashcards = openFlashcards;
+
+  // Initialize AI Grammar & Nuance Explainer
+  try {
+    initGrammarExplainer();
+    window.openGrammarExplainer = openGrammarExplainer;
+  } catch (err) {
+    console.warn('[GrammarExplainer] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[Flashcards] Init failed:', err);
   }
