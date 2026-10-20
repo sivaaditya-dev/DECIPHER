@@ -66,6 +66,8 @@ import { initCommandPalette, openCommandPalette } from './modules/palette.js';
 import { initAudioStudio, openAudioStudio } from './modules/audio-studio.js';
 import { initFlashcards, openFlashcards } from './modules/flashcards.js';
 import { initGrammarExplainer, openGrammarExplainer } from './modules/grammar-explainer.js';
+import { initSpeedReader, openSpeedReader } from './modules/speed-reader.js';
+
 
 
 
@@ -339,6 +341,15 @@ window.decipherNav = switchAppView;
   try {
     initGrammarExplainer();
     window.openGrammarExplainer = openGrammarExplainer;
+
+  // Initialize RSVP Speed Reader
+  try {
+    initSpeedReader();
+    window.openSpeedReader = openSpeedReader;
+  } catch (err) {
+    console.warn('[SpeedReader] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[GrammarExplainer] Init failed:', err);
   }
@@ -1539,6 +1550,15 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   try {
     initGrammarExplainer();
     window.openGrammarExplainer = openGrammarExplainer;
+
+  // Initialize RSVP Speed Reader
+  try {
+    initSpeedReader();
+    window.openSpeedReader = openSpeedReader;
+  } catch (err) {
+    console.warn('[SpeedReader] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[GrammarExplainer] Init failed:', err);
   }
