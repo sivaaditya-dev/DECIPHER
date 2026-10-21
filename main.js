@@ -67,6 +67,8 @@ import { initAudioStudio, openAudioStudio } from './modules/audio-studio.js';
 import { initFlashcards, openFlashcards } from './modules/flashcards.js';
 import { initGrammarExplainer, openGrammarExplainer } from './modules/grammar-explainer.js';
 import { initSpeedReader, openSpeedReader } from './modules/speed-reader.js';
+import { exportToAnkiTSV, exportToCSV, generatePrintableFlashcards } from './modules/export-suite.js';
+
 
 
 
@@ -346,6 +348,12 @@ window.decipherNav = switchAppView;
   try {
     initSpeedReader();
     window.openSpeedReader = openSpeedReader;
+
+  // Expose Study Export Suite
+  window.exportToAnki = exportToAnkiTSV;
+  window.exportToCSV = exportToCSV;
+  window.printFlashcards = generatePrintableFlashcards;
+
   } catch (err) {
     console.warn('[SpeedReader] Init failed:', err);
   }
@@ -1555,6 +1563,12 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   try {
     initSpeedReader();
     window.openSpeedReader = openSpeedReader;
+
+  // Expose Study Export Suite
+  window.exportToAnki = exportToAnkiTSV;
+  window.exportToCSV = exportToCSV;
+  window.printFlashcards = generatePrintableFlashcards;
+
   } catch (err) {
     console.warn('[SpeedReader] Init failed:', err);
   }
