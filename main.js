@@ -68,6 +68,8 @@ import { initFlashcards, openFlashcards } from './modules/flashcards.js';
 import { initGrammarExplainer, openGrammarExplainer } from './modules/grammar-explainer.js';
 import { initSpeedReader, openSpeedReader } from './modules/speed-reader.js';
 import { exportToAnkiTSV, exportToCSV, generatePrintableFlashcards } from './modules/export-suite.js';
+import { initZenFocus, openZenFocus } from './modules/zen-focus.js';
+
 
 
 
@@ -353,6 +355,15 @@ window.decipherNav = switchAppView;
   window.exportToAnki = exportToAnkiTSV;
   window.exportToCSV = exportToCSV;
   window.printFlashcards = generatePrintableFlashcards;
+
+  // Initialize Zen Focus Room & Pomodoro
+  try {
+    initZenFocus();
+    window.openZenFocus = openZenFocus;
+  } catch (err) {
+    console.warn('[ZenFocus] Init failed:', err);
+  }
+
 
   } catch (err) {
     console.warn('[SpeedReader] Init failed:', err);
@@ -1568,6 +1579,15 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   window.exportToAnki = exportToAnkiTSV;
   window.exportToCSV = exportToCSV;
   window.printFlashcards = generatePrintableFlashcards;
+
+  // Initialize Zen Focus Room & Pomodoro
+  try {
+    initZenFocus();
+    window.openZenFocus = openZenFocus;
+  } catch (err) {
+    console.warn('[ZenFocus] Init failed:', err);
+  }
+
 
   } catch (err) {
     console.warn('[SpeedReader] Init failed:', err);
