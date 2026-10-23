@@ -69,6 +69,8 @@ import { initGrammarExplainer, openGrammarExplainer } from './modules/grammar-ex
 import { initSpeedReader, openSpeedReader } from './modules/speed-reader.js';
 import { exportToAnkiTSV, exportToCSV, generatePrintableFlashcards } from './modules/export-suite.js';
 import { initZenFocus, openZenFocus } from './modules/zen-focus.js';
+import { initTrophies, unlockTrophy, triggerCelebrationConfetti } from './modules/trophies.js';
+
 
 
 
@@ -360,6 +362,16 @@ window.decipherNav = switchAppView;
   try {
     initZenFocus();
     window.openZenFocus = openZenFocus;
+
+  // Initialize Gamification Trophies
+  try {
+    initTrophies();
+    window.unlockTrophy = unlockTrophy;
+    window.triggerCelebrationConfetti = triggerCelebrationConfetti;
+  } catch (err) {
+    console.warn('[Trophies] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[ZenFocus] Init failed:', err);
   }
@@ -1584,6 +1596,16 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   try {
     initZenFocus();
     window.openZenFocus = openZenFocus;
+
+  // Initialize Gamification Trophies
+  try {
+    initTrophies();
+    window.unlockTrophy = unlockTrophy;
+    window.triggerCelebrationConfetti = triggerCelebrationConfetti;
+  } catch (err) {
+    console.warn('[Trophies] Init failed:', err);
+  }
+
   } catch (err) {
     console.warn('[ZenFocus] Init failed:', err);
   }
