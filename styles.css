@@ -4435,3 +4435,85 @@ a:focus-visible { outline-offset: 4px; }
   border-color: #6366f1;
   color: #a5b4fc;
 }
+
+
+/* ============================================================
+   GAMIFICATION TROPHY CABINET & BADGE STYLES
+   ============================================================ */
+.trophy-cabinet {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.trophy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.trophy-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trophy-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.trophy-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.trophy-tier-bronze .trophy-icon-box {
+  border: 2px solid #cd7f32;
+  box-shadow: 0 0 14px rgba(205, 127, 50, 0.3);
+}
+
+.trophy-tier-silver .trophy-icon-box {
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 0 16px rgba(226, 232, 240, 0.35);
+}
+
+.trophy-tier-gold .trophy-icon-box {
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.45);
+}
+
+.trophy-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary, #f8fafc);
+  margin: 0;
+}
+
+.trophy-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.trophy-locked {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
