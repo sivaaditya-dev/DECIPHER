@@ -70,6 +70,8 @@ import { initSpeedReader, openSpeedReader } from './modules/speed-reader.js';
 import { exportToAnkiTSV, exportToCSV, generatePrintableFlashcards } from './modules/export-suite.js';
 import { initZenFocus, openZenFocus } from './modules/zen-focus.js';
 import { initTrophies, unlockTrophy, triggerCelebrationConfetti } from './modules/trophies.js';
+import { estimateCEFRLevel, assignSmartTags, filterVocabCollection, batchActionExport } from './modules/vocab-indexer.js';
+
 
 
 
@@ -368,6 +370,13 @@ window.decipherNav = switchAppView;
     initTrophies();
     window.unlockTrophy = unlockTrophy;
     window.triggerCelebrationConfetti = triggerCelebrationConfetti;
+
+  // Expose Vocabulary Indexer & CEFR Engine
+  window.estimateCEFRLevel = estimateCEFRLevel;
+  window.assignSmartTags = assignSmartTags;
+  window.filterVocabCollection = filterVocabCollection;
+  window.batchActionExport = batchActionExport;
+
   } catch (err) {
     console.warn('[Trophies] Init failed:', err);
   }
@@ -1602,6 +1611,13 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     initTrophies();
     window.unlockTrophy = unlockTrophy;
     window.triggerCelebrationConfetti = triggerCelebrationConfetti;
+
+  // Expose Vocabulary Indexer & CEFR Engine
+  window.estimateCEFRLevel = estimateCEFRLevel;
+  window.assignSmartTags = assignSmartTags;
+  window.filterVocabCollection = filterVocabCollection;
+  window.batchActionExport = batchActionExport;
+
   } catch (err) {
     console.warn('[Trophies] Init failed:', err);
   }
