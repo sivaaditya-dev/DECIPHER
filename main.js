@@ -71,6 +71,8 @@ import { exportToAnkiTSV, exportToCSV, generatePrintableFlashcards } from './mod
 import { initZenFocus, openZenFocus } from './modules/zen-focus.js';
 import { initTrophies, unlockTrophy, triggerCelebrationConfetti } from './modules/trophies.js';
 import { estimateCEFRLevel, assignSmartTags, filterVocabCollection, batchActionExport } from './modules/vocab-indexer.js';
+import { initPWA } from './modules/pwa.js';
+
 
 
 
@@ -376,6 +378,14 @@ window.decipherNav = switchAppView;
   window.assignSmartTags = assignSmartTags;
   window.filterVocabCollection = filterVocabCollection;
   window.batchActionExport = batchActionExport;
+
+  // Initialize PWA Service Worker
+  try {
+    initPWA();
+  } catch (err) {
+    console.warn('[PWA] Init failed:', err);
+  }
+
 
   } catch (err) {
     console.warn('[Trophies] Init failed:', err);
@@ -1617,6 +1627,14 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   window.assignSmartTags = assignSmartTags;
   window.filterVocabCollection = filterVocabCollection;
   window.batchActionExport = batchActionExport;
+
+  // Initialize PWA Service Worker
+  try {
+    initPWA();
+  } catch (err) {
+    console.warn('[PWA] Init failed:', err);
+  }
+
 
   } catch (err) {
     console.warn('[Trophies] Init failed:', err);
