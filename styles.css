@@ -4517,3 +4517,40 @@ a:focus-visible { outline-offset: 4px; }
   filter: grayscale(1);
   opacity: 0.45;
 }
+
+
+/* ============================================================
+   PERFORMANCE OPTIMIZATION — Layout Containment & Rendering Hints
+   ============================================================ */
+
+/* Contain library grid cards so layout changes don't bubble up */
+.library-card,
+.vocab-card,
+.result-card {
+  contain: layout style paint;
+}
+
+/* Off-screen library grid items get skipped until near viewport */
+.library-grid {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 320px;
+}
+
+/* GPU-accelerate animated elements */
+.fc-card,
+.fc-card-face,
+.palette-item,
+.palette-container {
+  will-change: transform;
+}
+
+/* Isolate heavy quiz panels from rest of layout */
+#quizPanel,
+#daiPanel {
+  contain: layout;
+}
+
+/* Remove layout thrash on skeleton shimmer */
+.shimmer-card {
+  contain: strict;
+}
