@@ -375,6 +375,39 @@ window.decipherNav = switchAppView;
 
   // Expose Vocabulary Indexer & CEFR Engine
   window.estimateCEFRLevel = estimateCEFRLevel;
+
+  // === Register all new feature modules in the Command Palette ===
+  try {
+    if (window.registerPaletteCommand) {
+      window.registerPaletteCommand({
+        id: 'open-flashcards', title: 'Open 3D Flashcard SRS Deck', category: 'Study', icon: '🎴',
+        action: () => { if (window.openFlashcards && window.currentVocabList?.length) window.openFlashcards(window.currentVocabList); else if (window.showToast) window.showToast('Analyze text first to build a flashcard deck.', 'info'); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-audio-studio', title: 'Open Pronunciation Studio', category: 'Audio', icon: '🎙️',
+        action: () => { if (window.openAudioStudio) window.openAudioStudio('Study', ''); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-speed-reader', title: 'Start RSVP Speed Reader', category: 'Study', icon: '⚡',
+        action: () => { const txt = document.getElementById('inputText')?.value || ''; if (window.openSpeedReader && txt.length > 10) window.openSpeedReader(txt); else if (window.showToast) window.showToast('Enter or analyze some text first.', 'info'); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-zen-focus', title: 'Start Zen Focus Timer (Pomodoro)', category: 'Productivity', icon: '🧘',
+        action: () => { if (window.openZenFocus) window.openZenFocus(); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-grammar', title: 'Open Grammar & Nuance Explainer', category: 'Study', icon: '📖',
+        action: () => { const firstWord = window.currentVocabList?.[0]?.word || 'Language'; if (window.openGrammarExplainer) window.openGrammarExplainer(firstWord); }
+      });
+      window.registerPaletteCommand({
+        id: 'export-anki', title: 'Export Vocab to Anki (.tsv)', category: 'Export', icon: '📥',
+        action: () => { if (window.exportToAnki && window.currentVocabList?.length) window.exportToAnki(window.currentVocabList); else if (window.showToast) window.showToast('Analyze text first to generate a vocab list.', 'info'); }
+      });
+    }
+  } catch (err) {
+    console.warn('[Palette] Command registration failed:', err);
+  }
+
   window.assignSmartTags = assignSmartTags;
   window.filterVocabCollection = filterVocabCollection;
   window.batchActionExport = batchActionExport;
@@ -1624,6 +1657,39 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
 
   // Expose Vocabulary Indexer & CEFR Engine
   window.estimateCEFRLevel = estimateCEFRLevel;
+
+  // === Register all new feature modules in the Command Palette ===
+  try {
+    if (window.registerPaletteCommand) {
+      window.registerPaletteCommand({
+        id: 'open-flashcards', title: 'Open 3D Flashcard SRS Deck', category: 'Study', icon: '🎴',
+        action: () => { if (window.openFlashcards && window.currentVocabList?.length) window.openFlashcards(window.currentVocabList); else if (window.showToast) window.showToast('Analyze text first to build a flashcard deck.', 'info'); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-audio-studio', title: 'Open Pronunciation Studio', category: 'Audio', icon: '🎙️',
+        action: () => { if (window.openAudioStudio) window.openAudioStudio('Study', ''); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-speed-reader', title: 'Start RSVP Speed Reader', category: 'Study', icon: '⚡',
+        action: () => { const txt = document.getElementById('inputText')?.value || ''; if (window.openSpeedReader && txt.length > 10) window.openSpeedReader(txt); else if (window.showToast) window.showToast('Enter or analyze some text first.', 'info'); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-zen-focus', title: 'Start Zen Focus Timer (Pomodoro)', category: 'Productivity', icon: '🧘',
+        action: () => { if (window.openZenFocus) window.openZenFocus(); }
+      });
+      window.registerPaletteCommand({
+        id: 'open-grammar', title: 'Open Grammar & Nuance Explainer', category: 'Study', icon: '📖',
+        action: () => { const firstWord = window.currentVocabList?.[0]?.word || 'Language'; if (window.openGrammarExplainer) window.openGrammarExplainer(firstWord); }
+      });
+      window.registerPaletteCommand({
+        id: 'export-anki', title: 'Export Vocab to Anki (.tsv)', category: 'Export', icon: '📥',
+        action: () => { if (window.exportToAnki && window.currentVocabList?.length) window.exportToAnki(window.currentVocabList); else if (window.showToast) window.showToast('Analyze text first to generate a vocab list.', 'info'); }
+      });
+    }
+  } catch (err) {
+    console.warn('[Palette] Command registration failed:', err);
+  }
+
   window.assignSmartTags = assignSmartTags;
   window.filterVocabCollection = filterVocabCollection;
   window.batchActionExport = batchActionExport;
