@@ -52,3 +52,19 @@ FIREBASE_SERVICE_ACCOUNT=your_firebase_json
 - **AI**: Google Gemini 2.0 Flash
 - **Auth/DB**: Firebase Auth + Firestore
 - **Deployment**: Vercel
+
+
+## 🚀 New in Oct 2026 — Studio & Intelligence Upgrade
+
+| Feature | Shortcut | Description |
+|---|---|---|
+| **Command Palette** | `Ctrl+K` | Fuzzy-search over all actions |
+| **Audio Studio** | `Ctrl+Shift+P` | Record pronunciation vs. native TTS |
+| **3D Flashcards (SRS)** | `Ctrl+Shift+F` | SM-2 spaced repetition deck |
+| **Grammar Explainer** | Via Palette | Collocations, etymology, register |
+| **RSVP Speed Reader** | `Ctrl+Shift+R` | 150-750 WPM with ORP fixation |
+| **Anki Export** | Via Palette | `.tsv` / CSV / Printable PDF |
+| **Zen Focus Room** | `Ctrl+Shift+Z` | Pomodoro + ambient noise synthesizer |
+| **Trophy Cabinet** | Auto-unlock | Gamification badges & confetti |
+| **CEFR Filter** | Library View | A1–C2 difficulty tagging & batch ops |
+| **Offline PWA** | Auto | Service worker caching for offline study |
