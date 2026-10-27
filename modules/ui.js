@@ -4,6 +4,7 @@
  */
 
 import { showToast } from './toast.js';
+import { sanitizeHTML, sanitizeMarkdown, escapeHTML } from './sanitizer.js';
 
 // ----------------------
 // Vocab Card Rendering
@@ -26,7 +27,7 @@ export function renderResults(vocabArray, elements, translated = null, langName 
   const mnemonicMap = {};
   if (mnemonics) mnemonics.forEach(m => { mnemonicMap[m.term.toLowerCase()] = m; });
 
-  resultsBox.innerHTML = vocabArray.map((item, i) => {
+  resultsBox.innerHTML = sanitizeHTML(vocabArray.map((item, i) => {
     const t = translatedMap[item.term.toLowerCase()] || null;
   setTimeout(() => resultsBox && resultsBox.classList.add('visible'), 10);
     const mn = mnemonicMap[item.term.toLowerCase()] || null;
@@ -193,7 +194,7 @@ export function renderResults(vocabArray, elements, translated = null, langName 
         const cls = score >= 85 ? 'great' : score >= 60 ? 'ok' : 'miss';
         const emoji = score >= 85 ? '✅' : score >= 60 ? '⚡' : '❌';
         const msg = score >= 85 ? 'Great!' : score >= 60 ? 'Close!' : 'Try again';
-        resultEl.innerHTML = `<span class="pronun-badge ${cls}">${emoji} ${score}% — ${msg} <span style="opacity:.6;font-size:9px;">(heard: "${said}")</span></span>`;
+        resultEl.innerHTML = sanitizeHTML(`<span class="pronun-badge ${cls}">${emoji} ${score}% — ${msg} <span style="opacity:.6;font-size:9px;">(heard: "${said}")</span></span>`);
       };
       rec.onerror = () => { resultEl.innerHTML = '<span style="font-size:11px;color:var(--red);">Could not hear you. Try again.</span>'; };
       rec.onend = () => { btn.classList.remove('listening'); btn.title = 'Practice pronunciation'; };
@@ -246,7 +247,7 @@ export function renderLibraryGrid(libraryGrid, history, onSessionClick) {
 }
 
 export function renderLibraryError(libraryGrid, message) {
-  libraryGrid.innerHTML = `<div class="lib-placeholder lib-error">${message}</div>`;
+  libraryGrid.innerHTML = `<div class="lib-placeholder lib-error">${escapeHTML(message)}</div>`;
 }
 
 export function renderLibraryLoggedOut(libraryGrid) {
@@ -257,13 +258,14 @@ export function renderLibraryLoggedOut(libraryGrid) {
 // Story Panel
 // ----------------------
 export function renderStory(storyContainer, storyText) {
-  storyContainer.innerHTML = `
+  const safeStory = sanitizeHTML(storyText);
+  storyContainer.innerHTML = sanitizeHTML(`
     <div class="story-header">
       <span class="story-label">📖 AI Generated Story</span>
       <button id="copyStoryBtn" class="story-copy-btn">Copy</button>
     </div>
-    <p class="story-body">${storyText}</p>
-  `;
+    <p class="story-body">${safeStory}</p>
+  `);
   storyContainer.style.display = 'block';
   storyContainer.querySelector('#copyStoryBtn').addEventListener('click', () => {
     navigator.clipboard.writeText(storyText)

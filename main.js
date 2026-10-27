@@ -40,6 +40,7 @@ window.addEventListener('online', () => {
  */
 
 import { showToast } from './modules/toast.js';
+import { sanitizeHTML, sanitizeMarkdown, escapeHTML } from './modules/sanitizer.js';
 import {
   analyzeText, extractPdfText, generateStory,
   saveSession, fetchLibrary, fetchSession, clearLibrary,
@@ -1036,7 +1037,7 @@ if (oppositeDayBtn) {
       const result = await generateOppositeDay(text, currentVocabList);
       // Show result in storyContainer (reuse it)
       storyContainer.style.display = 'block';
-      storyContainer.innerHTML = '<div class="opposite-label">🔄 Opposite Day — Antonym Rewrite</div><p style="font-size:13px;line-height:1.7;font-style:italic;">' + result.opposite + '</p>';
+      storyContainer.innerHTML = sanitizeHTML('<div class="opposite-label">🔄 Opposite Day — Antonym Rewrite</div><p style="font-size:13px;line-height:1.7;font-style:italic;">' + result.opposite + '</p>');
       showToast('Opposite Day generated! All words flipped to their antonyms.', 'success', 4000);
     } catch (err) {
       showToast('Opposite Day failed: ' + err.message, 'error');
@@ -1063,7 +1064,7 @@ function appendTutorMsg(role, content) {
   avatar.textContent = role === 'user' ? '\u{1F464}' : '\u{1F916}';
   const bubble = document.createElement('div');
   bubble.className = 'dai-msg-bubble';
-  bubble.innerHTML = window.parseChatMarkdown ? window.parseChatMarkdown(content) : content;
+  bubble.innerHTML = sanitizeMarkdown(content);
   if(role === 'ai') {
     const copyBtn = document.createElement('button');
     copyBtn.className = 'dai-copy-btn';
@@ -1913,7 +1914,7 @@ window.restoreChatHistory = function() {
     try {
         const saved = sessionStorage.getItem('decipherChat');
         const msgs = document.getElementById('tutorMessages');
-        if (saved && msgs && msgs.querySelector('.dai-msg') === null) msgs.innerHTML = saved;
+        if (saved && msgs && msgs.querySelector('.dai-msg') === null) msgs.innerHTML = sanitizeHTML(saved);
     } catch(e) {}
 };
 
