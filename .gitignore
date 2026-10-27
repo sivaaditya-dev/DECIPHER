@@ -11,3 +11,7 @@ serviceAccountKey.json
 .env
 *.pem
 *.key
+test-results/
+playwright-report/
+*.log
+
