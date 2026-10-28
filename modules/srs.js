@@ -88,6 +88,231 @@ export function calculateDueDate(intervalDays, fromDate = new Date()) {
 /**
  * In-memory fallback storage adapter for non-browser environments.
  */
+export class MemoryStorage {
+  constructor() {
+    this.store = new Map();
+  }
+  getItem(key) {
+    return this.store.has(key) ? this.store.get(key) : null;
+  }
+  setItem(key, value) {
+    this.store.set(key, String(value));
+  }
+  removeItem(key) {
+    this.store.delete(key);
+  }
+  clear() {
+    this.store.clear();
+  }
+}
+
+/**
+ * Local Review Queue Manager for spaced repetition flashcard decks.
+ * Handles localStorage persistence, due date scheduling, overdue sorting, and deck statistics.
+ */
+export class SRSQueueManager {
+  /**
+   * @param {Object} [options={}]
+   * @param {string} [options.storageKey='decipher_srs_deck'] - Storage key in localStorage
+   * @param {Storage|MemoryStorage} [options.storage] - Custom storage provider
+   */
+  constructor(options = {}) {
+    this.storageKey = options.storageKey || 'decipher_srs_deck';
+    this.storage = options.storage || (typeof localStorage !== 'undefined' ? localStorage : new MemoryStorage());
+    this.deck = this.loadDeck();
+  }
+
+  /**
+   * Loads the deck from persistence.
+   * @returns {Array<Object>}
+   */
+  loadDeck() {
+    try {
+      const raw = this.storage.getItem(this.storageKey);
+      if (!raw) {
+        this.deck = [];
+        return [];
+      }
+      const parsed = JSON.parse(raw);
+      this.deck = Array.isArray(parsed) ? parsed : [];
+      return this.deck;
+    } catch {
+      this.deck = [];
+      return [];
+    }
+  }
+
+  /**
+   * Persists deck to storage.
+   * @param {Array<Object>} [deck=this.deck]
+   * @returns {Array<Object>}
+   */
+  saveDeck(deck = this.deck) {
+    if (Array.isArray(deck)) {
+      this.deck = deck;
+    }
+    try {
+      this.storage.setItem(this.storageKey, JSON.stringify(this.deck));
+    } catch (e) {
+      console.warn('[SRSQueueManager] Failed to persist deck:', e);
+    }
+    return this.deck;
+  }
+
+  /**
+   * Adds new cards to the queue or updates existing ones without losing SRS progress.
+   * @param {Array<Object>|Object} cards
+   * @returns {Array<Object>} Updated deck
+   */
+  addCards(cards) {
+    const list = Array.isArray(cards) ? cards : [cards];
+    const nowIso = new Date().toISOString();
+
+    for (const card of list) {
+      if (!card) continue;
+      const id = String(card.id || card.term || card.word || '').trim();
+      if (!id) continue;
+
+      const existingIndex = this.deck.findIndex(c => String(c.id || c.term || c.word || '').trim() === id);
+      if (existingIndex >= 0) {
+        const existing = this.deck[existingIndex];
+        this.deck[existingIndex] = {
+          ...existing,
+          ...card,
+          id: id,
+          repetitions: typeof card.repetitions === 'number' ? card.repetitions : existing.repetitions,
+          interval: typeof card.interval === 'number' ? card.interval : existing.interval,
+          ef: typeof card.ef === 'number' ? card.ef : existing.ef,
+          lastReviewed: card.lastReviewed !== undefined ? card.lastReviewed : existing.lastReviewed,
+          dueDate: card.dueDate !== undefined ? card.dueDate : existing.dueDate
+        };
+      } else {
+        this.deck.push({
+          id: id,
+          term: card.term || card.word || id,
+          word: card.word || card.term || id,
+          definition: card.definition || card.meaning || '',
+          phonetic: card.phonetic || '',
+          example: card.example || '',
+          translation: card.translation || '',
+          repetitions: typeof card.repetitions === 'number' ? card.repetitions : 0,
+          interval: typeof card.interval === 'number' ? card.interval : 0,
+          ef: typeof card.ef === 'number' ? card.ef : DEFAULT_EF,
+          lastReviewed: card.lastReviewed || null,
+          dueDate: card.dueDate || nowIso,
+          ...card
+        });
+      }
+    }
+    this.saveDeck();
+    return this.deck;
+  }
+
+  /**
+   * Retrieves a single card by its ID, term, or word.
+   * @param {string} cardId
+   * @returns {Object|null}
+   */
+  getCard(cardId) {
+    const target = String(cardId || '').trim();
+    return this.deck.find(c => String(c.id || c.term || c.word || '').trim() === target) || null;
+  }
+
+  /**
+   * Returns cards due for review on or before the given timestamp.
+   * @param {Date|string|number} [asOfDate=new Date()]
+   * @returns {Array<Object>}
+   */
+  getDueCards(asOfDate = new Date()) {
+    const targetMs = (asOfDate instanceof Date ? asOfDate : new Date(asOfDate)).getTime();
+    return this.deck.filter(card => {
+      if (!card.dueDate) return true;
+      const dueMs = new Date(card.dueDate).getTime();
+      return dueMs <= targetMs;
+    });
+  }
+
+  /**
+   * Returns overdue cards sorted ascending by dueDate (oldest overdue first).
+   * @param {Date|string|number} [asOfDate=new Date()]
+   * @returns {Array<Object>}
+   */
+  getOverdueCards(asOfDate = new Date()) {
+    const targetMs = (asOfDate instanceof Date ? asOfDate : new Date(asOfDate)).getTime();
+    return this.deck
+      .filter(card => {
+        if (!card.dueDate) return false;
+        return new Date(card.dueDate).getTime() < targetMs;
+      })
+      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+  }
+
+  /**
+   * Computes SRS queue summary metrics.
+   * @param {Date|string|number} [asOfDate=new Date()]
+   * @returns {{ total: number, due: number, learning: number, mature: number }}
+   */
+  getReviewStats(asOfDate = new Date()) {
+    const targetMs = (asOfDate instanceof Date ? asOfDate : new Date(asOfDate)).getTime();
+    let dueCount = 0;
+    let learningCount = 0;
+    let matureCount = 0;
+
+    for (const card of this.deck) {
+      const isDue = !card.dueDate || new Date(card.dueDate).getTime() <= targetMs;
+      if (isDue) dueCount++;
+
+      const interval = typeof card.interval === 'number' ? card.interval : 0;
+      if (interval >= 21) {
+        matureCount++;
+      } else {
+        learningCount++;
+      }
+    }
+
+    return {
+      total: this.deck.length,
+      due: dueCount,
+      learning: learningCount,
+      mature: matureCount
+    };
+  }
+
+  /**
+   * Records a user recall rating, recalculates SM-2, persists, and returns updated card.
+   * @param {string} cardId
+   * @param {number} grade
+   * @param {Date|string|number} [reviewDate=new Date()]
+   * @returns {Object}
+   */
+  recordReview(cardId, grade, reviewDate = new Date()) {
+    const target = String(cardId || '').trim();
+    const index = this.deck.findIndex(c => String(c.id || c.term || c.word || '').trim() === target);
+
+    let card;
+    if (index >= 0) {
+      card = this.deck[index];
+    } else {
+      card = { id: target, term: target, word: target, repetitions: 0, interval: 0, ef: DEFAULT_EF };
+      this.deck.push(card);
+    }
+
+    const updated = calculateSM2(card, grade, reviewDate);
+    const targetIndex = index >= 0 ? index : this.deck.length - 1;
+    this.deck[targetIndex] = updated;
+    this.saveDeck();
+    return updated;
+  }
+
+  /**
+   * Empties the queue and clears storage.
+   */
+  clearDeck() {
+    this.deck = [];
+    this.saveDeck();
+  }
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     DEFAULT_EF,
@@ -95,6 +320,8 @@ if (typeof module !== 'undefined' && module.exports) {
     MAX_INTERVAL,
     MS_PER_DAY,
     calculateSM2,
-    calculateDueDate
+    calculateDueDate,
+    MemoryStorage,
+    SRSQueueManager
   };
 }

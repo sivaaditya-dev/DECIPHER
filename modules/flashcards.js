@@ -1,3 +1,7 @@
+import { calculateSM2, SRSQueueManager } from './srs.js';
+export { calculateSM2, SRSQueueManager };
+export const srsQueue = new SRSQueueManager();
+
 /**
  * flashcards.js - 3D Perspective Flashcard SRS Engine (SuperMemo SM-2)
  * Decipher Language Learning Platform
@@ -99,11 +103,17 @@ export function initFlashcards() {
 
 export function openFlashcards(deck) {
   if (!modalEl) initFlashcards();
-  if (!deck || deck.length === 0) {
+  if (deck && deck.length > 0) {
+    srsQueue.addCards(deck);
+    currentDeck = deck.map(c => srsQueue.getCard(c.id || c.term || c.word) || c);
+  } else {
+    currentDeck = srsQueue.getDueCards();
+  }
+
+  if (!currentDeck || currentDeck.length === 0) {
     if (window.showToast) window.showToast('No vocabulary cards found. Analyze text first!', 'warning');
     return;
   }
-  currentDeck = [...deck];
   currentIndex = 0;
   isFlipped = false;
   if (modalEl) modalEl.style.display = 'flex';
@@ -122,32 +132,7 @@ export function flipCard() {
   cardEl.classList.toggle('is-flipped', isFlipped);
 }
 
-export function calculateSM2(card, grade) {
-  let rep = card.repetitions || 0;
-  let interval = card.interval || 0;
-  let ef = card.ef || 2.5;
-
-  if (grade >= 3) {
-    if (rep === 0) interval = 1;
-    else if (rep === 1) interval = 6;
-    else interval = Math.round(interval * ef);
-    rep++;
-  } else {
-    rep = 0;
-    interval = 1;
-  }
-
-  ef = ef + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
-  if (ef < 1.3) ef = 1.3;
-
-  return {
-    ...card,
-    repetitions: rep,
-    interval: interval,
-    ef: parseFloat(ef.toFixed(2)),
-    lastReviewed: new Date().toISOString()
-  };
-}
+// calculateSM2 is imported and re-exported from ./srs.js
 
 function renderCurrentCard() {
   if (currentIndex >= currentDeck.length) {
@@ -178,7 +163,9 @@ function renderCurrentCard() {
 function rateCurrentCard(grade) {
   if (currentDeck.length === 0 || currentIndex >= currentDeck.length) return;
   const current = currentDeck[currentIndex];
-  currentDeck[currentIndex] = calculateSM2(current, grade);
+  const cardId = current.id || current.term || current.word;
+  const updated = srsQueue.recordReview(cardId, grade);
+  currentDeck[currentIndex] = updated;
 
   currentIndex++;
   renderCurrentCard();
