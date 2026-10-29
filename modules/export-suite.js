@@ -289,6 +289,124 @@ export function generatePrintableFlashcards(vocabList) {
   printWindow.document.close();
 }
 
+/**
+ * Escapes characters for Markdown table cells
+ * @param {string} text - Cell text
+ * @returns {string} Escaped markdown text
+ */
+function escapeMarkdownCell(text) {
+  if (text === null || text === undefined) return '—';
+  const clean = String(text).replace(/\|/g, '\\|').replace(/\r?\n/g, '<br>').trim();
+  return clean || '—';
+}
+
+/**
+ * Generates Notion-compatible GitHub Flavored Markdown table
+ * @param {Array<Object>} vocabList - List of vocabulary items
+ * @param {Object} [options={}] - Export options
+ * @returns {string|null} Markdown content string
+ */
+export function exportToNotionMarkdown(vocabList, options = {}) {
+  const validList = sanitizeVocabList(vocabList);
+  if (validList.length === 0) {
+    if (typeof window !== 'undefined' && window.showToast) {
+      window.showToast('No vocabulary items to export.', 'warning');
+    }
+    return null;
+  }
+
+  const {
+    title = 'Decipher Vocabulary Deck',
+    download = true,
+    includeHeader = true
+  } = options;
+
+  const dateStr = new Date().toISOString().split('T')[0];
+  const lines = [];
+
+  if (includeHeader) {
+    lines.push(`# ${title}`);
+    lines.push(`> Exported from Decipher on ${dateStr} • ${validList.length} cards\n`);
+  }
+
+  // Notion Markdown Table Header
+  lines.push('| Term | Phonetic | Definition | Synonyms | Example Sentence | Translation | CEFR |');
+  lines.push('| :--- | :--- | :--- | :--- | :--- | :--- | :--- |');
+
+  validList.forEach(item => {
+    const term = `**${escapeMarkdownCell(item.word || item.term || '')}**`;
+    const phonetic = item.phonetic ? `\`/${escapeMarkdownCell(item.phonetic).replace(/`/g, '')}/\`` : '—';
+    const def = escapeMarkdownCell(item.definition || item.meaning || '');
+    const syn = escapeMarkdownCell(item.syn || '');
+    const example = item.example ? `*"${escapeMarkdownCell(item.example)}"*` : '—';
+    const trans = escapeMarkdownCell(item.translation || '');
+    const cefr = escapeMarkdownCell(item.cefr || '');
+
+    lines.push(`| ${term} | ${phonetic} | ${def} | ${syn} | ${example} | ${trans} | ${cefr} |`);
+  });
+
+  const mdContent = lines.join('\n');
+
+  if (download && typeof document !== 'undefined') {
+    downloadFile(mdContent, `decipher_notion_${sanitizeFilename(title)}.md`, 'text/markdown;charset=utf-8');
+    if (typeof window !== 'undefined' && window.showToast) {
+      window.showToast(`Exported ${validList.length} words for Notion!`, 'success');
+    }
+  }
+
+  return mdContent;
+}
+
+/**
+ * Generates Quizlet-compatible tab-delimited text format
+ * @param {Array<Object>} vocabList - List of vocabulary items
+ * @param {Object} [options={}] - Export options
+ * @returns {string|null} Quizlet TSV content string
+ */
+export function exportToQuizletTSV(vocabList, options = {}) {
+  const validList = sanitizeVocabList(vocabList);
+  if (validList.length === 0) {
+    if (typeof window !== 'undefined' && window.showToast) {
+      window.showToast('No vocabulary items to export.', 'warning');
+    }
+    return null;
+  }
+
+  const {
+    title = 'Decipher Vocabulary',
+    download = true,
+    delimiter = '\t',
+    includeExample = true
+  } = options;
+
+  const rows = validList.map(item => {
+    const word = (item.word || item.term || '').trim();
+    const phonetic = item.phonetic ? ` [${item.phonetic.replace(/[\[\]\/]/g, '').trim()}]` : '';
+    const def = (item.definition || item.meaning || '').trim();
+    const example = includeExample && item.example ? ` — "${item.example.trim()}"` : '';
+    const trans = item.translation ? ` (Translation: ${item.translation.trim()})` : '';
+
+    // Clean delimiters from text
+    const cleanTerm = (word + phonetic).replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
+    const cleanDef = (def + example + trans).replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
+
+    return `${cleanTerm}${delimiter}${cleanDef}`;
+  });
+
+  const content = rows.join('\n');
+
+  if (download && typeof document !== 'undefined') {
+    downloadFile(content, `decipher_quizlet_${sanitizeFilename(title)}.txt`, 'text/plain;charset=utf-8');
+    if (typeof window !== 'undefined' && window.showToast) {
+      window.showToast(`Exported ${validList.length} cards for Quizlet!`, 'success');
+    }
+  }
+
+  return content;
+}
+
+export const exportToQuizletFormat = exportToQuizletTSV;
+
 function escapeTSV(str) {
   if (str === null || str === undefined) return '';
   return String(str).replace(/\t/g, ' ').replace(/\r?\n/g, '<br>');
@@ -333,6 +451,9 @@ if (typeof module !== 'undefined' && module.exports) {
     formatClozeDeletion,
     generateAnkiDeckCSS,
     exportToCSV,
-    generatePrintableFlashcards
+    generatePrintableFlashcards,
+    exportToNotionMarkdown,
+    exportToQuizletTSV,
+    exportToQuizletFormat
   };
 }
