@@ -170,6 +170,77 @@ export function initFrequencyVisualizer(canvas, analyserNode, options = {}) {
  * @param {string} phoneticText - Raw IPA string, e.g. "/ˈkæt.ə.lɪst/" or "ˌkɒm.prɪˈhen.sɪv"
  * @returns {Array<Object>} Array of syllable breakdown objects
  */
+export function parseIPASyllables(phoneticText) {
+  if (!phoneticText || typeof phoneticText !== 'string') return [];
+
+  // Strip enclosing slashes and brackets, trim whitespace
+  let clean = phoneticText.trim()
+    .replace(/^\/+|\/+$/g, '')
+    .replace(/^\[+|\]+$/g, '')
+    .trim();
+
+  if (!clean) return [];
+
+  // Normalize ASCII quote to primary stress and comma to secondary stress if standard IPA marks are absent
+  clean = clean.replace(/'([a-zA-Z\u00C0-\u02AF])/g, 'ˈ$1');
+  clean = clean.replace(/,([a-zA-Z\u00C0-\u02AF])/g, 'ˌ$1');
+
+  // Tokenize on dots, whitespace, hyphens, and stress boundaries
+  const tokens = clean
+    .split(/[\.\s\-]+/)
+    .flatMap(chunk => chunk.split(/(?=[ˈˌ])/))
+    .filter(Boolean);
+
+  return tokens.map((part, index) => {
+    let stress = 'none';
+    if (part.startsWith('ˈ') || part.includes('ˈ')) {
+      stress = 'primary';
+    } else if (part.startsWith('ˌ') || part.includes('ˌ')) {
+      stress = 'secondary';
+    }
+
+    // Clean syllable text without stress symbols or dots
+    const syllable = part.replace(/[ˈˌ\.]/g, '').trim();
+
+    return {
+      syllable,
+      raw: part.trim(),
+      stress,
+      index,
+      isStressed: stress !== 'none'
+    };
+  }).filter(item => item.syllable.length > 0);
+}
+
+/**
+ * Renders phonetic IPA syllables as interactive visual badges into a container element
+ * @param {string} phoneticText - Raw IPA string
+ * @param {HTMLElement} containerEl - Target DOM container
+ */
+export function renderIPASyllables(phoneticText, containerEl) {
+  if (!containerEl) return;
+  const syllables = parseIPASyllables(phoneticText);
+
+  if (!syllables.length) {
+    containerEl.textContent = phoneticText ? `/${phoneticText}/` : '';
+    return;
+  }
+
+  const badges = syllables.map(s => {
+    const stressCls = s.stress === 'primary'
+      ? 'ipa-stress-primary'
+      : s.stress === 'secondary'
+        ? 'ipa-stress-secondary'
+        : 'ipa-stress-none';
+
+    const stressMark = s.stress === 'primary' ? '<span class="ipa-stress-mark">ˈ</span>' : (s.stress === 'secondary' ? '<span class="ipa-stress-mark">ˌ</span>' : '');
+    const title = s.stress === 'primary' ? 'Primary Stress' : (s.stress === 'secondary' ? 'Secondary Stress' : 'Unstressed');
+
+    return `<span class="ipa-syllable-badge ${stressCls}" data-stress="${s.stress}" title="${title}">${stressMark}${s.syllable}</span>`;
+  }).join('');
+
+  containerEl.innerHTML = `<div class="ipa-syllables-list">${badges}</div>`;
+}
 
 export function initAudioStudio() {
   if (typeof document === 'undefined') return;
