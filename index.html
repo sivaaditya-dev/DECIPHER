@@ -391,6 +391,7 @@
             <button id="oppositeDayBtn" class="chip-btn chip-amber" style="display:none;" disabled>🔄 Opposite Day</button>
             <button id="generateStoryBtn" class="chip-btn" style="display:none;" disabled>📖 Story</button>
             <button id="startQuizBtn" class="chip-btn chip-accent" disabled>🎯 Quiz</button>
+            <button id="drillRoomBtn" class="chip-btn chip-emerald" style="display:none;" title="Open Weak Words Drill Room">🎯 Drill Room <span id="weakWordsBadge" class="drill-badge">0</span></button>
           </div>
         </div>
 
@@ -416,6 +417,8 @@
         </div>
 
         <div id="storyContainer" style="display:none;" class="story-box"></div>
+        <!-- Drill Room Interactive Practice Card -->
+        <div id="drillRoomCard" class="drill-card-wrap" style="display:none;"></div>
 
         <div id="resultsBox" class="results-scroll">
           <div class="results-empty">
@@ -650,6 +653,7 @@
 }
 </script>
 <script type="module" src="main.js"></script>
+<script type="module" src="modules/drill.js"></script>
 
 <!-- TERMS & CONDITIONS MODAL -->
 <div id="termsModal" class="terms-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
