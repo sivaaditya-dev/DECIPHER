@@ -87,7 +87,7 @@ export class MemoryStorageAdapter {
       ...deepClone(deck),
       id,
       createdAt: deck.createdAt || now,
-      updatedAt: now
+      updatedAt: deck.updatedAt || now
     };
     this.decks.set(id, stored);
     return deepClone(stored);
@@ -388,7 +388,7 @@ export class IndexedDBStorageAdapter {
       ...deepClone(deck),
       id,
       createdAt: deck.createdAt || now,
-      updatedAt: now
+      updatedAt: deck.updatedAt || now
     };
 
     await this._tx(STORES.DECKS, 'readwrite', store => store.put(stored));
