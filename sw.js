@@ -1,6 +1,7 @@
 /**
  * sw.js - Service Worker for Decipher Offline PWA
  * Caches core shells and vocabulary libraries for offline study.
+ * Implements Background Sync queue listener for offline study progress.
  */
 
 const CACHE_NAME = 'decipher-cache-v1';
@@ -26,7 +27,8 @@ const STATIC_ASSETS = [
   '/modules/export-suite.js',
   '/modules/zen-focus.js',
   '/modules/trophies.js',
-  '/modules/vocab-indexer.js'
+  '/modules/vocab-indexer.js',
+  '/modules/storage-idb.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -74,5 +76,35 @@ self.addEventListener('fetch', (event) => {
         });
       })
     );
+  }
+});
+
+// --- Background Sync Queue Listener ---
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-study-progress') {
+    event.waitUntil(
+      (async () => {
+        console.log('[SW] Background sync triggered for study progress');
+        const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+        for (const client of clients) {
+          client.postMessage({
+            type: 'BACKGROUND_SYNC_TRIGGERED',
+            tag: event.tag,
+            timestamp: Date.now()
+          });
+        }
+      })()
+    );
+  }
+});
+
+// --- Client Message Interceptor for Manual Sync Trigger ---
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SYNC_NOW') {
+    if (self.registration && self.registration.sync) {
+      self.registration.sync.register('sync-study-progress').catch((err) => {
+        console.warn('[SW] Manual sync registration failed:', err);
+      });
+    }
   }
 });
