@@ -1,4 +1,5 @@
 import { calculateSM2, SRSQueueManager } from './srs.js';
+import { setShortcutContext } from './shortcuts.js';
 export { calculateSM2, SRSQueueManager };
 export const srsQueue = new SRSQueueManager();
 
@@ -116,14 +117,30 @@ export function openFlashcards(deck) {
   }
   currentIndex = 0;
   isFlipped = false;
+  setShortcutContext('flashcards');
   if (modalEl) modalEl.style.display = 'flex';
   renderCurrentCard();
 }
 
 export function closeFlashcards() {
+  setShortcutContext('global');
   if (modalEl) modalEl.style.display = 'none';
   isFlipped = false;
   if (cardEl) cardEl.classList.remove('is-flipped');
+}
+
+export function prevCard() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderCurrentCard();
+  }
+}
+
+export function nextCard() {
+  if (currentIndex < currentDeck.length - 1) {
+    currentIndex++;
+    renderCurrentCard();
+  }
 }
 
 export function flipCard() {
@@ -210,8 +227,34 @@ function handleFcKey(e) {
   } else if (e.key === '4') {
     e.preventDefault();
     rateCurrentCard(5);
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    prevCard();
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    nextCard();
   } else if (e.key === 'Escape') {
     e.preventDefault();
     closeFlashcards();
+  } else if (e.key === 'Enter' || e.key === 'r') {
+    const restartBtn = document.getElementById('fcRestartBtn');
+    if (restartBtn) {
+      e.preventDefault();
+      restartBtn.click();
+    }
   }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    initFlashcards,
+    openFlashcards,
+    closeFlashcards,
+    flipCard,
+    prevCard,
+    nextCard,
+    srsQueue,
+    calculateSM2,
+    SRSQueueManager
+  };
 }

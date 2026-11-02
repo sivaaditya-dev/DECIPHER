@@ -13,6 +13,7 @@
  */
 
 import { showToast } from './toast.js';
+import { setShortcutContext } from './shortcuts.js';
 
 
 // DOM references
@@ -76,6 +77,8 @@ export function startQuiz(srsSentences = null) {
 }
 
 export function closeQuiz() {
+  quizState.active = false;
+  setShortcutContext('global');
   quizModal.classList.remove('active');
   quizContent.style.transform = 'scale(0.95)';
   quizContent.style.opacity = '0';
@@ -117,6 +120,7 @@ function setMode(mode) {
 // ----------------------
 
 function _buildAndOpen() {
+  setShortcutContext('quiz');
   const shuffled  = [...fullVocabList].sort(() => Math.random() - 0.5);
   const questions = shuffled.slice(0, 10);
   quizState = { active: true, questions, currentIndex: 0, score: 0 };
@@ -158,8 +162,8 @@ function _loadStandardQuestion(qData) {
   const wrong = fullVocabList.filter(v => v.term !== qData.term).sort(() => Math.random() - 0.5);
   for (let i = 0; i < 3; i++) options.push(wrong[i] ? wrong[i].def : 'A related concept.');
   options.sort(() => Math.random() - 0.5);
-  optionsContainer.innerHTML = options.map(opt =>
-    `<button class="quiz-option" data-correct="${opt === qData.def}">${opt}</button>`
+  optionsContainer.innerHTML = options.map((opt, idx) =>
+    `<button class="quiz-option" data-correct="${opt === qData.def}"><span class="quiz-kbd">${idx + 1}</span>${opt}</button>`
   ).join('');
   _attachOptionListeners();
 }
@@ -178,8 +182,8 @@ function _loadReverseQuestion(qData) {
   const wrong = fullVocabList.filter(v => v.term !== qData.term).sort(() => Math.random() - 0.5);
   for (let i = 0; i < 3; i++) options.push(wrong[i] ? wrong[i].term : 'unknown');
   options.sort(() => Math.random() - 0.5);
-  optionsContainer.innerHTML = options.map(opt =>
-    `<button class="quiz-option quiz-option-term" data-correct="${opt === qData.term}">${opt}</button>`
+  optionsContainer.innerHTML = options.map((opt, idx) =>
+    `<button class="quiz-option quiz-option-term" data-correct="${opt === qData.term}"><span class="quiz-kbd">${idx + 1}</span>${opt}</button>`
   ).join('');
   _attachOptionListeners();
 }
@@ -203,8 +207,8 @@ function _loadSRSQuestion(qData) {
   const wrong = fullVocabList.filter(v => v.term !== qData.term).sort(() => Math.random() - 0.5);
   for (let i = 0; i < 3; i++) options.push(wrong[i] ? wrong[i].term : 'unknown');
   options.sort(() => Math.random() - 0.5);
-  optionsContainer.innerHTML = options.map(opt =>
-    `<button class="quiz-option quiz-option-term" data-correct="${opt === qData.term}">${opt}</button>`
+  optionsContainer.innerHTML = options.map((opt, idx) =>
+    `<button class="quiz-option quiz-option-term" data-correct="${opt === qData.term}"><span class="quiz-kbd">${idx + 1}</span>${opt}</button>`
   ).join('');
   _attachOptionListeners();
 }
@@ -220,6 +224,18 @@ function handleOptionClick(event) {
   const isCorrect = clicked.dataset.correct === 'true';
   const word      = quizState.questions[quizState.current]?.word || '';
   if (isCorrect) {
+    quizState.score++;
+    document.getElementById('currentScore').textContent = quizState.score;
+  } else if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+    const curQ = quizState.questions[quizState.currentIndex];
+    const wordTerm = curQ ? (curQ.term || curQ.word) : '';
+    if (wordTerm) {
+      window.dispatchEvent(new CustomEvent('decipher:word-failed', {
+        detail: { word: wordTerm, userResponse: clicked.textContent?.replace(/^\d+/, '').trim() }
+      }));
+    }
+  }
+  if (false) {
     quizState.score++;
     document.getElementById('currentScore').textContent = quizState.score;
   }
@@ -240,4 +256,55 @@ function endQuiz() {
   if (pct === 100) showToast(`Perfect! Flawless ${modeStr}! 🏆`, 'success', 6000);
   else if (pct >= 70) showToast(`Great work in ${modeStr}! ${pct}% 🌟`, 'success', 5000);
   else showToast(`${pct}% in ${modeStr}. Keep going — you'll get there!`, 'info', 5000);
+}
+
+function handleQuizKey(e) {
+  if (!quizState.active || !quizModal || !quizModal.classList.contains('active')) return;
+  const key = e.key ? e.key.toLowerCase() : '';
+
+  if (key === 'escape') {
+    e.preventDefault();
+    closeQuiz();
+    return;
+  }
+
+  if (quizStartScreen && quizStartScreen.style.display !== 'none') {
+    if (key === 'enter' || e.code === 'Space') {
+      e.preventDefault();
+      initQuiz();
+    }
+    return;
+  }
+
+  if (quizPlayScreen && quizPlayScreen.style.display !== 'none') {
+    if (['1', '2', '3', '4'].includes(key)) {
+      e.preventDefault();
+      const optionIndex = parseInt(key, 10) - 1;
+      const options = optionsContainer.querySelectorAll('.quiz-option');
+      if (options[optionIndex] && !options[optionIndex].disabled) {
+        options[optionIndex].click();
+      }
+      return;
+    }
+
+    if (key === 'enter' || e.code === 'Space') {
+      if (nextQBtn && nextQBtn.style.display !== 'none' && !nextQBtn.disabled) {
+        e.preventDefault();
+        nextQuestion();
+      }
+      return;
+    }
+  }
+
+  if (quizEndScreen && quizEndScreen.style.display !== 'none') {
+    if (key === 'enter' || key === 'r') {
+      e.preventDefault();
+      const restartBtn = document.getElementById('restartQuizBtn') || document.getElementById('startQuizBtn');
+      restartBtn?.click();
+    }
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('keydown', handleQuizKey);
 }
