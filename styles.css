@@ -4885,3 +4885,77 @@ a:focus-visible { outline-offset: 4px; }
   max-width: 380px;
   margin: 0 auto 16px;
 }
+
+
+/* ============================================================
+   ACCESSIBILITY (a11y) & HIGH-CONTRAST FOCUS RINGS
+   ============================================================ */
+
+/* Screen reader only utility class */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Enhanced High-Contrast Focus Rings */
+:focus-visible {
+  outline: 3px solid var(--accent, #6366f1) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.4) !important;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex="0"]:focus-visible,
+.quiz-option:focus-visible,
+.fc-card:focus-visible,
+.fc-rate-btn:focus-visible {
+  outline: 3px solid #818cf8 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(129, 140, 248, 0.45) !important;
+}
+
+/* Keyboard hint badges */
+.quiz-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: 4px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 3px !important;
+  }
+}

@@ -273,3 +273,39 @@ export function renderStory(storyContainer, storyText) {
       .catch(() => showToast('Could not copy. Please select manually.', 'error'));
   });
 }
+
+/**
+ * Announce dynamic message to screen readers via ARIA live region.
+ * @param {string} message - Announcement text
+ * @param {'polite'|'assertive'} [mode='polite'] - Politeness level
+ */
+export function announceA11y(message, mode = 'polite') {
+  if (typeof document === 'undefined') return;
+  const targetId = mode === 'assertive' ? 'a11yAlertAnnouncer' : 'a11yLiveAnnouncer';
+  const announcer = document.getElementById(targetId) || document.getElementById('a11yLiveAnnouncer');
+  if (!announcer) return;
+
+  announcer.textContent = '';
+  if (typeof requestAnimationFrame === 'function') {
+    requestAnimationFrame(() => {
+      announcer.textContent = message;
+    });
+  } else {
+    announcer.textContent = message;
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.announceA11y = announceA11y;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    renderResults,
+    renderLibraryGrid,
+    renderLibraryError,
+    renderLibraryLoggedOut,
+    renderStory,
+    announceA11y
+  };
+}
