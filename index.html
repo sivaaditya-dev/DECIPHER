@@ -434,6 +434,27 @@
     </div>
 
   </div><!-- /dual-pane -->
+
+  <!-- RETENTION ANALYTICS & MASTERY CARD -->
+  <div id="retentionAnalyticsCard" class="retention-card glass-panel mt-6">
+    <div class="retention-card-header">
+      <div class="retention-header-left">
+        <span class="retention-icon">📈</span>
+        <div>
+          <h3 class="retention-title">Retention Analytics & Learning Velocity</h3>
+          <p class="retention-subtitle">Ebbinghaus forgetting curve & spaced repetition mastery</p>
+        </div>
+      </div>
+      <div class="retention-metrics-pill">
+        <span id="retentionVelocityBadge" class="retention-pill-item">⚡ 0 cards/day</span>
+        <span id="retentionHealthBadge" class="retention-pill-item">❤️ 100% Health</span>
+      </div>
+    </div>
+    <div class="retention-card-grid">
+      <div id="retentionChartContainer" class="retention-chart-wrapper"></div>
+      <div id="retentionBreakdownContainer" class="retention-breakdown-wrapper"></div>
+    </div>
+  </div>
 </div><!-- /studioView -->
 
 <!-- ══════════════════════════════════════════════════════
@@ -658,6 +679,7 @@
 </script>
 <script type="module" src="main.js"></script>
 <script type="module" src="modules/drill.js"></script>
+<script type="module" src="modules/analytics.js"></script>
 
 <!-- TERMS & CONDITIONS MODAL -->
 <div id="termsModal" class="terms-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="termsTitle">

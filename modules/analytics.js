@@ -192,6 +192,132 @@ export function formatRetentionRate(rate) {
   return `${Math.round(rate * 100)}%`;
 }
 
+/**
+ * Generates and mounts responsive inline SVG retention curve chart.
+ *
+ * @param {HTMLElement|Object} container - DOM container element
+ * @param {Array} curveData - Data points from calculateRetentionCurve
+ * @param {Object} [options={}] - Custom dimensions/labels
+ * @returns {string} SVG HTML markup
+ */
+export function renderRetentionChart(container, curveData, options = {}) {
+  const data = Array.isArray(curveData) && curveData.length > 0 ? curveData : calculateRetentionCurve([]);
+  const width = options.width || 480;
+  const height = options.height || 200;
+  const pad = { top: 20, right: 25, bottom: 35, left: 45 };
+
+  const chartW = width - pad.left - pad.right;
+  const chartH = height - pad.top - pad.bottom;
+
+  const maxDay = Math.max(...data.map(d => d.day), 30);
+  const getX = day => pad.left + (Math.log(day) / Math.log(maxDay)) * chartW;
+  const getY = r => pad.top + chartH * (1 - r);
+
+  const points = data.map(d => ({ x: getX(d.day), y: getY(d.retention), day: d.day, pct: d.percentage }));
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const areaD = `${pathD} L ${points[points.length - 1].x.toFixed(1)} ${pad.top + chartH} L ${points[0].x.toFixed(1)} ${pad.top + chartH} Z`;
+
+  const thresholdY = getY(0.85).toFixed(1);
+
+  const svg = `
+    <svg class="retention-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Ebbinghaus Vocabulary Retention Curve">
+      <defs>
+        <linearGradient id="retentionGradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#6366f1" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#6366f1" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+      <!-- Grid Lines -->
+      <line class="chart-grid-line" x1="${pad.left}" y1="${getY(1)}" x2="${width - pad.right}" y2="${getY(1)}" />
+      <line class="chart-grid-line" x1="${pad.left}" y1="${getY(0.5)}" x2="${width - pad.right}" y2="${getY(0.5)}" />
+      <line class="chart-grid-line" x1="${pad.left}" y1="${getY(0)}" x2="${width - pad.right}" y2="${getY(0)}" />
+
+      <!-- Optimal Threshold (85%) -->
+      <line class="chart-threshold-line" x1="${pad.left}" y1="${thresholdY}" x2="${width - pad.right}" y2="${thresholdY}" stroke="#f59e0b" stroke-dasharray="4,4" />
+      <text class="chart-threshold-text" x="${width - pad.right}" y="${Number(thresholdY) - 5}" text-anchor="end">Optimal Review (85%)</text>
+
+      <!-- Area & Curve -->
+      <path class="chart-area-fill" d="${areaD}" fill="url(#retentionGradient)" />
+      <path class="chart-curve-path" d="${pathD}" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" />
+
+      <!-- Data Points -->
+      ${points.map(p => `
+        <circle class="chart-point" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5" tabindex="0" role="button"
+          aria-label="Day ${p.day}: ${p.pct}% retention" data-day="${p.day}" data-pct="${p.pct}">
+          <title>Day ${p.day}: ${p.pct}% Retention</title>
+        </circle>
+        <text class="chart-point-label" x="${p.x.toFixed(1)}" y="${Number(pad.top + chartH) + 18}" text-anchor="middle">D${p.day}</text>
+      `).join('')}
+
+      <!-- Y Axis Labels -->
+      <text class="chart-axis-text" x="${pad.left - 8}" y="${getY(1) + 4}" text-anchor="end">100%</text>
+      <text class="chart-axis-text" x="${pad.left - 8}" y="${getY(0.5) + 4}" text-anchor="end">50%</text>
+      <text class="chart-axis-text" x="${pad.left - 8}" y="${getY(0) + 4}" text-anchor="end">0%</text>
+    </svg>
+  `;
+
+  if (container && typeof container.innerHTML !== 'undefined') {
+    container.innerHTML = svg;
+  }
+  return svg;
+}
+
+/**
+ * Generates and mounts Retention Breakdown tier card with progress bars.
+ *
+ * @param {HTMLElement|Object} container - DOM container element
+ * @param {Array<Object>} cards - Deck cards
+ * @returns {string} HTML markup
+ */
+export function renderRetentionBreakdown(container, cards = []) {
+  const { counts, percentages } = categorizeMastery(cards);
+  const healthScore = calculateDeckRetentionScore(cards);
+
+  const markup = `
+    <div class="retention-breakdown-card">
+      <div class="breakdown-header">
+        <h4 class="breakdown-title">🧠 Memory Retention Breakdown</h4>
+        <span class="breakdown-score-badge">Deck Health: ${healthScore}%</span>
+      </div>
+      <div class="tier-list">
+        <div class="tier-item tier-mastered">
+          <div class="tier-info">
+            <span class="tier-label">🏆 Mastered (≥21d)</span>
+            <span class="tier-stat">${counts.mastered} cards (${percentages.mastered}%)</span>
+          </div>
+          <div class="tier-track"><div class="tier-fill tier-fill-mastered" style="width:${percentages.mastered}%"></div></div>
+        </div>
+        <div class="tier-item tier-reviewing">
+          <div class="tier-info">
+            <span class="tier-label">🔄 Reviewing (6–20d)</span>
+            <span class="tier-stat">${counts.reviewing} cards (${percentages.reviewing}%)</span>
+          </div>
+          <div class="tier-track"><div class="tier-fill tier-fill-reviewing" style="width:${percentages.reviewing}%"></div></div>
+        </div>
+        <div class="tier-item tier-learning">
+          <div class="tier-info">
+            <span class="tier-label">📖 Learning (1–5d)</span>
+            <span class="tier-stat">${counts.learning} cards (${percentages.learning}%)</span>
+          </div>
+          <div class="tier-track"><div class="tier-fill tier-fill-learning" style="width:${percentages.learning}%"></div></div>
+        </div>
+        <div class="tier-item tier-weak">
+          <div class="tier-info">
+            <span class="tier-label">⚠️ Needs Practice (&lt;1d)</span>
+            <span class="tier-stat">${counts.weak} cards (${percentages.weak}%)</span>
+          </div>
+          <div class="tier-track"><div class="tier-fill tier-fill-weak" style="width:${percentages.weak}%"></div></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (container && typeof container.innerHTML !== 'undefined') {
+    container.innerHTML = markup;
+  }
+  return markup;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     DEFAULT_STABILITY,
@@ -203,6 +329,8 @@ if (typeof module !== 'undefined' && module.exports) {
     calculateLearningVelocity,
     categorizeMastery,
     calculateDeckRetentionScore,
-    formatRetentionRate
+    formatRetentionRate,
+    renderRetentionChart,
+    renderRetentionBreakdown
   };
 }
