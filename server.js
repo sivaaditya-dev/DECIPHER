@@ -19,6 +19,7 @@ const { YoutubeTranscript } = require('youtube-transcript');
 const path = require('path');
 const { GoogleGenAI } = require('@google/genai');
 const admin = require('firebase-admin');
+const { withRetry, parseStructuredFallback } = require('./api/gemini-resilience');
 
 
 
@@ -252,7 +253,7 @@ app.post('/api/analyze', async (req, res) => {
       Text to analyze: "${text}"
     `;
 
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt,
         config: {
@@ -266,9 +267,9 @@ app.post('/api/analyze', async (req, res) => {
                 }
             }
         }
-    });
+    }));
 
-    res.json(JSON.parse(response.text));
+    res.json(parseStructuredFallback(response.text, 'analyze'));
   } catch (error) {
     console.error('Error during AI analysis:', error);
     res.status(500).json({ error: 'AI analysis failed. Please check the server logs for more details.' });
@@ -365,7 +366,7 @@ app.post('/api/translate', async (req, res) => {
       ${JSON.stringify(vocabList.map(v => ({ term: v.term, def: v.def, context: v.context })))}
     `;
 
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
@@ -393,9 +394,9 @@ app.post('/api/translate', async (req, res) => {
           }
         }
       }
-    });
+    }));
 
-    res.json(JSON.parse(response.text));
+    res.json(parseStructuredFallback(response.text, 'translate', { vocabList }));
   } catch (error) {
     console.error('Translation error:', error);
     res.status(500).json({ error: 'Translation failed. Please try again.' });
@@ -424,7 +425,7 @@ app.post('/api/mnemonic', async (req, res) => {
       Words to process:
       ${JSON.stringify(vocabList.map(v => ({ term: v.term, def: v.def })))}
     `;
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
@@ -441,8 +442,8 @@ app.post('/api/mnemonic', async (req, res) => {
           }
         }
       }
-    });
-    res.json(JSON.parse(response.text));
+    }));
+    res.json(parseStructuredFallback(response.text, 'mnemonic', { vocabList }));
   } catch (err) {
     console.error('Mnemonic error:', err);
     res.status(500).json({ error: 'Memory hook generation failed.' });
@@ -460,11 +461,12 @@ app.post('/api/simplify', async (req, res) => {
 
   try {
     const prompt = `${levelInstruction}\n\nPassage:\n"${text}"\n\nReturn ONLY the rewritten passage as plain text ??? no headings, no bullet points, no formatting.`;
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
-    });
-    res.json({ simplified: response.text.trim(), level });
+    }));
+    const simplified = (response.text || '').trim() || text;
+    res.json({ simplified, level });
   } catch (err) {
     console.error('Simplify error:', err);
     res.status(500).json({ error: 'Simplification failed.' });
@@ -494,7 +496,7 @@ app.post('/api/srs-questions', async (req, res) => {
       Words:
       ${JSON.stringify(vocabList.map(v => ({ term: v.term, def: v.def })))}
     `;
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
@@ -511,8 +513,8 @@ app.post('/api/srs-questions', async (req, res) => {
           }
         }
       }
-    });
-    res.json(JSON.parse(response.text));
+    }));
+    res.json(parseStructuredFallback(response.text, 'srs-questions', { vocabList }));
   } catch (err) {
     console.error('SRS error:', err);
     res.status(500).json({ error: 'SRS question generation failed.' });
@@ -524,13 +526,13 @@ app.post('/api/ocr', uploadImage.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No image uploaded.' });
   try {
     const b64 = req.file.buffer.toString('base64');
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [{ parts: [
         { text: 'Extract ALL readable text from this image exactly as it appears. Return ONLY the raw text, no commentary, no formatting.' },
         { inlineData: { mimeType: req.file.mimetype, data: b64 } }
       ]}]
-    });
+    }));
     const text = response.text.trim();
     if (!text || text.length < 10) return res.status(422).json({ error: 'Could not read text from this image. Please use a clearer photo.' });
     res.json({ text });
@@ -556,7 +558,7 @@ app.post('/api/youtube-transcript', async (req, res) => {
 });
 
 // --- DECIPHER TUTOR CHAT ---
-﻿app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', async (req, res) => {
   const { messages, passage, vocabList } = req.body;
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'No messages provided.' });
@@ -632,7 +634,7 @@ Current vocabulary list: ${contextWords}
       parts: [{ text: m.content }]
     }));
 
-    const result = await ai.models.generateContent({
+    const result = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [
         { role: 'user', parts: [{ text: systemPrompt + '\n\nUser: ' + (messages[0]?.content || '') }] },
@@ -645,10 +647,10 @@ Current vocabulary list: ${contextWords}
         temperature: 0.75,
         maxOutputTokens: 400,
       }
-    });
+    }));
 
-    const reply = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm having a moment — try again!";
-    res.json({ reply });
+    const rawReply = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || result.text;
+    res.json(parseStructuredFallback(rawReply, 'chat'));
   } catch (err) {
     console.error('[Chat Error]', err);
     res.status(500).json({ error: 'Tutor unavailable. Try again shortly.' });
@@ -666,8 +668,8 @@ app.post('/api/opposite-day', async (req, res) => {
 Original: "${text}"
 
 Return ONLY the rewritten passage as plain text.`;
-    const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
-    res.json({ opposite: response.text.trim() });
+    const response = await withRetry(() => ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt }));
+    res.json(parseStructuredFallback(response.text, 'opposite', { text }));
   } catch (err) {
     console.error('Opposite day error:', err);
     res.status(500).json({ error: 'Opposite Day generation failed.' });
@@ -690,11 +692,11 @@ app.post('/api/story', async (req, res) => {
       Do not use any markdown formatting, just return plain text.
     `;
 
-    const response = await ai.models.generateContent({
+    const response = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
-    });
-    res.json({ story: response.text });
+    }));
+    res.json(parseStructuredFallback(response.text, 'story', { words }));
   } catch (error) {
     console.error("Error generating story:", error);
     res.status(500).json({ error: "Story generation failed." });
@@ -841,13 +843,12 @@ Return a JSON object with EXACTLY these fields (no markdown, no extra text):
 }
 Choose a sophisticated but real English word. wrongChoices should be plausible but clearly wrong. sentence must contain exactly ___ (three underscores) for the blank.`;
 
-    const result = await ai.models.generateContent({
+    const result = await withRetry(() => ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
-    });
-    const raw = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    const jsonStr = raw.replace(/```json|```/g, '').trim();
-    const wordData = JSON.parse(jsonStr);
+    }));
+    const raw = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || result.text || '';
+    const wordData = parseStructuredFallback(raw, 'daily-word');
     wordData.date = today;
     wordData.generatedAt = new Date().toISOString();
     if (docRef) await docRef.set(wordData);
