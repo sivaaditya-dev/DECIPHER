@@ -228,10 +228,235 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
+
+// ============================================================
+// STRICT REQUEST BODY VALIDATION ENGINE & ROUTE SCHEMAS
+// ============================================================
+
+/**
+ * Creates an Express middleware that validates req.body against a declarative schema.
+ * Rejects unknown fields by default (strict mode), enforces required presence,
+ * verifies types, checks string lengths, array item counts, numeric bounds, and enum sets.
+ */
+function validateRequestBody(schema, options = { strict: true }) {
+  return function (req, res, next) {
+    if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: 'Request body must be a valid JSON object',
+        details: [{ field: 'body', message: 'Body must be a non-null JSON object' }]
+      });
+    }
+
+    const errors = [];
+    const body = req.body;
+
+    // 1. Strict mode: reject unknown fields
+    if (options.strict !== false) {
+      const allowedFields = new Set(Object.keys(schema));
+      for (const key of Object.keys(body)) {
+        if (!allowedFields.has(key)) {
+          errors.push({
+            field: key,
+            message: `Unknown field '${key}' is not allowed`
+          });
+        }
+      }
+    }
+
+    // 2. Validate declared fields
+    for (const [field, rules] of Object.entries(schema)) {
+      const val = body[field];
+      const isPresent = val !== undefined && val !== null;
+
+      if (rules.required && !isPresent) {
+        errors.push({
+          field,
+          message: `Field '${field}' is required`
+        });
+        continue;
+      }
+
+      if (!isPresent) continue; // Optional field omitted, skip checks
+
+      // Type checks
+      if (rules.type) {
+        if (rules.type === 'array') {
+          if (!Array.isArray(val)) {
+            errors.push({
+              field,
+              message: `Field '${field}' must be an array`
+            });
+            continue;
+          }
+        } else if (rules.type === 'object') {
+          if (typeof val !== 'object' || Array.isArray(val)) {
+            errors.push({
+              field,
+              message: `Field '${field}' must be an object`
+            });
+            continue;
+          }
+        } else if (typeof val !== rules.type) {
+          errors.push({
+            field,
+            message: `Field '${field}' must be of type ${rules.type}`
+          });
+          continue;
+        }
+      }
+
+      // String length checks
+      if (typeof val === 'string') {
+        if (rules.minLength !== undefined && val.length < rules.minLength) {
+          errors.push({
+            field,
+            message: `Field '${field}' must be at least ${rules.minLength} characters long`
+          });
+        }
+        if (rules.maxLength !== undefined && val.length > rules.maxLength) {
+          errors.push({
+            field,
+            message: `Field '${field}' must not exceed ${rules.maxLength} characters`
+          });
+        }
+      }
+
+      // Array count checks
+      if (Array.isArray(val)) {
+        if (rules.minItems !== undefined && val.length < rules.minItems) {
+          errors.push({
+            field,
+            message: `Field '${field}' must contain at least ${rules.minItems} items`
+          });
+        }
+        if (rules.maxItems !== undefined && val.length > rules.maxItems) {
+          errors.push({
+            field,
+            message: `Field '${field}' must not exceed ${rules.maxItems} items`
+          });
+        }
+      }
+
+      // Numeric range checks
+      if (typeof val === 'number') {
+        if (rules.min !== undefined && val < rules.min) {
+          errors.push({
+            field,
+            message: `Field '${field}' must be at least ${rules.min}`
+          });
+        }
+        if (rules.max !== undefined && val > rules.max) {
+          errors.push({
+            field,
+            message: `Field '${field}' must not exceed ${rules.max}`
+          });
+        }
+      }
+
+      // Enum checks
+      if (rules.enum && !rules.enum.includes(val)) {
+        errors.push({
+          field,
+          message: `Field '${field}' must be one of: ${rules.enum.join(', ')}`
+        });
+      }
+
+      // Custom validator function
+      if (typeof rules.custom === 'function') {
+        try {
+          const customResult = rules.custom(val, body);
+          if (customResult === false || typeof customResult === 'string') {
+            errors.push({
+              field,
+              message: typeof customResult === 'string' ? customResult : `Field '${field}' failed custom validation`
+            });
+          }
+        } catch (customErr) {
+          errors.push({
+            field,
+            message: `Field '${field}' custom validation error: ${customErr.message}`
+          });
+        }
+      }
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: 'Invalid request body',
+        details: errors
+      });
+    }
+
+    next();
+  };
+}
+
+const SCHEMAS = {
+  analyze: {
+    text: { type: 'string', required: true, minLength: 20, maxLength: 50000 },
+    theme: { type: 'string', required: false, maxLength: 100 }
+  },
+  translate: {
+    vocabList: { type: 'array', required: true, minItems: 1, maxItems: 100 },
+    targetLang: { type: 'string', required: true, minLength: 2, maxLength: 50 }
+  },
+  mnemonic: {
+    vocabList: { type: 'array', required: true, minItems: 1, maxItems: 100 }
+  },
+  simplify: {
+    text: { type: 'string', required: true, minLength: 20, maxLength: 50000 },
+    level: { type: 'string', required: false, enum: ['eli5', 'modern', 'standard', 'advanced'] }
+  },
+  srsQuestions: {
+    vocabList: { type: 'array', required: true, minItems: 1, maxItems: 100 }
+  },
+  youtubeTranscript: {
+    url: { type: 'string', required: true, minLength: 5, maxLength: 500 }
+  },
+  chat: {
+    messages: { type: 'array', required: true, minItems: 1, maxItems: 100 },
+    passage: { type: 'string', required: false, maxLength: 20000 },
+    vocabList: { type: 'array', required: false, maxItems: 100 }
+  },
+  oppositeDay: {
+    text: { type: 'string', required: true, minLength: 20, maxLength: 50000 },
+    vocabList: { type: 'array', required: false, maxItems: 100 }
+  },
+  story: {
+    words: { type: 'array', required: true, minItems: 1, maxItems: 100 }
+  },
+  history: {
+    snippet: { type: 'string', required: false, maxLength: 20000 },
+    words: { type: 'array', required: true, minItems: 1, maxItems: 100 }
+  },
+  profile: {
+    displayName: { type: 'string', required: false, maxLength: 100 },
+    avatarId: { type: 'string', required: false, maxLength: 50 },
+    voiceId: { type: 'string', required: false, maxLength: 50 }
+  },
+  challengeSubmit: {
+    date: { type: 'string', required: true, minLength: 8, maxLength: 20 },
+    mcqCorrect: { type: 'boolean', required: false },
+    sentenceCorrect: { type: 'boolean', required: false },
+    score: { type: 'number', required: false }
+  },
+  voiceIntent: {
+    utterance: { type: 'string', required: true, minLength: 1, maxLength: 500 },
+    lang: { type: 'string', required: false, maxLength: 20 }
+  },
+  batchSync: {
+    batchId: { type: 'string', required: true, minLength: 3, maxLength: 100 },
+    clientTimestamp: { type: 'number', required: false },
+    items: { type: 'array', required: true, minItems: 1, maxItems: 500 }
+  }
+};
+
 // --- ROUTES ---
 
 // AI Analysis (Unchanged)
-app.post('/api/analyze', async (req, res) => {
+app.post('/api/analyze', validateRequestBody(SCHEMAS.analyze), async (req, res) => {
   const { text, theme } = req.body;
   if (!text || text.length < 20) return res.status(400).json({ error: "Text too short." });
 
@@ -336,7 +561,7 @@ app.use((err, req, res, next) => {
 });
 
 // --- CONTEXTUAL TRANSLATION (with Cultural Notes & Mirror Word Detection) ---
-app.post('/api/translate', async (req, res) => {
+app.post('/api/translate', validateRequestBody(SCHEMAS.translate), async (req, res) => {
   const { vocabList, targetLang } = req.body;
   if (!vocabList || !Array.isArray(vocabList) || vocabList.length === 0) {
     return res.status(400).json({ error: 'No vocabulary list provided.' });
@@ -404,7 +629,7 @@ app.post('/api/translate', async (req, res) => {
 });
 
 // --- MEMORY HOOK / MNEMONIC GENERATOR ---
-app.post('/api/mnemonic', async (req, res) => {
+app.post('/api/mnemonic', validateRequestBody(SCHEMAS.mnemonic), async (req, res) => {
   const { vocabList } = req.body;
   if (!vocabList || !Array.isArray(vocabList) || vocabList.length === 0) {
     return res.status(400).json({ error: 'No vocabulary list provided.' });
@@ -451,7 +676,7 @@ app.post('/api/mnemonic', async (req, res) => {
 });
 
 // --- PASSAGE SIMPLIFIER (ELI5 / PLAIN ENGLISH) ---
-app.post('/api/simplify', async (req, res) => {
+app.post('/api/simplify', validateRequestBody(SCHEMAS.simplify), async (req, res) => {
   const { text, level } = req.body;
   if (!text || text.length < 20) return res.status(400).json({ error: 'Text too short.' });
 
@@ -474,7 +699,7 @@ app.post('/api/simplify', async (req, res) => {
 });
 
 // --- SRS (SPACED REPETITION) QUIZ QUESTION BATCH GENERATOR ---
-app.post('/api/srs-questions', async (req, res) => {
+app.post('/api/srs-questions', validateRequestBody(SCHEMAS.srsQuestions), async (req, res) => {
   const { vocabList } = req.body;
   if (!vocabList || !Array.isArray(vocabList) || vocabList.length === 0) {
     return res.status(400).json({ error: 'No vocabulary list provided.' });
@@ -543,7 +768,7 @@ app.post('/api/ocr', uploadImage.single('image'), async (req, res) => {
 });
 
 // --- YOUTUBE / URL TRANSCRIPT ---
-app.post('/api/youtube-transcript', async (req, res) => {
+app.post('/api/youtube-transcript', validateRequestBody(SCHEMAS.youtubeTranscript), async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'No URL provided.' });
   try {
@@ -558,7 +783,7 @@ app.post('/api/youtube-transcript', async (req, res) => {
 });
 
 // --- DECIPHER TUTOR CHAT ---
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', validateRequestBody(SCHEMAS.chat), async (req, res) => {
   const { messages, passage, vocabList } = req.body;
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'No messages provided.' });
@@ -656,7 +881,7 @@ Current vocabulary list: ${contextWords}
     res.status(500).json({ error: 'Tutor unavailable. Try again shortly.' });
   }
 });
-app.post('/api/opposite-day', async (req, res) => {
+app.post('/api/opposite-day', validateRequestBody(SCHEMAS.oppositeDay), async (req, res) => {
   const { text, vocabList } = req.body;
   if (!text || text.length < 20) return res.status(400).json({ error: 'Text too short.' });
   const terms = vocabList && vocabList.length > 0
@@ -677,7 +902,7 @@ Return ONLY the rewritten passage as plain text.`;
 });
 
 // NEW: Contextual Story Generation
-app.post('/api/story', async (req, res) => {
+app.post('/api/story', validateRequestBody(SCHEMAS.story), async (req, res) => {
   const { words } = req.body;
   if (!words || !Array.isArray(words) || words.length === 0) {
     return res.status(400).json({ error: "No words provided to generate a story." });
@@ -704,7 +929,7 @@ app.post('/api/story', async (req, res) => {
 });
 
 // UPGRADED: Save session WITH User ID
-app.post('/api/history', verifyToken, async (req, res) => {
+app.post('/api/history', verifyToken, validateRequestBody(SCHEMAS.history), async (req, res) => {
   const { snippet, words } = req.body;
   const userId = req.user.uid; // Get UID from verified token
   if (!words || words.length === 0) return res.status(400).json({ error: "No words to save." });
@@ -783,7 +1008,7 @@ app.get('/api/profile', verifyToken, async (req, res) => {
 });
 
 // POST /api/profile — save/update profile preferences (merge)
-app.post('/api/profile', verifyToken, async (req, res) => {
+app.post('/api/profile', verifyToken, validateRequestBody(SCHEMAS.profile), async (req, res) => {
   const uid = req.user.uid;
   const allowed = ['displayName', 'avatarId', 'voiceId'];
   const updates = {};
@@ -885,7 +1110,7 @@ app.get('/api/challenge/leaderboard', async (req, res) => {
 });
 
 // POST /api/challenge/submit — record a completed daily challenge attempt
-app.post('/api/challenge/submit', verifyToken, async (req, res) => {
+app.post('/api/challenge/submit', verifyToken, validateRequestBody(SCHEMAS.challengeSubmit), async (req, res) => {
   const uid = req.user.uid;
   const { mcqCorrect, sentenceCorrect, date } = req.body;
   if (!date) return res.status(400).json({ error: 'date required' });
@@ -1020,7 +1245,7 @@ app.use((req, res) => {
 
 // POST /api/voice-intent — Gemini-powered multilingual voice intent detection
 // Final fallback after local regex intent patterns return nothing.
-app.post('/api/voice-intent', async (req, res) => {
+app.post('/api/voice-intent', validateRequestBody(SCHEMAS.voiceIntent), async (req, res) => {
   const { utterance, lang } = req.body;
   if (!utterance || typeof utterance !== 'string') {
     return res.status(400).json({ error: 'utterance is required' });
@@ -1091,3 +1316,7 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+module.exports.app = app;
+module.exports.validateRequestBody = validateRequestBody;
+module.exports.SCHEMAS = SCHEMAS;
+module.exports.rateLimiter = rateLimiter;
