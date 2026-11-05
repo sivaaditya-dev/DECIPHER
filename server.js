@@ -55,18 +55,28 @@ app.use(helmet({ contentSecurityPolicy: false })); // Basic HTTP security header
 app.use(express.json({ limit: '10mb' }));
 
 // ============================================================
-// SIMPLE IN-MEMORY RATE LIMITER (no extra deps)
+// RATE LIMITER & TELEMETRY HEADERS
 // ============================================================
 const rateLimitMap = new Map();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 30; // max requests per window per IP
 
+function setRateLimitHeaders(res, remaining, resetSeconds) {
+  res.setHeader('RateLimit-Limit', RATE_LIMIT_MAX);
+  res.setHeader('RateLimit-Remaining', Math.max(0, remaining));
+  res.setHeader('RateLimit-Reset', Math.max(0, resetSeconds));
+  res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX);
+  res.setHeader('X-RateLimit-Remaining', Math.max(0, remaining));
+  res.setHeader('X-RateLimit-Reset', Math.max(0, resetSeconds));
+}
+
 function rateLimiter(req, res, next) {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
   const now = Date.now();
   
   if (!rateLimitMap.has(ip)) {
     rateLimitMap.set(ip, { count: 1, start: now });
+    setRateLimitHeaders(res, RATE_LIMIT_MAX - 1, Math.ceil(RATE_LIMIT_WINDOW / 1000));
     return next();
   }
   
@@ -75,15 +85,21 @@ function rateLimiter(req, res, next) {
     // Reset window
     entry.count = 1;
     entry.start = now;
+    setRateLimitHeaders(res, RATE_LIMIT_MAX - 1, Math.ceil(RATE_LIMIT_WINDOW / 1000));
     return next();
   }
   
   entry.count++;
+  const resetSec = Math.ceil((RATE_LIMIT_WINDOW - (now - entry.start)) / 1000);
+  const remaining = Math.max(0, RATE_LIMIT_MAX - entry.count);
+  setRateLimitHeaders(res, remaining, resetSec);
+
   if (entry.count > RATE_LIMIT_MAX) {
+    res.setHeader('Retry-After', resetSec);
     return res.status(429).json({
       error: 'Too Many Requests',
       message: 'You are sending too many requests. Please wait a moment and try again.',
-      retryAfter: Math.ceil((RATE_LIMIT_WINDOW - (now - entry.start)) / 1000)
+      retryAfter: resetSec
     });
   }
   
@@ -130,14 +146,19 @@ function sanitizeObject(obj) {
   return obj;
 }
 
-// Security headers middleware
-app.use((req, res, next) => {
+// Hardened Security Headers Middleware
+function securityHeadersMiddleware(req, res, next) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   next();
-});
+}
+
+app.use(securityHeadersMiddleware);
 app.use(express.static(__dirname));
 
 // --- CONNECT TO FIREBASE (SAFE & RESILIENT) ---
@@ -1320,3 +1341,4 @@ module.exports.app = app;
 module.exports.validateRequestBody = validateRequestBody;
 module.exports.SCHEMAS = SCHEMAS;
 module.exports.rateLimiter = rateLimiter;
+module.exports.securityHeadersMiddleware = securityHeadersMiddleware;
