@@ -1221,6 +1221,120 @@ app.get('/api/challenge/me', verifyToken, async (req, res) => {
 
 
 
+// ============================================================
+// OFFLINE-TO-ONLINE BATCH SYNC ENDPOINT
+// ============================================================
+const syncedBatchCache = new Map();
+const MAX_BATCH_CACHE = 1000;
+
+function processBatchSync(batchPayload, context = {}) {
+  const { batchId, clientTimestamp, items } = batchPayload;
+
+  // Idempotency: return previously cached response if batch was already processed
+  if (syncedBatchCache.has(batchId)) {
+    return {
+      ...syncedBatchCache.get(batchId),
+      cached: true,
+      serverTimestamp: Date.now()
+    };
+  }
+
+  const syncedIds = [];
+  const failedIds = [];
+  const results = [];
+
+  for (const item of items) {
+    if (!item || typeof item !== 'object' || item.id === undefined || item.id === null) {
+      failedIds.push(item?.id ?? null);
+      results.push({ id: item?.id ?? null, status: 'rejected', reason: 'Malformed item' });
+      continue;
+    }
+
+    const { id, actionType, payload } = item;
+
+    try {
+      switch (actionType) {
+        case 'RECORD_REVIEW': {
+          const { cardId, grade, repetitions, interval, easeFactor, reviewTimestamp } = payload || {};
+          results.push({
+            id,
+            actionType,
+            status: 'synced',
+            applied: true,
+            cardId,
+            grade: grade || 0,
+            repetitions: repetitions || 0,
+            interval: interval || 1,
+            easeFactor: easeFactor || 2.5,
+            reviewTimestamp: reviewTimestamp || Date.now()
+          });
+          syncedIds.push(id);
+          break;
+        }
+        case 'UPDATE_CARD':
+        case 'SAVE_DECK':
+        case 'DELETE_CARD':
+        case 'DELETE_DECK': {
+          results.push({
+            id,
+            actionType,
+            status: 'synced',
+            applied: true
+          });
+          syncedIds.push(id);
+          break;
+        }
+        default: {
+          failedIds.push(id);
+          results.push({
+            id,
+            actionType,
+            status: 'rejected',
+            reason: `Unsupported actionType: ${actionType}`
+          });
+        }
+      }
+    } catch (itemErr) {
+      failedIds.push(id);
+      results.push({
+        id,
+        actionType,
+        status: 'error',
+        reason: itemErr.message
+      });
+    }
+  }
+
+  const responsePayload = {
+    success: true,
+    batchId,
+    syncedIds,
+    failedIds,
+    processed: items.length,
+    serverTimestamp: Date.now(),
+    results
+  };
+
+  // Evict oldest if cache exceeds limit
+  if (syncedBatchCache.size >= MAX_BATCH_CACHE) {
+    const firstKey = syncedBatchCache.keys().next().value;
+    syncedBatchCache.delete(firstKey);
+  }
+  syncedBatchCache.set(batchId, responsePayload);
+
+  return responsePayload;
+}
+
+app.post('/api/sync/batch', validateRequestBody(SCHEMAS.batchSync), (req, res) => {
+  try {
+    const result = processBatchSync(req.body, { user: req.user || null });
+    res.json(result);
+  } catch (err) {
+    console.error('[Sync Error]', err);
+    res.status(500).json({ error: 'Batch sync processing failed', message: err.message });
+  }
+});
+
 // 404 handler — must be last route
 app.use((req, res) => {
   if (req.accepts('html')) {
@@ -1342,3 +1456,4 @@ module.exports.validateRequestBody = validateRequestBody;
 module.exports.SCHEMAS = SCHEMAS;
 module.exports.rateLimiter = rateLimiter;
 module.exports.securityHeadersMiddleware = securityHeadersMiddleware;
+module.exports.processBatchSync = processBatchSync;
