@@ -60,23 +60,45 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture</span></p>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture &amp; Core Design</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-overview">High-Level Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontend-layer">Frontend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#index-html"><code class="docutils literal notranslate"><span class="pre">index.html</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#main-js"><code class="docutils literal notranslate"><span class="pre">main.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#modules"><code class="docutils literal notranslate"><span class="pre">modules/</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; System Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-topology">System Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#core-architectural-tiers">Core Architectural Tiers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#client-presentation-tier">1. Client Presentation Tier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#modular-client-engines-modules">2. Modular Client Engines (<cite>modules/</cite>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-middleware-api-resilience">3. Server Middleware &amp; API Resilience</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#backend-layer">Backend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-js"><code class="docutils literal notranslate"><span class="pre">server.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#ai-integration">AI Integration</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#external-services">External Services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#security-model">Security Model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧠 Spaced Repetition (SRS) Engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="srs_engine.html">SuperMemo SM-2 Spaced Repetition Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#mathematical-formulation">Mathematical Formulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#interval-progression">1. Interval Progression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#ease-factor-update">2. Ease Factor Update</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#recall-grade-scale-q">Recall Grade Scale ($q$)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#review-queue-manager-architecture">Review Queue Manager Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#weak-words-drill-room-integration">Weak Words Drill Room Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">♿ Accessibility &amp; Shortcuts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="accessibility.html">Accessibility (a11y) &amp; Keyboard Navigation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#keyboard-navigation-registry">Keyboard Navigation Registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#global-navigation-chords">Global Navigation Chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#application-power-hotkeys">Application Power Hotkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#interactive-quiz-mode-shortcuts">Interactive Quiz Mode Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#d-flashcards-srs-shortcuts">3D Flashcards SRS Shortcuts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#screen-reader-live-regions">Screen Reader Live Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#high-contrast-visual-indicators">High-Contrast Visual Indicators</a></li>
 </ul>
 </li>
 </ul>
@@ -235,17 +257,15 @@
 <li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#scoring">Scoring</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="modules/voice.html"><code class="docutils literal notranslate"><span class="pre">voice.js</span></code> — Voice Assistant</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#initialization">Initialization</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#initvoiceassistant-handlers"><code class="docutils literal notranslate"><span class="pre">initVoiceAssistant(handlers)</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/voice.html">Voice Assistant — Multilingual Support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#how-it-works">How It Works</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#three-layer-intent-detection-pipeline">Three-Layer Intent Detection Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#language-picker-ui">Language Picker UI</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#supported-voice-commands">Supported Voice Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#multi-step-commands">Multi-Step Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#translation-language-extraction">Translation Language Extraction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#text-to-speech">Text-to-Speech</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#fallback-to-tutor-chat">Fallback to Tutor Chat</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#global-api">Global API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#supported-languages-highlights">Supported Languages (Highlights)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#technical-architecture">Technical Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#voice-recognition-notes">Voice Recognition Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/languages.html"><code class="docutils literal notranslate"><span class="pre">languages.js</span></code> — Translation Panel</a><ul>
@@ -391,6 +411,7 @@
 <img alt="Gemini 2.5" src="https://img.shields.io/badge/Gemini_2.5-4285F4?style=flat-square&amp;logo=google&amp;logoColor=white" />
 <img alt="Firebase" src="https://img.shields.io/badge/Firebase-FF6F00?style=flat-square&amp;logo=firebase&amp;logoColor=white" />
 <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=flat-square&amp;logo=node.js&amp;logoColor=white" />
+<img alt="Version 1.2.0" src="https://img.shields.io/badge/version-1.2.0-blue?style=flat-square" />
 <p><strong>Upload any text, PDF, image, or YouTube video. AI extracts vocabulary, translates it, and trains you until every word sticks.</strong></p>
 <p>Decipher is a full-stack AI-powered vocabulary learning web application. It combines Google Gemini 2.5 Flash, Firebase, and the Web Speech API into a cinematic, single-page experience where users can understand, remember, and quiz themselves on difficult vocabulary from any source.</p>
 <div class="toctree-wrapper compound">
@@ -409,14 +430,34 @@
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture</span></p>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture &amp; Core Design</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-overview">High-Level Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontend-layer">Frontend Layer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#backend-layer">Backend Layer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#external-services">External Services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#security-model">Security Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; System Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-topology">System Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#core-architectural-tiers">Core Architectural Tiers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">🧠 Spaced Repetition (SRS) Engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="srs_engine.html">SuperMemo SM-2 Spaced Repetition Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#mathematical-formulation">Mathematical Formulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#recall-grade-scale-q">Recall Grade Scale ($q$)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#review-queue-manager-architecture">Review Queue Manager Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#weak-words-drill-room-integration">Weak Words Drill Room Integration</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">♿ Accessibility &amp; Shortcuts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="accessibility.html">Accessibility (a11y) &amp; Keyboard Navigation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#keyboard-navigation-registry">Keyboard Navigation Registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#screen-reader-live-regions">Screen Reader Live Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#high-contrast-visual-indicators">High-Contrast Visual Indicators</a></li>
 </ul>
 </li>
 </ul>
@@ -451,7 +492,7 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/api.html"><code class="docutils literal notranslate"><span class="pre">api.js</span></code> — Backend Communication Layer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/auth.html"><code class="docutils literal notranslate"><span class="pre">auth.js</span></code> — Authentication Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/quiz.html"><code class="docutils literal notranslate"><span class="pre">quiz.js</span></code> — Quiz Engine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/voice.html"><code class="docutils literal notranslate"><span class="pre">voice.js</span></code> — Voice Assistant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/voice.html">Voice Assistant — Multilingual Support</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/languages.html"><code class="docutils literal notranslate"><span class="pre">languages.js</span></code> — Translation Panel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/profile.html"><code class="docutils literal notranslate"><span class="pre">profile.js</span></code> — User Profile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/challenge.html"><code class="docutils literal notranslate"><span class="pre">challenge.js</span></code> — Daily Word Challenge</a></li>
@@ -504,9 +545,12 @@
 <h2>Quick Links<a class="headerlink" href="#quick-links" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="getting-started.html"><span class="doc">Getting Started</span></a> — Clone, configure, and run in 5 minutes.</p></li>
-<li><p><a class="reference internal" href="api-reference.html"><span class="doc">REST API Reference</span></a> — All REST endpoints with request/response shapes.</p></li>
-<li><p><a class="reference internal" href="modules/index.html"><span class="doc">Frontend Modules</span></a> — Every client-side JavaScript module explained.</p></li>
-<li><p><a class="reference internal" href="architecture.html"><span class="doc">Architecture</span></a> — How all the pieces fit together.</p></li>
+<li><p><a class="reference internal" href="architecture.html"><span class="doc">Architecture &amp; System Design</span></a> — How all the client modules, resilience layers, and backend fit together.</p></li>
+<li><p><a class="reference internal" href="srs_engine.html"><span class="doc">SuperMemo SM-2 Spaced Repetition Engine</span></a> — SuperMemo SM-2 interval formulas, queue manager, and retention metrics.</p></li>
+<li><p><a class="reference internal" href="accessibility.html"><span class="doc">Accessibility (a11y) &amp; Keyboard Navigation Guide</span></a> — Keyboard navigation chord mappings, ARIA live announcements, and WCAG compliance.</p></li>
+<li><p><a class="reference internal" href="api-reference.html"><span class="doc">REST API Reference</span></a> — All REST endpoints with request/response schemas and rate-limit headers.</p></li>
+<li><p><a class="reference internal" href="modules/index.html"><span class="doc">Frontend Modules</span></a> — Comprehensive index of all frontend ES modules.</p></li>
+<li><p><a class="reference internal" href="changelog.html"><span class="doc">Changelog</span></a> — Release history and sprint logs.</p></li>
 </ul>
 </section>
 </section>

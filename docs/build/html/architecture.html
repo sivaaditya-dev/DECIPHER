@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Architecture &mdash; Decipher — AI Vocabulary Learning App</title>
+  <title>Architecture &amp; System Design &mdash; Decipher — AI Vocabulary Learning App</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6278791d" />
@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="REST API Reference" href="api-reference.html" />
+    <link rel="next" title="SuperMemo SM-2 Spaced Repetition Engine" href="srs_engine.html" />
     <link rel="prev" title="Getting Started" href="getting-started.html" /> 
 </head>
 
@@ -61,23 +61,45 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture</span></p>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture &amp; Core Design</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#high-level-overview">High-Level Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#frontend-layer">Frontend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#index-html"><code class="docutils literal notranslate"><span class="pre">index.html</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#main-js"><code class="docutils literal notranslate"><span class="pre">main.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#modules"><code class="docutils literal notranslate"><span class="pre">modules/</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture &amp; System Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-topology">System Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-architectural-tiers">Core Architectural Tiers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#client-presentation-tier">1. Client Presentation Tier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modular-client-engines-modules">2. Modular Client Engines (<cite>modules/</cite>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-middleware-api-resilience">3. Server Middleware &amp; API Resilience</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#backend-layer">Backend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#server-js"><code class="docutils literal notranslate"><span class="pre">server.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ai-integration">AI Integration</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#external-services">External Services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#security-model">Security Model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧠 Spaced Repetition (SRS) Engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="srs_engine.html">SuperMemo SM-2 Spaced Repetition Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#mathematical-formulation">Mathematical Formulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#interval-progression">1. Interval Progression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#ease-factor-update">2. Ease Factor Update</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#recall-grade-scale-q">Recall Grade Scale ($q$)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#review-queue-manager-architecture">Review Queue Manager Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#weak-words-drill-room-integration">Weak Words Drill Room Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">♿ Accessibility &amp; Shortcuts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="accessibility.html">Accessibility (a11y) &amp; Keyboard Navigation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#keyboard-navigation-registry">Keyboard Navigation Registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#global-navigation-chords">Global Navigation Chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#application-power-hotkeys">Application Power Hotkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#interactive-quiz-mode-shortcuts">Interactive Quiz Mode Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#d-flashcards-srs-shortcuts">3D Flashcards SRS Shortcuts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#screen-reader-live-regions">Screen Reader Live Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#high-contrast-visual-indicators">High-Contrast Visual Indicators</a></li>
 </ul>
 </li>
 </ul>
@@ -236,17 +258,15 @@
 <li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#scoring">Scoring</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="modules/voice.html"><code class="docutils literal notranslate"><span class="pre">voice.js</span></code> — Voice Assistant</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#initialization">Initialization</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#initvoiceassistant-handlers"><code class="docutils literal notranslate"><span class="pre">initVoiceAssistant(handlers)</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/voice.html">Voice Assistant — Multilingual Support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#how-it-works">How It Works</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#three-layer-intent-detection-pipeline">Three-Layer Intent Detection Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#language-picker-ui">Language Picker UI</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#supported-voice-commands">Supported Voice Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#multi-step-commands">Multi-Step Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#translation-language-extraction">Translation Language Extraction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#text-to-speech">Text-to-Speech</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#fallback-to-tutor-chat">Fallback to Tutor Chat</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#global-api">Global API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#supported-languages-highlights">Supported Languages (Highlights)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#technical-architecture">Technical Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#voice-recognition-notes">Voice Recognition Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/languages.html"><code class="docutils literal notranslate"><span class="pre">languages.js</span></code> — Translation Panel</a><ul>
@@ -377,9 +397,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Architecture</li>
+      <li class="breadcrumb-item active">Architecture &amp; System Design</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/architecture.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/architecture.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -387,167 +407,73 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="architecture">
-<h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h1>
-<p>This page explains how Decipher’s frontend, backend, and external services are wired together.</p>
-<hr class="docutils" />
-<section id="high-level-overview">
-<h2>High-Level Overview<a class="headerlink" href="#high-level-overview" title="Link to this heading"></a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────┐
-│                    Browser (Client)                  │
-│                                                      │
-│  index.html  ──►  main.js  ──►  /modules/*.js        │
-│                                                      │
-│   auth.js  quiz.js  api.js  voice.js  galaxy.js      │
-│   languages.js  profile.js  challenge.js  toast.js  │
-└─────────────────────────────┬───────────────────────┘
-                              │  HTTP / REST
-                              ▼
-┌─────────────────────────────────────────────────────┐
-│               Node.js + Express Server               │
-│                   (server.js)                        │
-│                                                      │
-│   /api/analyze      /api/translate   /api/mnemonic   │
-│   /api/simplify     /api/story       /api/ocr        │
-│   /api/chat         /api/srs-questions               │
-│   /api/youtube-transcript            /api/history    │
-│   /api/profile      /api/daily-word  /api/challenge  │
-└────────────┬─────────────────────────┬──────────────┘
-             │                         │
-             ▼                         ▼
-  ┌──────────────────┐     ┌─────────────────────────┐
-  │  Google Gemini   │     │   Firebase Admin SDK     │
-  │  2.5 Flash API   │     │                         │
-  │  (AI reasoning)  │     │  Firestore (database)   │
-  └──────────────────┘     │  Auth (token verify)    │
-                           └─────────────────────────┘
+  <section id="architecture-system-design">
+<h1>Architecture &amp; System Design<a class="headerlink" href="#architecture-system-design" title="Link to this heading"></a></h1>
+<p>This document provides a comprehensive overview of DECIPHER’s multi-tier architecture, client engines, resilience handlers, and server-side middleware.</p>
+<section id="system-topology">
+<h2>System Topology<a class="headerlink" href="#system-topology" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌────────────────────────────────────────────────────────────────────────┐
+│                       Browser Client (SPA &amp; PWA)                       │
+│                                                                        │
+│   index.html  ──►  main.js  ──►  modules/                             │
+│                                                                        │
+│   [Learning &amp; Retention]      [Studio &amp; Media]       [Persistence]     │
+│    • srs.js (SM-2 Engine)      • audio-studio.js      • storage-idb.js │
+│    • drill.js (Weak Words)     • export-suite.js      • pwa.js / sw.js │
+│    • analytics.js (Curves)     • shortcuts.js (a11y)  • sanitizer.js   │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ HTTPS / JSON REST
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                        Express Server (server.js)                      │
+│                                                                        │
+│   [Middleware &amp; Security]     [Resilience Engine]    [API Endpoints]   │
+│    • validateRequestBody       • api/gemini-          • /api/analyze    │
+│    • RateLimit-* Headers         resilience.js        • /api/quiz       │
+│    • Helmet &amp; Hardened CORS    • Exponential Backoff  • /api/sync/batch │
+└────────────────────┬──────────────────────────────────┬────────────────┘
+                     │                                  │
+                     ▼                                  ▼
+          ┌─────────────────────┐            ┌─────────────────────┐
+          │ Google Gemini API   │            │ Firebase Cloud      │
+          │ (gemini-2.5-flash)  │            │ (Firestore &amp; Auth)  │
+          └─────────────────────┘            └─────────────────────┘
 </pre></div>
 </div>
 </section>
-<hr class="docutils" />
-<section id="frontend-layer">
-<h2>Frontend Layer<a class="headerlink" href="#frontend-layer" title="Link to this heading"></a></h2>
-<section id="index-html">
-<h3><code class="docutils literal notranslate"><span class="pre">index.html</span></code><a class="headerlink" href="#index-html" title="Link to this heading"></a></h3>
-<p>The single HTML file that contains every view (Studio, Quiz, Library, About, landing). Each view is a <code class="docutils literal notranslate"><span class="pre">&lt;section&gt;</span></code> that is shown/hidden via <code class="docutils literal notranslate"><span class="pre">main.js</span></code>’s navigation system.</p>
-</section>
-<section id="main-js">
-<h3><code class="docutils literal notranslate"><span class="pre">main.js</span></code><a class="headerlink" href="#main-js" title="Link to this heading"></a></h3>
-<p>The application’s entry point and orchestrator (~1700 lines). Responsibilities:</p>
+<section id="core-architectural-tiers">
+<h2>Core Architectural Tiers<a class="headerlink" href="#core-architectural-tiers" title="Link to this heading"></a></h2>
+<section id="client-presentation-tier">
+<h3>1. Client Presentation Tier<a class="headerlink" href="#client-presentation-tier" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Bootstrapping all modules on <code class="docutils literal notranslate"><span class="pre">DOMContentLoaded</span></code>.</p></li>
-<li><p>Implementing the <code class="docutils literal notranslate"><span class="pre">decipherNav()</span></code> navigation state machine.</p></li>
-<li><p>Coordinating between modules (e.g., passing vocab list from <code class="docutils literal notranslate"><span class="pre">api.js</span></code> to <code class="docutils literal notranslate"><span class="pre">quiz.js</span></code>).</p></li>
-<li><p>Managing global UI state (active theme, active view, sidebar panels).</p></li>
+<li><p><strong>Single Page Shell (`index.html`)</strong>: Fully modular section-based layout for Studio, Quiz, Flashcards, Drill Room, Library, and Profile.</p></li>
+<li><p><strong>Master Orchestrator (`main.js`)</strong>: Coordinates state transitions, navigation dispatch (<cite>decipherNav</cite>), and view lifecycles.</p></li>
+<li><p><strong>Design System (`styles.css`)</strong>: Glassmorphism aesthetic, fluid responsive typography, and high-contrast accessible <cite>:focus-visible</cite> states.</p></li>
 </ul>
 </section>
-<section id="modules">
-<h3><code class="docutils literal notranslate"><span class="pre">modules/</span></code><a class="headerlink" href="#modules" title="Link to this heading"></a></h3>
-<p>Each file is a focused ES Module with a clear single responsibility:</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Module</p></th>
-<th class="head"><p>Responsibility</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">api.js</span></code></p></td>
-<td><p>All <code class="docutils literal notranslate"><span class="pre">fetch()</span></code> calls to the backend. Never used by modules other than through this file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">auth.js</span></code></p></td>
-<td><p>Firebase Authentication — modal UI, sign-in, sign-up, sign-out.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">quiz.js</span></code></p></td>
-<td><p>Quiz logic for Standard, Reverse, and SRS modes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">voice.js</span></code></p></td>
-<td><p>Web Speech API integration — voice command parsing and TTS.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">galaxy.js</span></code></p></td>
-<td><p>3D particle / galaxy canvas animation on the landing page.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">languages.js</span></code></p></td>
-<td><p>Translation panel UI and 51-language selector.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">profile.js</span></code></p></td>
-<td><p>User profile modal, avatar selection, display name management.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">challenge.js</span></code></p></td>
-<td><p>Daily Word Challenge UI, leaderboard rendering, streak tracking.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">spidey.js</span></code></p></td>
-<td><p>Spidey-sense animation triggered on quiz answer events.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">samples.js</span></code></p></td>
-<td><p>Bundled sample texts for 20+ domains (science, literature, law…).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">toast.js</span></code></p></td>
-<td><p>Lightweight toast notification utility.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ui.js</span></code></p></td>
-<td><p>Shared UI helpers (scroll effects, theme switching, nav toggles).</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<hr class="docutils" />
-<section id="backend-layer">
-<h2>Backend Layer<a class="headerlink" href="#backend-layer" title="Link to this heading"></a></h2>
-<section id="server-js">
-<h3><code class="docutils literal notranslate"><span class="pre">server.js</span></code><a class="headerlink" href="#server-js" title="Link to this heading"></a></h3>
-<p>A single Express.js file (~800 lines) that:</p>
+<section id="modular-client-engines-modules">
+<h3>2. Modular Client Engines (<cite>modules/</cite>)<a class="headerlink" href="#modular-client-engines-modules" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Configures middleware (CORS, JSON body parser, Multer).</p></li>
-<li><p>Initialises Firebase Admin SDK.</p></li>
-<li><p>Defines all REST API routes (see <a class="reference internal" href="api-reference.html"><span class="doc std std-doc">API Reference</span></a>).</p></li>
-<li><p>Runs on <code class="docutils literal notranslate"><span class="pre">PORT</span></code> (default 3000) and serves the static frontend files.</p></li>
+<li><p><strong>SuperMemo SM-2 Spaced Repetition (`modules/srs.js`)</strong>: Calculates intervals, ease factors, repetition counts, and due dates.</p></li>
+<li><p><strong>Weak Words Drill Room (`modules/drill.js`)</strong>: Mistake taxonomy classifier (typo, near-miss, semantic confusion) with practice card UI.</p></li>
+<li><p><strong>Retention Analytics (`modules/analytics.js`)</strong>: Computes exponential Ebbinghaus memory retention ($R = e^{-t/S}$) and rolling 7-day velocity.</p></li>
+<li><p><strong>Media &amp; Audio Studio (`modules/audio-studio.js`)</strong>: Web Audio API frequency visualizer with real-time waveform canvas and IPA syllable parser.</p></li>
+<li><p><strong>Multi-Format Export Suite (`modules/export-suite.js`)</strong>: Formats vocabulary for Anki cloze-deletion (with dark CSS), Notion, and Quizlet.</p></li>
+<li><p><strong>Unified Shortcuts &amp; Accessibility (`modules/shortcuts.js`)</strong>: Chord navigation (<cite>g+h</cite>, <cite>g+s</cite>, etc.), quiz/flashcard controls, and ARIA live announcements.</p></li>
+<li><p><strong>Offline IndexedDB Adapter (`modules/storage-idb.js`)</strong>: Structured browser storage for offline vocabulary decks with in-memory fallback.</p></li>
+<li><p><strong>Service Worker Sync (`sw.js`, `modules/pwa.js`)</strong>: Background sync queue for study progress and offline-first asset caching.</p></li>
+<li><p><strong>Security &amp; Sanitization (`modules/sanitizer.js`)</strong>: Strict DOMPurify-based whitelist for AI HTML and markdown output.</p></li>
 </ul>
 </section>
-<section id="ai-integration">
-<h3>AI Integration<a class="headerlink" href="#ai-integration" title="Link to this heading"></a></h3>
-<p>Every AI call uses the <code class="docutils literal notranslate"><span class="pre">&#64;google/genai</span></code> SDK:</p>
-<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">ai</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">GoogleGenAI</span><span class="p">({</span><span class="w"> </span><span class="nx">apiKey</span><span class="o">:</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">GEMINI_API_KEY</span><span class="w"> </span><span class="p">});</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">ai</span><span class="p">.</span><span class="nx">models</span><span class="p">.</span><span class="nx">generateContent</span><span class="p">({</span><span class="w"> </span><span class="nx">model</span><span class="o">:</span><span class="w"> </span><span class="s1">'gemini-2.5-flash'</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">});</span>
-</pre></div>
-</div>
-<p>Structured JSON responses are enforced via <code class="docutils literal notranslate"><span class="pre">responseMimeType</span></code> and <code class="docutils literal notranslate"><span class="pre">responseSchema</span></code> to guarantee predictable, parseable output.</p>
-</section>
-</section>
-<hr class="docutils" />
-<section id="external-services">
-<h2>External Services<a class="headerlink" href="#external-services" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Service</p></th>
-<th class="head"><p>Used For</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Google Gemini 2.5 Flash</strong></p></td>
-<td><p>Vocabulary extraction, translation, mnemonics, story generation, OCR, simplification, SRS questions, Tutor chat, daily word generation</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Firebase Firestore</strong></p></td>
-<td><p>Persisting user sessions (library), daily word cache, challenge leaderboard, user challenge stats, user profiles</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Firebase Authentication</strong></p></td>
-<td><p>Identity (Google OAuth + Email/Password). JWTs verified server-side on protected routes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Web Speech API</strong></p></td>
-<td><p>Voice command recognition (client-side, no API key).</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<hr class="docutils" />
-<section id="security-model">
-<h2>Security Model<a class="headerlink" href="#security-model" title="Link to this heading"></a></h2>
+<section id="server-middleware-api-resilience">
+<h3>3. Server Middleware &amp; API Resilience<a class="headerlink" href="#server-middleware-api-resilience" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>All endpoints that read/write user-specific data require a <strong>Firebase ID token</strong> in the <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Bearer</span> <span class="pre">&lt;token&gt;</span></code> header.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">verifyToken</span></code> middleware decodes and validates the JWT using <code class="docutils literal notranslate"><span class="pre">admin.auth().verifyIdToken()</span></code>.</p></li>
-<li><p>Users can only read and delete <strong>their own</strong> Firestore documents (enforced in query filters: <code class="docutils literal notranslate"><span class="pre">where('userId',</span> <span class="pre">'==',</span> <span class="pre">uid)</span></code>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">serviceAccountKey.json</span></code> and <code class="docutils literal notranslate"><span class="pre">.env</span></code> are listed in <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> and must <strong>never be committed</strong>.</p></li>
+<li><p><strong>Request Validation Middleware (`server.js`)</strong>: Declarative schema validator enforcing type and length constraints before route execution.</p></li>
+<li><p><strong>Rate-Limit Telemetry Headers</strong>: Standard RFC-compliant <cite>RateLimit-Limit</cite>, <cite>RateLimit-Remaining</cite>, and <cite>RateLimit-Reset</cite> headers.</p></li>
+<li><p><strong>Gemini API Resilience (`api/gemini-resilience.js`)</strong>: Exponential backoff retry handler with full jitter and schema fallback parser.</p></li>
+<li><p><strong>Offline-to-Online Batch Sync (`/api/sync/batch`)</strong>: Processes queued offline reviews and reconciles SRS parameters.</p></li>
 </ul>
+</section>
 </section>
 </section>
 
@@ -556,7 +482,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="getting-started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="api-reference.html" class="btn btn-neutral float-right" title="REST API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="srs_engine.html" class="btn btn-neutral float-right" title="SuperMemo SM-2 Spaced Repetition Engine" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

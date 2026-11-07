@@ -9,6 +9,8 @@
    :alt: Firebase
 .. image:: https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white
    :alt: Node.js
+.. image:: https://img.shields.io/badge/version-1.2.0-blue?style=flat-square
+   :alt: Version 1.2.0
 
 **Upload any text, PDF, image, or YouTube video. AI extracts vocabulary, translates it, and trains you until every word sticks.**
 
@@ -22,9 +24,21 @@ Decipher is a full-stack AI-powered vocabulary learning web application. It comb
 
 .. toctree::
    :maxdepth: 2
-   :caption: 🏗️ Architecture
+   :caption: 🏗️ Architecture & Core Design
 
    architecture
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 🧠 Spaced Repetition (SRS) Engine
+
+   srs_engine
+
+.. toctree::
+   :maxdepth: 2
+   :caption: ♿ Accessibility & Shortcuts
+
+   accessibility
 
 .. toctree::
    :maxdepth: 2
@@ -62,6 +76,9 @@ Quick Links
 -----------
 
 * :doc:`getting-started` — Clone, configure, and run in 5 minutes.
-* :doc:`api-reference` — All REST endpoints with request/response shapes.
-* :doc:`modules/index` — Every client-side JavaScript module explained.
-* :doc:`architecture` — How all the pieces fit together.
+* :doc:`architecture` — How all the client modules, resilience layers, and backend fit together.
+* :doc:`srs_engine` — SuperMemo SM-2 interval formulas, queue manager, and retention metrics.
+* :doc:`accessibility` — Keyboard navigation chord mappings, ARIA live announcements, and WCAG compliance.
+* :doc:`api-reference` — All REST endpoints with request/response schemas and rate-limit headers.
+* :doc:`modules/index` — Comprehensive index of all frontend ES modules.
+* :doc:`changelog` — Release history and sprint logs.
