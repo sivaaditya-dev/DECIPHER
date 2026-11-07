@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; Decipher — AI Vocabulary Learning App</title>
+  <title>DECIPHER — Changelog &mdash; Decipher — AI Vocabulary Learning App</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6278791d" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
@@ -60,23 +60,45 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture</span></p>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture &amp; Core Design</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-overview">High-Level Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontend-layer">Frontend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#index-html"><code class="docutils literal notranslate"><span class="pre">index.html</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#main-js"><code class="docutils literal notranslate"><span class="pre">main.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#modules"><code class="docutils literal notranslate"><span class="pre">modules/</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; System Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-topology">System Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#core-architectural-tiers">Core Architectural Tiers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#client-presentation-tier">1. Client Presentation Tier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#modular-client-engines-modules">2. Modular Client Engines (<cite>modules/</cite>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-middleware-api-resilience">3. Server Middleware &amp; API Resilience</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#backend-layer">Backend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-js"><code class="docutils literal notranslate"><span class="pre">server.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#ai-integration">AI Integration</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#external-services">External Services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#security-model">Security Model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧠 Spaced Repetition (SRS) Engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="srs_engine.html">SuperMemo SM-2 Spaced Repetition Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#mathematical-formulation">Mathematical Formulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#interval-progression">1. Interval Progression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#ease-factor-update">2. Ease Factor Update</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#recall-grade-scale-q">Recall Grade Scale ($q$)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#review-queue-manager-architecture">Review Queue Manager Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#weak-words-drill-room-integration">Weak Words Drill Room Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">♿ Accessibility &amp; Shortcuts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="accessibility.html">Accessibility (a11y) &amp; Keyboard Navigation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#keyboard-navigation-registry">Keyboard Navigation Registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#global-navigation-chords">Global Navigation Chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#application-power-hotkeys">Application Power Hotkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#interactive-quiz-mode-shortcuts">Interactive Quiz Mode Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#d-flashcards-srs-shortcuts">3D Flashcards SRS Shortcuts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#screen-reader-live-regions">Screen Reader Live Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#high-contrast-visual-indicators">High-Contrast Visual Indicators</a></li>
 </ul>
 </li>
 </ul>
@@ -351,11 +373,24 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📋 Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">[1.0.0] — 2026-08-23</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#initial-open-source-release">🎉 Initial Open Source Release</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DECIPHER — Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#spaced-repetition-offline-sync-resilience-security-ci-cd-sprint">[1.2.0] — 2026-11-07 — Spaced Repetition, Offline Sync, Resilience, Security &amp; CI/CD Sprint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#key-feature-highlights">🌟 Key Feature Highlights</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#supermemo-sm-2-spaced-repetition-retention-analytics-oct-28-oct-31-nov-03">1. 🧠 SuperMemo SM-2 Spaced Repetition &amp; Retention Analytics (Oct 28, Oct 31, Nov 03)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#offline-pwa-indexeddb-persistence-nov-01">2. 📶 Offline PWA &amp; IndexedDB Persistence (Nov 01)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gemini-2-5-flash-api-resilience-schema-fallback-parser-nov-04">3. ⚡ Gemini 2.5 Flash API Resilience &amp; Schema Fallback Parser (Nov 04)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server-security-request-validation-middleware-rate-limit-telemetry-oct-27-nov-05">4. 🛡️ Server Security, Request Validation Middleware &amp; Rate-Limit Telemetry (Oct 27, Nov 05)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multi-format-export-suite-oct-29">5. 📤 Multi-Format Export Suite (Oct 29)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#web-audio-studio-phonetics-engine-oct-30">6. 🎙️ Web Audio Studio &amp; Phonetics Engine (Oct 30)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keyboard-shortcuts-accessibility-suite-nov-02">7. ♿ Keyboard Shortcuts &amp; Accessibility Suite (Nov 02)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ci-cd-automation-sphinx-documentation-quality-assurance-nov-06-nov-07">8. 🤖 CI/CD Automation, Sphinx Documentation &amp; Quality Assurance (Nov 06, Nov 07)</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#complete-30-commit-sprint-index">📋 Complete 30-Commit Sprint Index</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#studio-intelligence-upgrade">[1.1.0] — 2026-10-26 — Studio &amp; Intelligence Upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#initial-release">[1.0.0] — 2026-08-23 — Initial Release</a></li>
 </ul>
 </li>
 </ul>
@@ -374,7 +409,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Changelog</li>
+      <li class="breadcrumb-item active">DECIPHER — Changelog</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/changelog.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -384,64 +419,320 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
-<p>All notable changes to Decipher are documented here.</p>
+  <section id="decipher-changelog">
+<h1>DECIPHER — Changelog<a class="headerlink" href="#decipher-changelog" title="Link to this heading"></a></h1>
+<p>All notable changes to the DECIPHER platform are documented in this file.<br />
+Format adheres to <a class="reference external" href="https://keepachangelog.com">Keep a Changelog</a> and adheres to <a class="reference external" href="https://www.conventionalcommits.org">Conventional Commits</a>.</p>
 <hr class="docutils" />
-<section id="id1">
-<h2>[1.0.0] — 2026-08-23<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<section id="initial-open-source-release">
-<h3>🎉 Initial Open Source Release<a class="headerlink" href="#initial-open-source-release" title="Link to this heading"></a></h3>
-<p><strong>Core Features</strong></p>
+<section id="spaced-repetition-offline-sync-resilience-security-ci-cd-sprint">
+<h2>[1.2.0] — 2026-11-07 — Spaced Repetition, Offline Sync, Resilience, Security &amp; CI/CD Sprint<a class="headerlink" href="#spaced-repetition-offline-sync-resilience-security-ci-cd-sprint" title="Link to this heading"></a></h2>
+<p>The November 2026 production sprint executed a 12-day development cycle across 30 production commits, upgrading DECIPHER to an enterprise-grade AI vocabulary learning platform.</p>
+<section id="key-feature-highlights">
+<h3>🌟 Key Feature Highlights<a class="headerlink" href="#key-feature-highlights" title="Link to this heading"></a></h3>
+<section id="supermemo-sm-2-spaced-repetition-retention-analytics-oct-28-oct-31-nov-03">
+<h4>1. 🧠 SuperMemo SM-2 Spaced Repetition &amp; Retention Analytics (Oct 28, Oct 31, Nov 03)<a class="headerlink" href="#supermemo-sm-2-spaced-repetition-retention-analytics-oct-28-oct-31-nov-03" title="Link to this heading"></a></h4>
 <ul class="simple">
-<li><p>AI vocabulary extraction from free text (Gemini 2.5 Flash, up to 25 words).</p></li>
-<li><p>PDF / DOCX document upload with text extraction.</p></li>
-<li><p>Image OCR via Gemini Vision.</p></li>
-<li><p>YouTube video transcript extraction.</p></li>
-<li><p>Contextual translation into 51 languages with cultural notes and mirror word detection.</p></li>
-<li><p>Memory hook (mnemonic) generation.</p></li>
-<li><p>Vocabulary story generation.</p></li>
-<li><p>Passage simplifier — Plain English and ELI5 modes.</p></li>
-<li><p>Opposite Day — antonym passage rewrite.</p></li>
-<li><p>Three quiz modes: Standard, Reverse, SRS (fill-in-the-blank).</p></li>
-</ul>
-<p><strong>AI Tutor</strong></p>
-<ul class="simple">
-<li><p>Socratic Tutor chat panel with conversation history.</p></li>
-<li><p>Action tags for in-chat navigation (<code class="docutils literal notranslate"><span class="pre">[ACTION:navQuiz]</span></code>, etc.).</p></li>
-<li><p>Multi-language intent recognition.</p></li>
-</ul>
-<p><strong>Voice Assistant</strong></p>
-<ul class="simple">
-<li><p>Web Speech API integration (no API key required).</p></li>
-<li><p>Multi-step chained commands.</p></li>
-<li><p>Language extraction for translate commands.</p></li>
-<li><p>TTS confirmation feedback.</p></li>
-</ul>
-<p><strong>Authentication &amp; Cloud</strong></p>
-<ul class="simple">
-<li><p>Firebase Auth — Google OAuth and Email/Password.</p></li>
-<li><p>Firestore Cloud Library — save and resume sessions.</p></li>
-<li><p>User profile (display name, avatar, voice preference).</p></li>
-<li><p>Password reset via email.</p></li>
-</ul>
-<p><strong>Daily Word Challenge</strong></p>
-<ul class="simple">
-<li><p>Daily AI-generated vocabulary challenge (shared globally).</p></li>
-<li><p>MCQ + fill-in-the-blank questions.</p></li>
-<li><p>Streak tracking, rank system with 6-month decay.</p></li>
-<li><p>Global and weekly leaderboards.</p></li>
-</ul>
-<p><strong>Design</strong></p>
-<ul class="simple">
-<li><p>Three premium themes: Cyber Dark, Sakura Light, Matte Red.</p></li>
-<li><p>Glassmorphism UI cards.</p></li>
-<li><p>Interactive galaxy particle animation.</p></li>
-<li><p>Spidey-sense quiz feedback animation.</p></li>
-<li><p>Full-screen video hero background.</p></li>
-<li><p>Responsive layout (mobile + desktop).</p></li>
+<li><p>Implemented SuperMemo SM-2 interval and ease-factor calculation engine with minimum $EF \ge 1.3$ bound (<code class="docutils literal notranslate"><span class="pre">modules/srs.js</span></code>).</p></li>
+<li><p>Local review queue manager with due date tracking, overdue sorting, and mature card classification.</p></li>
+<li><p>Weak Words drill room with automatic mistake taxonomy classification (<code class="docutils literal notranslate"><span class="pre">spelling_typo</span></code>, <code class="docutils literal notranslate"><span class="pre">near_miss</span></code>, <code class="docutils literal notranslate"><span class="pre">confused_definition</span></code>) and graduation threshold.</p></li>
+<li><p>Ebbinghaus retention curve generator ($R = e^{-t/S}$) and rolling 7-day learning velocity calculations (<code class="docutils literal notranslate"><span class="pre">modules/analytics.js</span></code>).</p></li>
+<li><p>Interactive pure-SVG retention curve chart and mastery breakdown cards in Studio view.</p></li>
 </ul>
 </section>
+<section id="offline-pwa-indexeddb-persistence-nov-01">
+<h4>2. 📶 Offline PWA &amp; IndexedDB Persistence (Nov 01)<a class="headerlink" href="#offline-pwa-indexeddb-persistence-nov-01" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">IndexedDBStorageAdapter</span></code> (<code class="docutils literal notranslate"><span class="pre">modules/storage-idb.js</span></code>) supporting persistent local vocabulary decks with automatic in-memory fallback for non-browser runtimes.</p></li>
+<li><p>Service worker background sync queue (<code class="docutils literal notranslate"><span class="pre">sw.js</span></code>, <code class="docutils literal notranslate"><span class="pre">modules/pwa.js</span></code>) enabling offline review queuing and automatic online synchronization.</p></li>
+</ul>
+</section>
+<section id="gemini-2-5-flash-api-resilience-schema-fallback-parser-nov-04">
+<h4>3. ⚡ Gemini 2.5 Flash API Resilience &amp; Schema Fallback Parser (Nov 04)<a class="headerlink" href="#gemini-2-5-flash-api-resilience-schema-fallback-parser-nov-04" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Exponential backoff retry handler with full randomized jitter (<code class="docutils literal notranslate"><span class="pre">api/gemini-resilience.js</span></code>), recovering gracefully from HTTP 429 and 503 transient errors.</p></li>
+<li><p>Schema fallback parser stripping markdown code fences, repairing trailing commas, and applying resilient vocabulary schema defaults.</p></li>
+</ul>
+</section>
+<section id="server-security-request-validation-middleware-rate-limit-telemetry-oct-27-nov-05">
+<h4>4. 🛡️ Server Security, Request Validation Middleware &amp; Rate-Limit Telemetry (Oct 27, Nov 05)<a class="headerlink" href="#server-security-request-validation-middleware-rate-limit-telemetry-oct-27-nov-05" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>DOMPurify-based XSS sanitizer for AI output rendering (<code class="docutils literal notranslate"><span class="pre">modules/sanitizer.js</span></code>).</p></li>
+<li><p>Centralized request body validation middleware (<code class="docutils literal notranslate"><span class="pre">server.js</span></code>) enforcing strict type and length schemas across all API endpoints.</p></li>
+<li><p>RFC-compliant rate-limiting telemetry headers (<code class="docutils literal notranslate"><span class="pre">RateLimit-Limit</span></code>, <code class="docutils literal notranslate"><span class="pre">RateLimit-Remaining</span></code>, <code class="docutils literal notranslate"><span class="pre">RateLimit-Reset</span></code>) and hardened HTTP security headers.</p></li>
+</ul>
+</section>
+<section id="multi-format-export-suite-oct-29">
+<h4>5. 📤 Multi-Format Export Suite (Oct 29)<a class="headerlink" href="#multi-format-export-suite-oct-29" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Anki cloze-deletion formatter (<code class="docutils literal notranslate"><span class="pre">{{c1::word::hint}}</span></code>) with custom dark CSS card templates (<code class="docutils literal notranslate"><span class="pre">modules/export-suite.js</span></code>).</p></li>
+<li><p>Notion and Quizlet-compatible Markdown table and TSV generators.</p></li>
+</ul>
+</section>
+<section id="web-audio-studio-phonetics-engine-oct-30">
+<h4>6. 🎙️ Web Audio Studio &amp; Phonetics Engine (Oct 30)<a class="headerlink" href="#web-audio-studio-phonetics-engine-oct-30" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Real-time Web Audio API frequency visualizer canvas with HiDPI display scaling (<code class="docutils literal notranslate"><span class="pre">modules/audio-studio.js</span></code>).</p></li>
+<li><p>Phonetic IPA syllable breakdown and primary/secondary stress indicators.</p></li>
+</ul>
+</section>
+<section id="keyboard-shortcuts-accessibility-suite-nov-02">
+<h4>7. ♿ Keyboard Shortcuts &amp; Accessibility Suite (Nov 02)<a class="headerlink" href="#keyboard-shortcuts-accessibility-suite-nov-02" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Comprehensive chord navigation (<code class="docutils literal notranslate"><span class="pre">g+h</span></code>, <code class="docutils literal notranslate"><span class="pre">g+s</span></code>, <code class="docutils literal notranslate"><span class="pre">g+l</span></code>, <code class="docutils literal notranslate"><span class="pre">g+p</span></code>, <code class="docutils literal notranslate"><span class="pre">g+c</span></code>) and hotkey mapping (<code class="docutils literal notranslate"><span class="pre">?</span></code>, <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+F</span></code>, etc.) via <code class="docutils literal notranslate"><span class="pre">modules/shortcuts.js</span></code>.</p></li>
+<li><p>Full keyboard operability for Quiz (<code class="docutils literal notranslate"><span class="pre">1-4</span></code>, <code class="docutils literal notranslate"><span class="pre">Enter</span></code>) and 3D Flashcards (<code class="docutils literal notranslate"><span class="pre">Space</span></code>, <code class="docutils literal notranslate"><span class="pre">1-4</span></code>, arrow keys).</p></li>
+<li><p>WCAG 2.1 AA ARIA live region announcer (<code class="docutils literal notranslate"><span class="pre">#a11yLiveAnnouncer</span></code>) and luminous <code class="docutils literal notranslate"><span class="pre">:focus-visible</span></code> focus rings.</p></li>
+</ul>
+</section>
+<section id="ci-cd-automation-sphinx-documentation-quality-assurance-nov-06-nov-07">
+<h4>8. 🤖 CI/CD Automation, Sphinx Documentation &amp; Quality Assurance (Nov 06, Nov 07)<a class="headerlink" href="#ci-cd-automation-sphinx-documentation-quality-assurance-nov-06-nov-07" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Multi-version Node.js matrix test workflow on GitHub Actions (<code class="docutils literal notranslate"><span class="pre">.github/workflows/ci.yml</span></code>).</p></li>
+<li><p>Automated security audit step (<code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">audit</span> <span class="pre">--audit-level=high</span></code>).</p></li>
+<li><p>Comprehensive Sphinx 9.1 documentation suite (<code class="docutils literal notranslate"><span class="pre">docs/source/</span></code>) featuring architecture, SM-2 engine, and accessibility guides.</p></li>
+<li><p>Extensive unit and integration test expansion achieving 220+ passing tests with zero regressions.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="complete-30-commit-sprint-index">
+<h3>📋 Complete 30-Commit Sprint Index<a class="headerlink" href="#complete-30-commit-sprint-index" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>Timestamp (+0530)</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Scope</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Affected Files</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>2026-10-27T11:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">chore</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">git</span></code></p></td>
+<td><p>ignore playwright test artifacts and clean tracked test cache</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>, <code class="docutils literal notranslate"><span class="pre">test-results/</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>2026-10-27T16:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">security</span></code></p></td>
+<td><p>implement DOMPurify-based HTML and markdown sanitizer for AI outputs</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/sanitizer.js</span></code>, <code class="docutils literal notranslate"><span class="pre">main.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>2026-10-28T10:15:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">srs</span></code></p></td>
+<td><p>implement SuperMemo SM-2 interval and ease-factor calculation engine</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/srs.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>2026-10-28T14:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">srs</span></code></p></td>
+<td><p>add local review queue manager with due date tracking</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/srs.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>2026-10-28T18:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">srs</span></code></p></td>
+<td><p>add comprehensive unit test suite for SM-2 interval transitions</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/srs.test.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>2026-10-29T11:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export</span></code></p></td>
+<td><p>add Anki cloze-deletion and custom CSS deck export formatting</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/export-suite.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>2026-10-29T16:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export</span></code></p></td>
+<td><p>add Notion and Quizlet-compatible Markdown table generator</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/export-suite.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>2026-10-30T10:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">audio</span></code></p></td>
+<td><p>add real-time Web Audio API frequency visualizer canvas</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/audio-studio.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>2026-10-30T14:15:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">audio</span></code></p></td>
+<td><p>add phonetic IPA syllable breakdown and stress indicator</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/audio-studio.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>2026-10-30T17:45:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">audio</span></code></p></td>
+<td><p>add audio studio browser compatibility and fallback tests</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/audio.test.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>2026-11-01T11:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">drill</span></code></p></td>
+<td><p>add dedicated Weak Words review queue with failure analytics</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/drill.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>2026-10-31T16:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ui</span></code></p></td>
+<td><p>add Drill Room interactive practice card component in Studio view</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/drill.js</span></code>, <code class="docutils literal notranslate"><span class="pre">index.html</span></code>, <code class="docutils literal notranslate"><span class="pre">styles.css</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>2026-11-01T10:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pwa</span></code></p></td>
+<td><p>implement IndexedDB storage adapter for offline vocabulary decks</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/storage-idb.js</span></code>, <code class="docutils literal notranslate"><span class="pre">modules/pwa.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>14</p></td>
+<td><p>2026-11-01T14:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pwa</span></code></p></td>
+<td><p>add service worker background sync queue for offline study progress</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sw.js</span></code>, <code class="docutils literal notranslate"><span class="pre">modules/pwa.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>15</p></td>
+<td><p>2026-11-01T18:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pwa</span></code></p></td>
+<td><p>add unit tests for IndexedDB CRUD operations and offline fallbacks</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/pwa-idb.test.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>2026-11-02T11:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">a11y</span></code></p></td>
+<td><p>add full keyboard shortcut mapping for Quiz and Flashcards</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/shortcuts.js</span></code>, <code class="docutils literal notranslate"><span class="pre">modules/quiz.js</span></code>, <code class="docutils literal notranslate"><span class="pre">modules/flashcards.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>17</p></td>
+<td><p>2026-11-02T16:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">a11y</span></code></p></td>
+<td><p>add ARIA live regions and high-contrast focus rings for screen readers</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">index.html</span></code>, <code class="docutils literal notranslate"><span class="pre">styles.css</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>18</p></td>
+<td><p>2026-11-03T10:15:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">analytics</span></code></p></td>
+<td><p>add retention rate curve and daily learning velocity calculations</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/analytics.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>19</p></td>
+<td><p>2026-11-03T14:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ui</span></code></p></td>
+<td><p>add interactive visual progress charts and retention breakdown card</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modules/analytics.js</span></code>, <code class="docutils literal notranslate"><span class="pre">styles.css</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>2026-11-03T18:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">analytics</span></code></p></td>
+<td><p>add unit tests for learning velocity and retention calculations</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/analytics.test.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>21</p></td>
+<td><p>2026-11-04T10:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">api</span></code></p></td>
+<td><p>add exponential backoff retry handler with jitter for Gemini API calls</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">api/gemini-resilience.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>22</p></td>
+<td><p>2026-11-04T14:45:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">api</span></code></p></td>
+<td><p>add structured schema fallback parser for non-standard Gemini responses</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">api/gemini-resilience.js</span></code>, <code class="docutils literal notranslate"><span class="pre">server.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>23</p></td>
+<td><p>2026-11-04T18:15:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">api</span></code></p></td>
+<td><p>add mock unit tests for Gemini API retry mechanism and payload parsing</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/gemini-resilience.test.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>24</p></td>
+<td><p>2026-11-05T11:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">security</span></code></p></td>
+<td><p>implement strict request body validation middleware for all API routes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">server.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>25</p></td>
+<td><p>2026-11-05T16:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">feat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">security</span></code></p></td>
+<td><p>add security headers and rate-limit telemetry headers</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">server.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>26</p></td>
+<td><p>2026-11-06T11:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unit</span></code></p></td>
+<td><p>add comprehensive unit tests for request validation middleware</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/validation.test.js</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>27</p></td>
+<td><p>2026-11-06T16:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">integration</span></code></p></td>
+<td><p>add end-to-end integration tests for offline-to-online sync flow</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/offline-sync.test.js</span></code>, <code class="docutils literal notranslate"><span class="pre">server.js</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>28</p></td>
+<td><p>2026-11-07T10:15:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ci</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ci</span></code></p></td>
+<td><p>add GitHub Actions workflow for automated test, lint, and security audit (.github/workflows/ci.yml)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.github/workflows/ci.yml</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>29</p></td>
+<td><p>2026-11-07T14:00:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">docs</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">docs</span></code></p></td>
+<td><p>update Sphinx documentation with architecture, SM-2 engine, and a11y guides</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">docs/source/</span></code>, <code class="docutils literal notranslate"><span class="pre">docs/build/html/</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>30</p></td>
+<td><p>2026-11-07T17:30:00+05:30</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">chore</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">release</span></code></p></td>
+<td><p>bump version to v1.2.0 and update CHANGELOG with Nov feature sprint</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">package.json</span></code>, <code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code>, <code class="docutils literal notranslate"><span class="pre">docs/source/conf.py</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<hr class="docutils" />
+<section id="studio-intelligence-upgrade">
+<h2>[1.1.0] — 2026-10-26 — Studio &amp; Intelligence Upgrade<a class="headerlink" href="#studio-intelligence-upgrade" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Added Command Palette (<code class="docutils literal notranslate"><span class="pre">modules/palette.js</span></code>), Audio Pronunciation Studio (<code class="docutils literal notranslate"><span class="pre">modules/audio-studio.js</span></code>), 3D Flashcards SRS (<code class="docutils literal notranslate"><span class="pre">modules/flashcards.js</span></code>), RSVP Speed Reader (<code class="docutils literal notranslate"><span class="pre">modules/speed-reader.js</span></code>), Zen Focus Room (<code class="docutils literal notranslate"><span class="pre">modules/zen-focus.js</span></code>), Trophy gamification (<code class="docutils literal notranslate"><span class="pre">modules/trophies.js</span></code>), and CEFR Vocabulary Filter (<code class="docutils literal notranslate"><span class="pre">modules/vocab-indexer.js</span></code>).</p></li>
+</ul>
+</section>
+<section id="initial-release">
+<h2>[1.0.0] — 2026-08-23 — Initial Release<a class="headerlink" href="#initial-release" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Core AI vocabulary learning application with Gemini 2.5 Flash, Firebase authentication, and Web Speech API.</p></li>
+</ul>
 </section>
 </section>
 

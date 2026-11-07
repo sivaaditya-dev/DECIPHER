@@ -14,14 +14,14 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Frontend Modules" href="modules/index.html" />
-    <link rel="prev" title="Architecture" href="architecture.html" /> 
+    <link rel="prev" title="Accessibility (a11y) &amp; Keyboard Navigation Guide" href="accessibility.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -61,23 +61,45 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture</span></p>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture &amp; Core Design</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-overview">High-Level Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontend-layer">Frontend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#index-html"><code class="docutils literal notranslate"><span class="pre">index.html</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#main-js"><code class="docutils literal notranslate"><span class="pre">main.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#modules"><code class="docutils literal notranslate"><span class="pre">modules/</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; System Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-topology">System Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#core-architectural-tiers">Core Architectural Tiers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#client-presentation-tier">1. Client Presentation Tier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#modular-client-engines-modules">2. Modular Client Engines (<cite>modules/</cite>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-middleware-api-resilience">3. Server Middleware &amp; API Resilience</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#backend-layer">Backend Layer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-js"><code class="docutils literal notranslate"><span class="pre">server.js</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="architecture.html#ai-integration">AI Integration</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#external-services">External Services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#security-model">Security Model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧠 Spaced Repetition (SRS) Engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="srs_engine.html">SuperMemo SM-2 Spaced Repetition Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#mathematical-formulation">Mathematical Formulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#interval-progression">1. Interval Progression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#ease-factor-update">2. Ease Factor Update</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#recall-grade-scale-q">Recall Grade Scale ($q$)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#review-queue-manager-architecture">Review Queue Manager Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#weak-words-drill-room-integration">Weak Words Drill Room Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">♿ Accessibility &amp; Shortcuts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="accessibility.html">Accessibility (a11y) &amp; Keyboard Navigation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#keyboard-navigation-registry">Keyboard Navigation Registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#global-navigation-chords">Global Navigation Chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#application-power-hotkeys">Application Power Hotkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#interactive-quiz-mode-shortcuts">Interactive Quiz Mode Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#d-flashcards-srs-shortcuts">3D Flashcards SRS Shortcuts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#screen-reader-live-regions">Screen Reader Live Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#high-contrast-visual-indicators">High-Contrast Visual Indicators</a></li>
 </ul>
 </li>
 </ul>
@@ -352,11 +374,24 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">📋 Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#id1">[1.0.0] — 2026-08-23</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#initial-open-source-release">🎉 Initial Open Source Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">DECIPHER — Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#spaced-repetition-offline-sync-resilience-security-ci-cd-sprint">[1.2.0] — 2026-11-07 — Spaced Repetition, Offline Sync, Resilience, Security &amp; CI/CD Sprint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#key-feature-highlights">🌟 Key Feature Highlights</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#supermemo-sm-2-spaced-repetition-retention-analytics-oct-28-oct-31-nov-03">1. 🧠 SuperMemo SM-2 Spaced Repetition &amp; Retention Analytics (Oct 28, Oct 31, Nov 03)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#offline-pwa-indexeddb-persistence-nov-01">2. 📶 Offline PWA &amp; IndexedDB Persistence (Nov 01)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#gemini-2-5-flash-api-resilience-schema-fallback-parser-nov-04">3. ⚡ Gemini 2.5 Flash API Resilience &amp; Schema Fallback Parser (Nov 04)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#server-security-request-validation-middleware-rate-limit-telemetry-oct-27-nov-05">4. 🛡️ Server Security, Request Validation Middleware &amp; Rate-Limit Telemetry (Oct 27, Nov 05)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#multi-format-export-suite-oct-29">5. 📤 Multi-Format Export Suite (Oct 29)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#web-audio-studio-phonetics-engine-oct-30">6. 🎙️ Web Audio Studio &amp; Phonetics Engine (Oct 30)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#keyboard-shortcuts-accessibility-suite-nov-02">7. ♿ Keyboard Shortcuts &amp; Accessibility Suite (Nov 02)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#ci-cd-automation-sphinx-documentation-quality-assurance-nov-06-nov-07">8. 🤖 CI/CD Automation, Sphinx Documentation &amp; Quality Assurance (Nov 06, Nov 07)</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#complete-30-commit-sprint-index">📋 Complete 30-Commit Sprint Index</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#studio-intelligence-upgrade">[1.1.0] — 2026-10-26 — Studio &amp; Intelligence Upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#initial-release">[1.0.0] — 2026-08-23 — Initial Release</a></li>
 </ul>
 </li>
 </ul>
@@ -768,7 +803,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="accessibility.html" class="btn btn-neutral float-left" title="Accessibility (a11y) &amp; Keyboard Navigation Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="modules/index.html" class="btn btn-neutral float-right" title="Frontend Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

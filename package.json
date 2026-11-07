@@ -1,8 +1,13 @@
 {
+  "name": "decipher",
+  "version": "1.2.0",
+  "description": "AI-Powered Vocabulary Learning Web Application",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "jest --testPathPattern=tests/api",
+    "test": "jest",
+    "test:unit": "jest --testPathIgnorePatterns=\"api\\.test\\.js|e2e\\.spec\\.js\"",
     "test:e2e": "playwright test tests/e2e.spec.js"
   },
   "dependencies": {
