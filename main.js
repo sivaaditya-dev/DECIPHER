@@ -61,7 +61,7 @@ import {
 import { LANGUAGES } from './modules/languages.js';
 import { SAMPLE_TEXTS } from './modules/samples.js';
 import { initVoiceAssistant } from './modules/voice.js';
-import { initChallenge, setTokenProvider, calculateRank } from './modules/challenge.js';
+import { initColiseum } from './modules/arena/coliseum-ui.js';
 import { initProfile } from './modules/profile.js';
 import { initCommandPalette, openCommandPalette } from './modules/palette.js';
 import { initAudioStudio, openAudioStudio } from './modules/audio-studio.js';
@@ -248,7 +248,7 @@ let currentLangName   = '';
 // ============================================================
 // VIEW ROUTER (Top-level & resilient: ensures buttons ALWAYS work)
 // ============================================================
-const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'challengeView', 'profileView', 'libraryView'];
+const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'coliseumView', 'profileView', 'libraryView'];
 
 export function switchAppView(viewId) {
   // 1. Hide every view
@@ -318,8 +318,8 @@ export function switchAppView(viewId) {
   }
 
   // 8. Init challenge view whenever user navigates to it
-  if (viewId === 'challengeView') {
-    initChallenge(getCurrentUser());
+  if (viewId === 'coliseumView') {
+    initColiseum(getCurrentUser());
   }
 
   // 9. Init profile view whenever user navigates to it
@@ -1462,7 +1462,7 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
   //  since we unified to a single set of .theme-btn-sm buttons)
 
   // ── VIEW ROUTER ───────────────────────────────────────────────
-  const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'challengeView', 'profileView', 'libraryView'];
+  const VIEWS = ['landing', 'aboutView', 'studioView', 'dojoView', 'coliseumView', 'profileView', 'libraryView'];
 
   function switchAppView(viewId) {
     // 1. Hide every view
@@ -1532,9 +1532,9 @@ document.getElementById('quizModal').addEventListener('click', e => { if (e.targ
     }
 
     // 8. Init challenge view whenever user navigates to it
-    if (viewId === 'challengeView') {
-      initChallenge(getCurrentUser());
-    }
+    if (viewId === 'coliseumView') {
+    initColiseum(getCurrentUser());
+  }
 
     // 9. Init profile view whenever user navigates to it
     if (viewId === 'profileView') {
