@@ -36,6 +36,12 @@ Decipher is a full-stack AI-powered vocabulary learning web application. It comb
 
 .. toctree::
    :maxdepth: 2
+   :caption: ⚔️ Lexicon Coliseum & Iron Chain
+
+   coliseum
+
+.. toctree::
+   :maxdepth: 2
    :caption: ♿ Accessibility & Shortcuts
 
    accessibility
