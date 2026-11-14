@@ -5,6 +5,39 @@ Format adheres to [Keep a Changelog](https://keepachangelog.com) and adheres to 
 
 ---
 
+## [1.3.0-alpha.1] — 2026-11-14 — Lexicon Coliseum: Week 1 Arena Engine & The Iron Chain
+
+Week 1 of the December production sprint introduces **The Lexicon Coliseum**, replacing the static Daily Challenge with an active, real-time 1v1 linguistic tug-of-war battle arena:
+
+### 🌟 Key Feature Highlights
+
+#### 1. ⚔️ The Iron Chain 1v1 Engine (Nov 10)
+- 60fps `requestAnimationFrame` physics loop managing chain tension, tug force, and sudden-death timers (`modules/arena/iron-chain.js`).
+- Dynamic momentum decay gently recentering the tension line over time to prevent stalling.
+- Rapid 3-word combo system with screen-shake effects and tension bonus multipliers.
+
+#### 2. 📊 CEFR Lexical Weight Scoring Engine (Nov 09)
+- Comprehensive CEFR vocabulary bank containing 360 curated entries across A1–C2 tiers (`modules/arena/cefr-bank.js`).
+- Lexical weight evaluation assigning 10kg (A1) to 500kg (C2) pull forces with negative penalties for filler words (`modules/arena/lexical-weight.js`).
+- Spaced Repetition (SM-2) bonus multiplier (1.5×) for words actively due in the user's review deck.
+
+#### 3. 🤖 AI Bot Archetypes with Human-Like Timing (Nov 11)
+- Simulated opponent controller with three distinct bot archetypes: Rookie (A1/A2), Scholar (B1/B2), and Grand Inquisitor (C1/C2) (`modules/arena/bot-controller.js`).
+- Human-like typing jitter, miss-rate variance, and fatigue curves.
+
+#### 4. 🎨 Cyberpunk Dark-Mode Arena HUD & Trophy Modal (Nov 12, Nov 14)
+- Canvas-based SVG tension rope visualizer with real-time spark particle physics and glow anchors (`modules/arena/coliseum-ui.js`).
+- Arsenal word panel with real-time deployment status glow indicators.
+- Victory and defeat modals featuring contextual commentary from the Savage Arbiter (`modules/arena/trophy-modal.js`).
+
+#### 5. 🔊 Procedural Web Audio SFX Engine (Nov 13)
+- Pure Web Audio API synthesized sound effects: chain clanks, combo chimes, critical hit pings, and heartbeat tension (`modules/arena/audio-sfx.js`).
+
+#### 6. 🧪 Comprehensive Test Suite (Nov 14)
+- 82 automated unit tests across LexicalWeight, Iron Chain physics, and Bot Controller (`tests/arena-*.test.js`), bringing total passing test suite count to 288 tests.
+
+---
+
 ## [1.2.0] — 2026-11-07 — Spaced Repetition, Offline Sync, Resilience, Security & CI/CD Sprint
 
 The November 2026 production sprint executed a 12-day development cycle across 30 production commits, upgrading DECIPHER to an enterprise-grade AI vocabulary learning platform.
