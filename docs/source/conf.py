@@ -7,8 +7,8 @@
 project = 'Decipher'
 copyright = '2026, Siva Aditya'
 author = 'Siva Aditya'
-release = '1.2.0'
-version = '1.2'
+release = '1.3.0-alpha.1'
+version = '1.3'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
