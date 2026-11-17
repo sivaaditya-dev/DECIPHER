@@ -454,6 +454,107 @@ app.post('/api/arena/room/:code/action', (req, res) => {
   res.json({ success: true, word: validation.word, nextStartLetter });
 });
 
+// ── GET /api/arena/queue/stream — SSE stream for queued Quick Match player ──
+app.get('/api/arena/queue/stream', (req, res) => {
+  const uid = String(req.query.uid || '');
+  if (!uid) {
+    res.status(400).set('Content-Type', 'text/event-stream').end('event: error\ndata: {"reason":"uid required"}\n\n');
+    return;
+  }
+
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection':    'keep-alive',
+    'X-Accel-Buffering': 'no',
+  });
+  res.flushHeaders();
+
+  arenaQueueStreams.set(uid, res);
+  _sendToPlayer(res, 'queued', { uid, position: arenaQueue.size });
+
+  const hb = setInterval(() => _sendToPlayer(res, 'heartbeat', { ts: Date.now() }), HB_INTERVAL);
+  if (hb.unref) hb.unref();
+
+  req.on('close', () => {
+    clearInterval(hb);
+    arenaQueueStreams.delete(uid);
+  });
+});
+
+// ── POST /api/arena/queue — Join Quick Match pool ────────────────────────────
+app.post('/api/arena/queue', (req, res) => {
+  const { uid, elo = 1200, displayName } = req.body || {};
+  if (!uid) return res.status(400).json({ error: 'uid is required' });
+
+  const cleanName = sanitizeInput(String(displayName || uid || 'Challenger').slice(0, 40));
+  arenaQueue.set(uid, { uid, displayName: cleanName, elo: Number(elo) || 1200, enqueuedAt: Date.now() });
+
+  // Try to find a compatible match
+  const entries = [...arenaQueue.values()].sort((a, b) => a.enqueuedAt - b.enqueuedAt);
+  for (let i = 0; i < entries.length; i++) {
+    for (let j = i + 1; j < entries.length; j++) {
+      const a = entries[i];
+      const b = entries[j];
+      if (Math.abs(a.elo - b.elo) <= ELO_RANGE || Date.now() - a.enqueuedAt > 30_000) {
+        arenaQueue.delete(a.uid);
+        arenaQueue.delete(b.uid);
+
+        // Determine which one is waiting (a) vs caller (b or a)
+        const hostPlayer  = a.uid === uid ? b : a;
+        const guestPlayer = a.uid === uid ? a : b;
+
+        const code = _genRoomCode();
+        arenaRooms.set(code, {
+          code,
+          hostUid: hostPlayer.uid,
+          hostName: hostPlayer.displayName,
+          hostElo: hostPlayer.elo,
+          guestUid: guestPlayer.uid,
+          guestName: guestPlayer.displayName,
+          guestElo: guestPlayer.elo,
+          status: 'ready',
+          players: new Map(),
+          chain: [],
+          gameState: { hostHp: 100, guestHp: 100, tension: 0.5, hostPullKg: 0, guestPullKg: 0, turnCount: 0 },
+          createdAt: Date.now(),
+          hbInterval: null,
+        });
+
+        // Push match_found over SSE to the waiting player if connected
+        const waitingStream = arenaQueueStreams.get(hostPlayer.uid);
+        if (waitingStream) {
+          _sendToPlayer(waitingStream, 'match_found', {
+            roomCode: code,
+            role: 'host',
+            opponentName: guestPlayer.displayName,
+            opponentElo: guestPlayer.elo,
+          });
+        }
+
+        return res.json({
+          roomCode: code,
+          role: 'guest',
+          matchedWith: hostPlayer.uid,
+          opponentName: hostPlayer.displayName,
+          opponentElo: hostPlayer.elo,
+        });
+      }
+    }
+  }
+
+  // No immediate match — player is queued
+  res.json({ queued: true, position: arenaQueue.size });
+});
+
+// ── POST /api/arena/queue/leave — Leave Quick Match pool ────────────────────
+app.post('/api/arena/queue/leave', (req, res) => {
+  const { uid } = req.body || {};
+  const removed = uid ? arenaQueue.delete(uid) : false;
+  if (uid) arenaQueueStreams.delete(uid);
+  res.json({ success: removed });
+});
+
 // ============================================================
 // INPUT SANITIZATION — prevent XSS and injection attacks
 // ============================================================
