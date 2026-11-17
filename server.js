@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -114,8 +114,255 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 
-// Apply rate limiter to all API routes
-app.use('/api/', rateLimiter);
+// Apply rate limiter to all API routes (arena SSE & action endpoints use per-uid anti-cheat limiter)
+app.use('/api/', (req, res, next) => {
+  if (req.path && req.path.startsWith('/arena/')) return next();
+  return rateLimiter(req, res, next);
+});
+
+// ============================================================
+// LEXICON COLISEUM — PvP ARENA (SSE + REST)
+// ============================================================
+//
+// Architecture: Server-Sent Events (server→client) + fetch POST (client→server)
+// No external WebSocket package required — pure Node.js EventEmitter pattern.
+//
+// Routes:
+//   POST   /api/arena/room                    — Create a Private Duel room
+//   POST   /api/arena/room/:code/join         — Join a Private Duel room
+//   GET    /api/arena/room/:code/stream       — SSE stream for a room
+//   POST   /api/arena/room/:code/action       — Submit a word action
+//   POST   /api/arena/queue                   — Join Quick Match queue
+//   GET    /api/arena/queue/stream            — SSE waiting stream for Quick Match
+//   POST   /api/arena/queue/leave             — Leave Quick Match queue
+//   GET    /api/arena/leaderboard/pvp         — Fetch PvP Elo rankings
+//   POST   /api/arena/match/end               — Persist final Elo after match
+
+// ── In-Memory PvP State (server lifecycle) ──────────────────────────────────
+
+/** Map<roomCode, Object> */
+const arenaRooms        = new Map();
+
+/** Map<uid, { uid: string, displayName: string, elo: number, enqueuedAt: number }> */
+const arenaQueue        = new Map();
+
+/** Map<uid, express.Response> — open SSE streams for queued Quick Match players */
+const arenaQueueStreams = new Map();
+
+/** Map<string, number> — ms timestamp of last word submission per `${code}:${uid}` */
+const pvpRateMap        = new Map();
+
+const ELO_RANGE   = 200;   // Max Elo gap for Quick Match auto-pairing
+const HB_INTERVAL = 25000; // Heartbeat interval ms
+const ROOM_TTL    = 5 * 60 * 1000; // 5 minutes room expiry
+
+/** Generates a 4-char room code from unambiguous characters. */
+function _genRoomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return arenaRooms.has(code) ? _genRoomCode() : code;
+}
+
+/** Broadcasts an SSE event to all connected clients in a room. */
+function _broadcastToRoom(roomCode, eventName, data) {
+  const room = arenaRooms.get(roomCode);
+  if (!room) return;
+  const payload = `event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`;
+  for (const res of room.players.values()) {
+    try { res.write(payload); } catch (_) {}
+  }
+}
+
+/** Sends an SSE event directly to a specific player in a room. */
+function _sendToPlayer(res, eventName, data) {
+  if (!res) return;
+  try {
+    res.write(`event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`);
+  } catch (_) {}
+}
+
+/** Returns true if a word passes basic server-side chain/dupe validation. */
+function _validateArenaWord(word, chain) {
+  if (typeof word !== 'string') return { valid: false, reason: 'Invalid word type.' };
+  const w = word.trim().toLowerCase();
+  if (w.length < 3) return { valid: false, reason: 'Too short (min 3 chars).' };
+  if (w.length > 45) return { valid: false, reason: 'Too long (max 45 chars).' };
+  if (!/^[a-z]+$/.test(w)) return { valid: false, reason: 'Letters only.' };
+  if (chain.includes(w)) return { valid: false, reason: 'Already played.' };
+  if (chain.length > 0) {
+    const last = chain[chain.length - 1];
+    if (w[0] !== last[last.length - 1]) {
+      return { valid: false, reason: `Must start with "${last[last.length - 1].toUpperCase()}".` };
+    }
+  }
+  return { valid: true, word: w };
+}
+
+/** Notify both room participants once both SSE streams are open. */
+function _notifyRoomReadyIfBothConnected(room) {
+  if (!room || !room.hostUid || !room.guestUid) return;
+  const hostRes  = room.players.get(room.hostUid);
+  const guestRes = room.players.get(room.guestUid);
+  if (!hostRes || !guestRes) return;
+
+  if (room.status !== 'active') {
+    room.status = 'active';
+    _sendToPlayer(hostRes, 'opponent_joined', {
+      roomId: room.code,
+      role: 'host',
+      opponentName: room.guestName || room.guestUid,
+      opponentElo: room.guestElo,
+      hostUid: room.hostUid,
+      guestUid: room.guestUid,
+    });
+    _sendToPlayer(guestRes, 'opponent_joined', {
+      roomId: room.code,
+      role: 'guest',
+      opponentName: room.hostName || room.hostUid,
+      opponentElo: room.hostElo,
+      hostUid: room.hostUid,
+      guestUid: room.guestUid,
+    });
+  }
+}
+
+// ── POST /api/arena/room — Create Private Duel room ─────────────────────────
+app.post('/api/arena/room', (req, res) => {
+  const uid = req.body?.uid;
+  const elo = Number(req.body?.elo) || 1200;
+  const displayName = sanitizeInput(String(req.body?.displayName || uid || 'Host').slice(0, 40));
+  if (!uid) return res.status(400).json({ error: 'uid is required' });
+
+  const code = _genRoomCode();
+  arenaRooms.set(code, {
+    code,
+    hostUid: uid,
+    hostName: displayName,
+    hostElo: elo,
+    guestUid: null,
+    guestName: null,
+    guestElo: 1200,
+    status: 'waiting',
+    players: new Map(),           // uid → SSE res object
+    chain: [],
+    gameState: { hostHp: 100, guestHp: 100, tension: 0.5, hostPullKg: 0, guestPullKg: 0, turnCount: 0 },
+    createdAt: Date.now(),
+    hbInterval: null,
+  });
+
+  // Auto-expire room after ROOM_TTL if nobody joins
+  const ttlTimer = setTimeout(() => {
+    const r = arenaRooms.get(code);
+    if (r && r.status === 'waiting') {
+      _broadcastToRoom(code, 'error', { reason: 'Room expired.' });
+      if (r.hbInterval) clearInterval(r.hbInterval);
+      arenaRooms.delete(code);
+    }
+  }, ROOM_TTL);
+  if (ttlTimer.unref) ttlTimer.unref();
+
+  res.json({ roomCode: code, role: 'host' });
+});
+
+// ── POST /api/arena/room/:code/join — Join Private Duel room ────────────────
+app.post('/api/arena/room/:code/join', (req, res) => {
+  const code = (req.params.code || '').toUpperCase().trim();
+  const uid  = req.body?.uid;
+  const elo  = Number(req.body?.elo) || 1200;
+  const displayName = sanitizeInput(String(req.body?.displayName || uid || 'Challenger').slice(0, 40));
+
+  if (!uid) return res.status(400).json({ error: 'uid is required.' });
+
+  const room = arenaRooms.get(code);
+  if (!room)                return res.status(404).json({ error: 'Room not found.' });
+  if (room.guestUid)        return res.status(409).json({ error: 'Room is full.' });
+  if (room.hostUid === uid) return res.status(400).json({ error: 'Cannot join your own room.' });
+
+  room.guestUid  = uid;
+  room.guestName = displayName;
+  room.guestElo  = elo;
+  room.status    = 'ready';
+
+  res.json({
+    success: true,
+    roomCode: code,
+    role: 'guest',
+    opponentName: room.hostName || room.hostUid,
+    opponentElo: room.hostElo,
+  });
+
+  _notifyRoomReadyIfBothConnected(room);
+});
+
+// ── GET /api/arena/room/:code/stream — SSE connection ───────────────────────
+app.get('/api/arena/room/:code/stream', (req, res) => {
+  const code = (req.params.code || '').toUpperCase().trim();
+  const uid  = String(req.query.uid || '');
+
+  const room = arenaRooms.get(code);
+  if (!room) {
+    res.status(404).set('Content-Type', 'text/event-stream').end('event: error\ndata: {"reason":"Room not found"}\n\n');
+    return;
+  }
+
+  // SSE headers
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection':    'keep-alive',
+    'X-Accel-Buffering': 'no',
+  });
+  res.flushHeaders();
+
+  // Register this connection
+  room.players.set(uid, res);
+
+  const role = uid === room.hostUid ? 'host' : 'guest';
+  _sendToPlayer(res, 'room_joined', {
+    roomId: code,
+    role,
+    hostUid: room.hostUid,
+    guestUid: room.guestUid,
+  });
+
+  // Start match if both host and guest streams are open
+  if (room.status === 'active') {
+    const isHost = uid === room.hostUid;
+    _sendToPlayer(res, 'opponent_joined', {
+      roomId: code,
+      role,
+      opponentName: isHost ? (room.guestName || room.guestUid) : (room.hostName || room.hostUid),
+      opponentElo: isHost ? room.guestElo : room.hostElo,
+      hostUid: room.hostUid,
+      guestUid: room.guestUid,
+    });
+    _sendToPlayer(res, 'game_state', {
+      ...room.gameState,
+      chain: room.chain,
+    });
+  } else {
+    _notifyRoomReadyIfBothConnected(room);
+  }
+
+  // Start heartbeat if not already running
+  if (!room.hbInterval) {
+    room.hbInterval = setInterval(() => {
+      _broadcastToRoom(code, 'heartbeat', { ts: Date.now() });
+    }, HB_INTERVAL);
+    if (room.hbInterval.unref) room.hbInterval.unref();
+  }
+
+  // On client disconnect — clean up
+  req.on('close', () => {
+    room.players.delete(uid);
+    if (room.players.size === 0) {
+      clearInterval(room.hbInterval);
+      room.hbInterval = null;
+      if (room.status === 'finished') arenaRooms.delete(code);
+    }
+  });
+});
 
 // ============================================================
 // INPUT SANITIZATION — prevent XSS and injection attacks
