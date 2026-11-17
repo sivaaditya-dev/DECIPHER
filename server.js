@@ -364,6 +364,96 @@ app.get('/api/arena/room/:code/stream', (req, res) => {
   });
 });
 
+// ── POST /api/arena/room/:code/action — Submit a word ───────────────────────
+app.post('/api/arena/room/:code/action', (req, res) => {
+  const code = (req.params.code || '').toUpperCase().trim();
+  const { word, uid, weight = 0 } = req.body || {};
+
+  const room = arenaRooms.get(code);
+  if (!room) return res.status(404).json({ error: 'Room not found.' });
+  if (room.status === 'finished') {
+    return res.status(409).json({ error: 'Match has already ended.' });
+  }
+  if (uid !== room.hostUid && uid !== room.guestUid) {
+    return res.status(403).json({ error: 'Not a participant in this room.' });
+  }
+
+  // Rate limit: 1 action per 500ms per uid in this room
+  const rateKey = `${code}:${uid}`;
+  const now = Date.now();
+  const lastMs = pvpRateMap.get(rateKey) || 0;
+  if (now - lastMs < 500) {
+    return res.status(429).json({ error: 'Slow down — one word at a time!' });
+  }
+  pvpRateMap.set(rateKey, now);
+
+  const validation = _validateArenaWord(word, room.chain);
+  if (!validation.valid) {
+    return res.status(422).json({ error: validation.reason });
+  }
+
+  room.chain.push(validation.word);
+  room.gameState.turnCount++;
+
+  // Calculate HP damage & Iron Chain tension pull
+  const damage = Math.min(30, Math.max(8, validation.word.length * 2));
+  const boundedWeight = Math.min(600, Math.max(10, Number(weight) || (validation.word.length * 15)));
+  const tensionShift  = Math.min(0.18, Math.max(0.04, damage / 100));
+
+  const isHost = uid === room.hostUid;
+  if (isHost) {
+    room.gameState.guestHp = Math.max(0, room.gameState.guestHp - damage);
+    room.gameState.hostPullKg += boundedWeight;
+    room.gameState.tension = Math.max(0, Number((room.gameState.tension - tensionShift).toFixed(4)));
+  } else {
+    room.gameState.hostHp = Math.max(0, room.gameState.hostHp - damage);
+    room.gameState.guestPullKg += boundedWeight;
+    room.gameState.tension = Math.min(1, Number((room.gameState.tension + tensionShift).toFixed(4)));
+  }
+
+  const nextStartLetter = validation.word[validation.word.length - 1].toUpperCase();
+
+  // Broadcast updated game state to both players
+  _broadcastToRoom(code, 'game_state', {
+    lastWord: validation.word,
+    lastUid:  uid,
+    lastWeight: boundedWeight,
+    nextStartLetter,
+    hostHp:   room.gameState.hostHp,
+    guestHp:  room.gameState.guestHp,
+    tension:  room.gameState.tension,
+    hostPullKg:  room.gameState.hostPullKg,
+    guestPullKg: room.gameState.guestPullKg,
+    chain:    room.chain,
+    turnCount: room.gameState.turnCount,
+  });
+
+  // Check for match end (HP KO or Iron Chain pull extreme)
+  const hostWonByChain  = room.gameState.tension <= 0.05;
+  const guestWonByChain = room.gameState.tension >= 0.95;
+  if (room.gameState.hostHp <= 0 || room.gameState.guestHp <= 0 || hostWonByChain || guestWonByChain) {
+    room.status = 'finished';
+    const winner = (room.gameState.guestHp <= 0 || hostWonByChain) ? room.hostUid : room.guestUid;
+    _broadcastToRoom(code, 'match_end', {
+      winner,
+      hostUid:  room.hostUid,
+      guestUid: room.guestUid,
+      hostHp:   room.gameState.hostHp,
+      guestHp:  room.gameState.guestHp,
+      tension:  room.gameState.tension,
+      hostPullKg:  room.gameState.hostPullKg,
+      guestPullKg: room.gameState.guestPullKg,
+      chain:    room.chain,
+    });
+    clearInterval(room.hbInterval);
+    room.hbInterval = null;
+    const cleanupTimer = setTimeout(() => arenaRooms.delete(code), 60_000);
+    if (cleanupTimer.unref) cleanupTimer.unref();
+  }
+
+  res.json({ success: true, word: validation.word, nextStartLetter });
+});
+
 // ============================================================
 // INPUT SANITIZATION — prevent XSS and injection attacks
 // ============================================================
