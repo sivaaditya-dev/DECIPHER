@@ -555,6 +555,97 @@ app.post('/api/arena/queue/leave', (req, res) => {
   res.json({ success: removed });
 });
 
+// ── GET /api/arena/leaderboard/pvp — PvP Elo rankings ───────────────────────
+app.get('/api/arena/leaderboard/pvp', async (req, res) => {
+  try {
+    if (!db) {
+      return res.json({ rankings: [], message: 'Firebase not connected — no PvP data yet.' });
+    }
+    const snap = await db.collection('pvp_ratings')
+      .orderBy('elo', 'desc')
+      .limit(50)
+      .get();
+
+    const rankings = snap.docs.map(doc => ({
+      uid:         doc.id,
+      displayName: doc.data().displayName || 'Anonymous',
+      elo:         doc.data().elo         || 1200,
+      wins:        doc.data().wins        || 0,
+      losses:      doc.data().losses      || 0,
+    }));
+
+    res.json({ rankings });
+  } catch (err) {
+    console.error('[Arena] PvP leaderboard error:', err.message);
+    res.status(500).json({ error: 'Could not fetch leaderboard.', rankings: [] });
+  }
+});
+
+// ── POST /api/arena/match/end — Persist Elo after match ─────────────────────
+app.post('/api/arena/match/end', async (req, res) => {
+  const { winnerUid, loserUid, winnerEloNew, loserEloNew,
+          winnerDelta, loserDelta, winnerDisplayName, loserDisplayName } = req.body || {};
+
+  if (!winnerUid || !loserUid) {
+    return res.status(400).json({ error: 'winnerUid and loserUid are required.' });
+  }
+
+  const safeWinnerElo = Math.max(0, Math.round(Number(winnerEloNew)));
+  const safeLoserElo  = Math.max(0, Math.round(Number(loserEloNew)));
+  if (!Number.isFinite(safeWinnerElo) || !Number.isFinite(safeLoserElo)) {
+    return res.status(400).json({ error: 'Valid numeric Elo values are required.' });
+  }
+
+  const cleanWinnerName = sanitizeInput(String(winnerDisplayName || 'Anonymous').slice(0, 60));
+  const cleanLoserName  = sanitizeInput(String(loserDisplayName || 'Anonymous').slice(0, 60));
+
+  if (!db) {
+    return res.json({
+      success: true,
+      persisted: false,
+      message: 'Firebase not connected — Elo not persisted.',
+      winnerEloNew: safeWinnerElo,
+      loserEloNew: safeLoserElo,
+    });
+  }
+
+  try {
+    const batch = db.batch();
+
+    const winnerRef = db.collection('pvp_ratings').doc(String(winnerUid));
+    batch.set(winnerRef, {
+      displayName: cleanWinnerName,
+      elo: safeWinnerElo,
+      wins: admin.firestore.FieldValue.increment(1),
+      losses: admin.firestore.FieldValue.increment(0),
+      lastMatchAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    const loserRef = db.collection('pvp_ratings').doc(String(loserUid));
+    batch.set(loserRef, {
+      displayName: cleanLoserName,
+      elo: safeLoserElo,
+      wins: admin.firestore.FieldValue.increment(0),
+      losses: admin.firestore.FieldValue.increment(1),
+      lastMatchAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    await batch.commit();
+
+    res.json({
+      success: true,
+      persisted: true,
+      winnerEloNew: safeWinnerElo,
+      loserEloNew: safeLoserElo,
+      winnerDelta: Number(winnerDelta) || 0,
+      loserDelta: Number(loserDelta) || 0,
+    });
+  } catch (err) {
+    console.error('[Arena] Elo persist error:', err.message);
+    res.status(500).json({ error: 'Could not persist Elo ratings.', winnerEloNew: safeWinnerElo, loserEloNew: safeLoserElo });
+  }
+});
+
 // ============================================================
 // INPUT SANITIZATION — prevent XSS and injection attacks
 // ============================================================
