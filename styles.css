@@ -5662,3 +5662,493 @@ textarea:focus-visible,
   gap: 12px;
   justify-content: center;
 }
+
+
+/* ============================================================
+   LEXICON COLISEUM — WEEK 2: PvP LOBBY, LEADERBOARD & SSE STATUS
+   ============================================================ */
+
+/* ── Coliseum Mode Tabs ──────────────────────────────────────── */
+.coliseum-mode-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #2a2a4a;
+  padding-bottom: 0.5rem;
+}
+
+.coliseum-mode-tab {
+  background: transparent;
+  border: 1px solid #3a3a6a;
+  color: #8888cc;
+  padding: 0.4rem 1.1rem;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.coliseum-mode-tab:hover,
+.coliseum-tab-active {
+  background: #1a1a3e;
+  color: #c0a0ff;
+  border-color: #7755cc;
+}
+
+/* ── PvP Lobby ───────────────────────────────────────────────── */
+.pvp-lobby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem 1rem;
+  animation: fadeInUp 0.4s ease both;
+}
+
+.pvp-lobby-header {
+  text-align: center;
+  position: relative;
+  width: 100%;
+}
+
+.pvp-back-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 1px solid #3a3a6a;
+  color: #8888cc;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.pvp-back-btn:hover {
+  color: #c0a0ff;
+  border-color: #7755cc;
+}
+
+.pvp-logo {
+  font-size: 2.2rem;
+  margin-bottom: 0.3rem;
+}
+
+.pvp-title {
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 1.4rem;
+  color: #c0a0ff;
+  margin: 0 0 0.3rem;
+  letter-spacing: 0.1em;
+}
+
+.pvp-subtitle {
+  color: #8888cc;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.pvp-tier-badge {
+  display: inline-block;
+  background: #1a1a3e;
+  border: 1px solid #5533aa;
+  border-radius: 20px;
+  padding: 0.1rem 0.6rem;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: #c0a0ff;
+}
+
+/* ── PvP Mode Cards ─────────────────────────────────────────── */
+.pvp-mode-cards {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.pvp-mode-card {
+  background: linear-gradient(145deg, #12122a, #1a1a3e);
+  border: 1px solid #3a3a6a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-width: 260px;
+  max-width: 320px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pvp-mode-card:hover {
+  border-color: #7755cc;
+  box-shadow: 0 0 20px rgba(119, 85, 204, 0.2);
+}
+
+.pvp-mode-icon {
+  font-size: 2rem;
+}
+
+.pvp-mode-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  color: #c0a0ff;
+  letter-spacing: 0.08em;
+}
+
+.pvp-mode-desc {
+  color: #8888cc;
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.pvp-action-btn {
+  min-width: 140px;
+  margin-top: 0.25rem;
+}
+
+/* ── PvP Quick Match Status ─────────────────────────────────── */
+.pvp-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  color: #8888cc;
+  font-size: 0.8rem;
+}
+
+.pvp-status.hidden { display: none; }
+
+.pvp-spinner {
+  animation: pulse 1s infinite;
+}
+
+.pvp-cancel-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+}
+
+/* ── Private Duel Actions ───────────────────────────────────── */
+.pvp-duel-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.pvp-or-divider {
+  color: #555599;
+  font-size: 0.75rem;
+}
+
+.pvp-join-row {
+  display: flex;
+  gap: 0.4rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.pvp-code-input {
+  background: #0d0d20;
+  border: 1px solid #3a3a6a;
+  color: #c0a0ff;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  text-align: center;
+  width: 90px;
+  text-transform: uppercase;
+  transition: border-color 0.2s;
+}
+
+.pvp-code-input:focus {
+  outline: none;
+  border-color: #7755cc;
+  box-shadow: 0 0 8px rgba(119, 85, 204, 0.3);
+}
+
+/* ── Room Code Display ──────────────────────────────────────── */
+.pvp-room-code-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  background: #0d0d20;
+  border: 1px solid #5533aa;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.pvp-room-code-display.hidden { display: none; }
+
+.pvp-code-label {
+  color: #8888cc;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.pvp-code-value {
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  color: #00e5ff;
+  letter-spacing: 0.3em;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.pvp-code-hint {
+  color: #666699;
+  font-size: 0.75rem;
+}
+
+/* ── Error Banner ───────────────────────────────────────────── */
+.pvp-error-banner {
+  background: rgba(200, 50, 50, 0.15);
+  border: 1px solid #cc3333;
+  color: #ff7777;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.pvp-error-banner.hidden { display: none; }
+
+/* ── PvP HUD Overlay ────────────────────────────────────────── */
+.pvp-hud-overlay {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.pvp-opponent-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(10, 10, 30, 0.85);
+  border: 1px solid #3a3a6a;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+}
+
+.pvp-opp-name {
+  font-size: 0.75rem;
+  color: #8888cc;
+  min-width: 80px;
+}
+
+.pvp-hp-bar-wrap {
+  width: 80px;
+  height: 8px;
+  background: #1a1a3e;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pvp-hp-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #cc3333, #ff5555);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.pvp-hp-label {
+  font-size: 0.7rem;
+  color: #ff7777;
+  min-width: 36px;
+  text-align: right;
+}
+
+.pvp-connection-pill {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.pvp-status-ok  { background: rgba(0, 200, 100, 0.15); color: #00cc66; border: 1px solid #00aa44; }
+.pvp-status-warn { background: rgba(200, 170, 0, 0.15); color: #ccaa00; border: 1px solid #aa8800; }
+.pvp-status-err  { background: rgba(200, 50, 50, 0.15); color: #cc4444; border: 1px solid #aa2222; }
+
+.pvp-elo-preview {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  color: #c0a0ff;
+  background: rgba(80, 50, 150, 0.2);
+  border: 1px solid #5533aa;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+}
+
+/* ── Leaderboard Panel ──────────────────────────────────────── */
+.lb-panel {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.lb-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #2a2a4a;
+  margin-bottom: 1rem;
+}
+
+.lb-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  color: #8888cc;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  border-radius: 6px 6px 0 0;
+  transition: color 0.2s, background 0.2s;
+}
+
+.lb-tab:hover,
+.lb-tab-active {
+  background: #1a1a3e;
+  color: #c0a0ff;
+  border-color: #7755cc;
+}
+
+.lb-pane { display: none; }
+.lb-pane-active { display: block; }
+
+.lb-loading {
+  color: #555599;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.lb-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lb-list.hidden { display: none; }
+.lb-empty.hidden { display: none; }
+.lb-my-rank.hidden { display: none; }
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  transition: border-color 0.2s;
+}
+
+.lb-row:hover { border-color: #5533aa; }
+
+.lb-row-top {
+  border-color: #3a3a6a;
+  background: linear-gradient(135deg, #15153a, #1a1a4a);
+}
+
+.lb-row-me {
+  border-color: #7755cc;
+  background: linear-gradient(135deg, #1a1040, #221060);
+}
+
+.lb-rank { min-width: 28px; text-align: center; font-size: 0.9rem; }
+.lb-tier-icon { font-size: 0.9rem; }
+.lb-name { flex: 1; color: #c0c0e0; }
+.lb-elo  { color: #c0a0ff; font-family: 'Orbitron', monospace; font-size: 0.75rem; min-width: 65px; text-align: right; }
+.lb-score { color: #00e5ff; font-weight: 600; min-width: 70px; text-align: right; }
+.lb-record { color: #666699; font-size: 0.7rem; min-width: 65px; text-align: right; }
+
+.lb-empty {
+  color: #555599;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.lb-my-rank {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(80, 50, 150, 0.1);
+  border: 1px solid #5533aa;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #c0a0ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── Elo Delta in Trophy Modal ──────────────────────────────── */
+.trophy-elo-delta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+  font-family: 'Orbitron', monospace;
+}
+
+.elo-gain {
+  background: rgba(0, 200, 100, 0.1);
+  border: 1px solid #00aa55;
+}
+
+.elo-loss {
+  background: rgba(200, 50, 50, 0.1);
+  border: 1px solid #aa2222;
+}
+
+.elo-delta-label {
+  font-size: 0.65rem;
+  color: #888899;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.elo-delta-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: inherit;
+}
+
+.elo-gain .elo-delta-value  { color: #00cc66; }
+.elo-loss .elo-delta-value  { color: #cc4444; }
+
+.elo-new-rating {
+  font-size: 0.75rem;
+  color: #8888cc;
+}
