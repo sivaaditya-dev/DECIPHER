@@ -75,8 +75,9 @@ function statRow(label, value) {
  * @param {string} botDisplayName - e.g. "🥇 Grand Inquisitor"
  * @param {function} onRematch
  * @param {function} onLobby
+ * @param {Object} [eloResult] - Optional PvP Elo delta {deltaA, newA, tier}
  */
-function buildModal(type, stats, botId, botDisplayName, onRematch, onLobby) {
+function buildModal(type, stats, botId, botDisplayName, onRematch, onLobby, eloResult) {
   hideResultModal(); // Remove any existing modal
 
   const isVictory = type === 'victory';
@@ -138,6 +139,14 @@ function buildModal(type, stats, botId, botDisplayName, onRematch, onLobby) {
       <div class="trophy-words-row">${topWordsHTML}</div>
     </div>
 
+    ${eloResult ? `
+    <!-- PvP Elo Delta -->
+    <div class="trophy-elo-delta ${eloResult.deltaA >= 0 ? 'elo-gain' : 'elo-loss'}">
+      <span class="elo-delta-label">Elo Change</span>
+      <span class="elo-delta-value">${eloResult.deltaA >= 0 ? '+' : ''}${eloResult.deltaA}</span>
+      <span class="elo-new-rating">${eloResult.newA} Elo · ${eloResult.tier || ''}</span>
+    </div>` : ''}
+
     <!-- CTAs -->
     <div class="trophy-cta-row">
       <button id="trophyRematch" class="arena-btn arena-btn-primary">⚔️ Rematch</button>
@@ -180,8 +189,8 @@ function buildModal(type, stats, botId, botDisplayName, onRematch, onLobby) {
  * @param {function} onRematch
  * @param {function} onLobby
  */
-export function showVictoryModal(stats, botId, botDisplayName, onRematch, onLobby) {
-  buildModal('victory', stats, botId, botDisplayName, onRematch, onLobby);
+export function showVictoryModal(stats, botId, botDisplayName, onRematch, onLobby, eloResult) {
+  buildModal('victory', stats, botId, botDisplayName, onRematch, onLobby, eloResult);
 }
 
 /**
@@ -191,9 +200,10 @@ export function showVictoryModal(stats, botId, botDisplayName, onRematch, onLobb
  * @param {string} botDisplayName
  * @param {function} onRematch
  * @param {function} onLobby
+ * @param {Object} [eloResult] - Optional PvP Elo delta {deltaA, newA, tier}
  */
-export function showDefeatModal(stats, botId, botDisplayName, onRematch, onLobby) {
-  buildModal('defeat', stats, botId, botDisplayName, onRematch, onLobby);
+export function showDefeatModal(stats, botId, botDisplayName, onRematch, onLobby, eloResult) {
+  buildModal('defeat', stats, botId, botDisplayName, onRematch, onLobby, eloResult);
 }
 
 /**
