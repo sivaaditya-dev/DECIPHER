@@ -5,6 +5,52 @@ Format adheres to [Keep a Changelog](https://keepachangelog.com) and adheres to 
 
 ---
 
+## [1.3.0-alpha.2] — 2026-11-21 — Lexicon Coliseum: Week 2 PvP Networking & Elo
+
+Week 2 of the Coliseum sprint adds a complete real-time **Player vs Player** layer
+on top of the Week 1 Iron Chain engine, using Server-Sent Events for sub-50ms
+game state sync and Chess-style Elo ratings persisted to Firebase Firestore.
+
+### 🌟 Key Feature Highlights
+
+#### 1. 🧮 Chess-Style Elo Rating Engine (Nov 15)
+- Full FIDE Elo implementation with variable K-factor (K=32 below 2100, K=16 for elite) (`modules/arena/elo.js`).
+- Six-tier division system: Bronze → Silver → Gold → Platinum → Diamond → Grandmaster.
+- 55 unit tests covering all tier boundaries, edge cases, and invalid inputs (`tests/arena-elo.test.js`).
+
+#### 2. 🔗 Room-Code Matchmaking Session Manager (Nov 16)
+- Deterministic 4-character room code generator using unambiguous character set (no I/O/0/1) (`modules/arena/matchmaking.js`).
+- Private Duel room lifecycle: `waiting → ready → active → finished` with 5-minute auto-expiry.
+- Quick Match queue with Elo-proximity pairing (±200 points) and 30-second fallback relaxation.
+- 33 unit tests for room creation, join validation, queue pairing, and edge cases (`tests/arena-matchmaking.test.js`).
+
+#### 3. 📡 Real-Time SSE Server Routes (Nov 17)
+- Zero-dependency Server-Sent Events layer integrated into existing `server.js`.
+- `GET /api/arena/room/:code/stream` and `GET /api/arena/queue/stream` — persistent SSE streams with 25s heartbeat.
+- `POST /api/arena/room` / `POST /api/arena/room/:code/join` / `POST /api/arena/room/:code/action` — room lifecycle and live word sync endpoints.
+- `POST /api/arena/queue` / `POST /api/arena/queue/leave` with instant pairing and SSE waiting notification.
+
+#### 4. 🌐 Browser PvP Client & Playable Duel HUD (Nov 18)
+- `PvPClient` class managing room and queue EventSource lifecycles, typed event dispatch, and exponential backoff reconnection (1s→2s→4s→30s max) (`modules/arena/pvp-client.js`), verified by 8 unit tests (`tests/arena-pvp-client.test.js`).
+- Quick Match + Private Duel lobby UI with room code copy button, join input, queue status indicator, and live HP/connection HUD overlay (`modules/arena/pvp-ui.js`).
+- Three-tab Coliseum lobby (**vs AI**, **vs Player**, **Leaderboard**) and full live PvP Iron Chain match wiring (`modules/arena/coliseum-ui.js`).
+
+#### 5. 🛡️ Server-Side Anti-Cheat & Firestore Elo Persistence (Nov 19)
+- Six-rule input validator running server-side on every word action: rate limit, length, character whitelist, duplicate detection, and configurable letter-chain enforcement (`modules/arena/anti-cheat.js`), verified by 11 unit tests (`tests/arena-anti-cheat.test.js`).
+- `GET /api/arena/leaderboard/pvp` and `POST /api/arena/match/end` with atomic Firestore batch commits and input sanitization, covered by 5 route tests (`tests/arena-routes.test.js`).
+
+#### 6. 🏆 Dual Leaderboard Panel & Trophy Modal Elo Delta (Nov 20)
+- Tabbed leaderboard showing **vs AI** and **vs Player** (Elo rankings with tier icons and W/L record) side by side (`modules/arena/leaderboard-ui.js`).
+- Trophy modal extended to show Elo delta and tier badge after PvP matches (`modules/arena/trophy-modal.js`).
+- Full PvP CSS: lobby cards, room code display, HP overlay, connection status pills, leaderboard rows, Elo delta badge (`styles.css`).
+
+#### 7. 📖 Sphinx Documentation & Release (Nov 21)
+- Complete PvP architecture chapter with SSE protocol table, REST endpoint reference, Elo formula in LaTeX, matchmaking flow, and Firestore data model (`docs/source/pvp.rst`).
+- Sphinx HTML documentation rebuilt cleanly (`docs/source/conf.py` bumped to `1.3.0-alpha.2`).
+- 112 new unit & route tests bringing total verified suite to **400 passing tests** across 19 suites.
+
+---
+
 ## [1.3.0-alpha.1] — 2026-11-14 — Lexicon Coliseum: Week 1 Arena Engine & The Iron Chain
 
 Week 1 of the December production sprint introduces **The Lexicon Coliseum**, replacing the static Daily Challenge with an active, real-time 1v1 linguistic tug-of-war battle arena:
