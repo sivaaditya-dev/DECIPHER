@@ -7,7 +7,7 @@
 project = 'Decipher'
 copyright = '2026, Siva Aditya'
 author = 'Siva Aditya'
-release = '1.3.0-alpha.1'
+release = '1.3.0-alpha.2'
 version = '1.3'
 
 # -- General configuration ---------------------------------------------------

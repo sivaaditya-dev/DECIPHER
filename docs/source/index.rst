@@ -42,6 +42,12 @@ Decipher is a full-stack AI-powered vocabulary learning web application. It comb
 
 .. toctree::
    :maxdepth: 2
+   :caption: 🌐 Real-Time PvP Arena
+
+   pvp
+
+.. toctree::
+   :maxdepth: 2
    :caption: ♿ Accessibility & Shortcuts
 
    accessibility

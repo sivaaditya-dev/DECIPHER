@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚔️ Lexicon Coliseum — Real-Time PvP System &mdash; Decipher — AI Vocabulary Learning App</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6278791d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f5c6d9cb"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Accessibility (a11y) &amp; Keyboard Navigation Guide" href="accessibility.html" />
+    <link rel="prev" title="Lexicon Coliseum &amp; The Iron Chain" href="coliseum.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #0f172a" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Decipher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🚀 Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#clone-install">1. Clone &amp; Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#environment-variables">2. Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#firebase-setup">3. Firebase Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#a-firebase-admin-server">3a. Firebase Admin (Server)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#b-firebase-client-browser">3b. Firebase Client (Browser)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#c-enable-firestore-auth">3c. Enable Firestore &amp; Auth</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#run-the-app">4. Run the App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#verify-it-works">5. Verify It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🏗️ Architecture &amp; Core Design</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; System Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-topology">System Topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#core-architectural-tiers">Core Architectural Tiers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#client-presentation-tier">1. Client Presentation Tier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#modular-client-engines-modules">2. Modular Client Engines (<cite>modules/</cite>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#server-middleware-api-resilience">3. Server Middleware &amp; API Resilience</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧠 Spaced Repetition (SRS) Engine</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="srs_engine.html">SuperMemo SM-2 Spaced Repetition Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#mathematical-formulation">Mathematical Formulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#interval-progression">1. Interval Progression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srs_engine.html#ease-factor-update">2. Ease Factor Update</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#recall-grade-scale-q">Recall Grade Scale ($q$)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#review-queue-manager-architecture">Review Queue Manager Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="srs_engine.html#weak-words-drill-room-integration">Weak Words Drill Room Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">⚔️ Lexicon Coliseum &amp; Iron Chain</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="coliseum.html">Lexicon Coliseum &amp; The Iron Chain</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coliseum.html#architecture-overview">Architecture Overview</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🌐 Real-Time PvP Arena</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">⚔️ Lexicon Coliseum — Real-Time PvP System</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#architecture-overview">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sse-event-protocol">SSE Event Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rest-endpoints">REST Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#elo-rating-engine-modules-arena-elo-js">Elo Rating Engine (<code class="docutils literal notranslate"><span class="pre">modules/arena/elo.js</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#formula">Formula</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tier-divisions">Tier Divisions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#matchmaking-modules-arena-matchmaking-js">Matchmaking (<code class="docutils literal notranslate"><span class="pre">modules/arena/matchmaking.js</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#anti-cheat-validation-modules-arena-anti-cheat-js">Anti-Cheat Validation (<code class="docutils literal notranslate"><span class="pre">modules/arena/anti-cheat.js</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#leaderboard-modules-arena-leaderboard-ui-js">Leaderboard (<code class="docutils literal notranslate"><span class="pre">modules/arena/leaderboard-ui.js</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pvp-client-modules-arena-pvp-client-js">PvP Client (<code class="docutils literal notranslate"><span class="pre">modules/arena/pvp-client.js</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-model-firestore">Data Model (Firestore)</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">♿ Accessibility &amp; Shortcuts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="accessibility.html">Accessibility (a11y) &amp; Keyboard Navigation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#keyboard-navigation-registry">Keyboard Navigation Registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#global-navigation-chords">Global Navigation Chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#application-power-hotkeys">Application Power Hotkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#interactive-quiz-mode-shortcuts">Interactive Quiz Mode Shortcuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html#d-flashcards-srs-shortcuts">3D Flashcards SRS Shortcuts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#screen-reader-live-regions">Screen Reader Live Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility.html#high-contrast-visual-indicators">High-Contrast Visual Indicators</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🔌 Backend API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">REST API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#vocabulary-analysis">Vocabulary Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-analyze"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/analyze</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#document-extraction">Document Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-extract-pdf"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/extract-pdf</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#image-ocr">Image OCR</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-ocr"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/ocr</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#youtube-transcript">YouTube Transcript</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-youtube-transcript"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/youtube-transcript</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#translation">Translation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-translate"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/translate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#memory-hooks-mnemonics">Memory Hooks (Mnemonics)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-mnemonic"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/mnemonic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#passage-simplifier">Passage Simplifier</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-simplify"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/simplify</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#opposite-day">Opposite Day</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-opposite-day"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/opposite-day</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#story-generation">Story Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-story"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/story</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#srs-quiz-questions">SRS Quiz Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-srs-questions"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/srs-questions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#socratic-tutor-chat">Socratic Tutor Chat</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-chat"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/chat</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#user-library-sessions">User Library (Sessions)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-history"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#get-api-history"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#get-api-history-id"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/history/:id</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#delete-api-history"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/api/history</span></code> 🔒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#user-profile">User Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#get-api-profile"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/profile</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-profile"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/profile</span></code> 🔒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api-reference.html#daily-word-challenge">Daily Word Challenge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#get-api-daily-word"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/daily-word</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#post-api-challenge-submit"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/challenge/submit</span></code> 🔒</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#get-api-challenge-leaderboard"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/leaderboard</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api-reference.html#get-api-challenge-me"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/me</span></code> 🔒</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🧩 Frontend Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Frontend Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html"><code class="docutils literal notranslate"><span class="pre">api.js</span></code> — Backend Communication Layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#constants">Constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#api-base"><code class="docutils literal notranslate"><span class="pre">API_BASE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#auth-header-management">Auth Header Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#setauth-authinstance"><code class="docutils literal notranslate"><span class="pre">setAuth(authInstance)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#getauthheaders"><code class="docutils literal notranslate"><span class="pre">getAuthHeaders()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#ai-functions">AI Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#analyzetext-text-theme"><code class="docutils literal notranslate"><span class="pre">analyzeText(text,</span> <span class="pre">theme)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#translatevocablist-vocablist-targetlang"><code class="docutils literal notranslate"><span class="pre">translateVocabList(vocabList,</span> <span class="pre">targetLang)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generatestory-words"><code class="docutils literal notranslate"><span class="pre">generateStory(words)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generatemnemonics-vocablist"><code class="docutils literal notranslate"><span class="pre">generateMnemonics(vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#simplifypassage-text-level"><code class="docutils literal notranslate"><span class="pre">simplifyPassage(text,</span> <span class="pre">level)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generatesrsquestions-vocablist"><code class="docutils literal notranslate"><span class="pre">generateSRSQuestions(vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#generateoppositeday-text-vocablist"><code class="docutils literal notranslate"><span class="pre">generateOppositeDay(text,</span> <span class="pre">vocabList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#sendchatmessage-messages-passage-vocablist"><code class="docutils literal notranslate"><span class="pre">sendChatMessage(messages,</span> <span class="pre">passage,</span> <span class="pre">vocabList)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#file-media-functions">File / Media Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#extractpdftext-file"><code class="docutils literal notranslate"><span class="pre">extractPdfText(file)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#extractimagetext-imagefile"><code class="docutils literal notranslate"><span class="pre">extractImageText(imageFile)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#fetchyoutubetranscript-url"><code class="docutils literal notranslate"><span class="pre">fetchYouTubeTranscript(url)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/api.html#library-functions">Library Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#savesession-snippet-words"><code class="docutils literal notranslate"><span class="pre">saveSession(snippet,</span> <span class="pre">words)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#fetchlibrary"><code class="docutils literal notranslate"><span class="pre">fetchLibrary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#fetchsession-id"><code class="docutils literal notranslate"><span class="pre">fetchSession(id)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/api.html#clearlibrary"><code class="docutils literal notranslate"><span class="pre">clearLibrary()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/auth.html"><code class="docutils literal notranslate"><span class="pre">auth.js</span></code> — Authentication Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#initauth-firebaseapp-onuserchanged"><code class="docutils literal notranslate"><span class="pre">initAuth(firebaseApp,</span> <span class="pre">onUserChanged)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#modal-control">Modal Control</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#showauthmodal-mode"><code class="docutils literal notranslate"><span class="pre">showAuthModal(mode?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#hideauthmodal"><code class="docutils literal notranslate"><span class="pre">hideAuthModal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#handleauthbuttonclick"><code class="docutils literal notranslate"><span class="pre">handleAuthButtonClick()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#user-state">User State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#getcurrentuser"><code class="docutils literal notranslate"><span class="pre">getCurrentUser()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#internal-flow">Internal Flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#sign-in-with-google">Sign In with Google</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#email-sign-in">Email Sign In</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#email-sign-up">Email Sign Up</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/auth.html#forgot-password">Forgot Password</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/auth.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/quiz.html"><code class="docutils literal notranslate"><span class="pre">quiz.js</span></code> — Quiz Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#quiz-modes">Quiz Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#setvocablist-list"><code class="docutils literal notranslate"><span class="pre">setVocabList(list)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#settranslatedvocablist-list"><code class="docutils literal notranslate"><span class="pre">setTranslatedVocabList(list)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#setsrsquestions-questions"><code class="docutils literal notranslate"><span class="pre">setSRSQuestions(questions)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#getmode"><code class="docutils literal notranslate"><span class="pre">getMode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#startquiz-srssentences"><code class="docutils literal notranslate"><span class="pre">startQuiz(srsSentences?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#closequiz"><code class="docutils literal notranslate"><span class="pre">closeQuiz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#initquiz"><code class="docutils literal notranslate"><span class="pre">initQuiz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#nextquestion"><code class="docutils literal notranslate"><span class="pre">nextQuestion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#initquizmodetabs"><code class="docutils literal notranslate"><span class="pre">initQuizModeTabs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#spidey-integration">Spidey Integration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/quiz.html#setspideycallback-fn"><code class="docutils literal notranslate"><span class="pre">setSpideyCallback(fn)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/quiz.html#scoring">Scoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/voice.html">Voice Assistant — Multilingual Support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#how-it-works">How It Works</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#three-layer-intent-detection-pipeline">Three-Layer Intent Detection Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/voice.html#language-picker-ui">Language Picker UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#supported-languages-highlights">Supported Languages (Highlights)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#technical-architecture">Technical Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/voice.html#voice-recognition-notes">Voice Recognition Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/languages.html"><code class="docutils literal notranslate"><span class="pre">languages.js</span></code> — Translation Panel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/languages.html#key-features">Key Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/languages.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#initlanguages-ontranslatecallback"><code class="docutils literal notranslate"><span class="pre">initLanguages(onTranslateCallback)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#settranslationdata-translatedlist"><code class="docutils literal notranslate"><span class="pre">setTranslationData(translatedList)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#getselectedlanguage"><code class="docutils literal notranslate"><span class="pre">getSelectedLanguage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/languages.html#setlanguage-langname"><code class="docutils literal notranslate"><span class="pre">setLanguage(langName)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/profile.html"><code class="docutils literal notranslate"><span class="pre">profile.js</span></code> — User Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/profile.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/profile.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#initprofile-auth"><code class="docutils literal notranslate"><span class="pre">initProfile(auth)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#showprofilemodal"><code class="docutils literal notranslate"><span class="pre">showProfileModal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#loadprofile"><code class="docutils literal notranslate"><span class="pre">loadProfile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/profile.html#saveprofile"><code class="docutils literal notranslate"><span class="pre">saveProfile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/challenge.html"><code class="docutils literal notranslate"><span class="pre">challenge.js</span></code> — Daily Word Challenge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/challenge.html#feature-overview">Feature Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/challenge.html#rank-system">Rank System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/challenge.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/challenge.html#initchallenge-auth"><code class="docutils literal notranslate"><span class="pre">initChallenge(auth)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/challenge.html#renderleaderboard-type"><code class="docutils literal notranslate"><span class="pre">renderLeaderboard(type)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/galaxy.html"><code class="docutils literal notranslate"><span class="pre">galaxy.js</span></code> — Galaxy Animation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/galaxy.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/galaxy.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/galaxy.html#initgalaxy-canvasid"><code class="docutils literal notranslate"><span class="pre">initGalaxy(canvasId)</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/galaxy.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/spidey.html"><code class="docutils literal notranslate"><span class="pre">spidey.js</span></code> — Spidey-Sense Animation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/spidey.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/spidey.html#initspidey-canvasid"><code class="docutils literal notranslate"><span class="pre">initSpidey(canvasId?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/spidey.html#triggerspidey-iscorrect-word"><code class="docutils literal notranslate"><span class="pre">triggerSpidey({</span> <span class="pre">isCorrect,</span> <span class="pre">word</span> <span class="pre">})</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/toast.html"><code class="docutils literal notranslate"><span class="pre">toast.js</span></code> — Toast Notifications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/toast.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/toast.html#showtoast-message-type-duration"><code class="docutils literal notranslate"><span class="pre">showToast(message,</span> <span class="pre">type?,</span> <span class="pre">duration?)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/ui.html"><code class="docutils literal notranslate"><span class="pre">ui.js</span></code> — Shared UI Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/ui.html#responsibilities">Responsibilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/ui.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/ui.html#initui"><code class="docutils literal notranslate"><span class="pre">initUI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/ui.html#settheme-themename"><code class="docutils literal notranslate"><span class="pre">setTheme(themeName)</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/samples.html"><code class="docutils literal notranslate"><span class="pre">samples.js</span></code> — Sample Texts Library</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/samples.html#domains-included">Domains Included</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/samples.html#public-api">Public API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/samples.html#getsampletext-domain"><code class="docutils literal notranslate"><span class="pre">getSampleText(domain?)</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/samples.html#getalldomains"><code class="docutils literal notranslate"><span class="pre">getAllDomains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/samples.html#getrandomsample"><code class="docutils literal notranslate"><span class="pre">getRandomSample()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🗄️ Database</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="database.html#sessions"><code class="docutils literal notranslate"><span class="pre">sessions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#userprofiles"><code class="docutils literal notranslate"><span class="pre">userProfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#dailywords"><code class="docutils literal notranslate"><span class="pre">dailyWords</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#challengeusers"><code class="docutils literal notranslate"><span class="pre">challengeUsers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#challengeleaderboard"><code class="docutils literal notranslate"><span class="pre">challengeLeaderboard</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html#challengeweekly-weekkey-entries"><code class="docutils literal notranslate"><span class="pre">challengeWeekly/{weekKey}/entries</span></code></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">🎨 UI &amp; Themes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ui-and-themes.html">UI &amp; Themes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#themes">Themes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#design-tokens-css-custom-properties">Design Tokens (CSS Custom Properties)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#glassmorphism-cards">Glassmorphism Cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#navigation">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#view-system">View System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#typography">Typography</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui-and-themes.html#animations-micro-interactions">Animations &amp; Micro-interactions</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">📋 Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">DECIPHER — Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#spaced-repetition-offline-sync-resilience-security-ci-cd-sprint">[1.2.0] — 2026-11-07 — Spaced Repetition, Offline Sync, Resilience, Security &amp; CI/CD Sprint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#key-feature-highlights">🌟 Key Feature Highlights</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#supermemo-sm-2-spaced-repetition-retention-analytics-oct-28-oct-31-nov-03">1. 🧠 SuperMemo SM-2 Spaced Repetition &amp; Retention Analytics (Oct 28, Oct 31, Nov 03)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#offline-pwa-indexeddb-persistence-nov-01">2. 📶 Offline PWA &amp; IndexedDB Persistence (Nov 01)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#gemini-2-5-flash-api-resilience-schema-fallback-parser-nov-04">3. ⚡ Gemini 2.5 Flash API Resilience &amp; Schema Fallback Parser (Nov 04)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#server-security-request-validation-middleware-rate-limit-telemetry-oct-27-nov-05">4. 🛡️ Server Security, Request Validation Middleware &amp; Rate-Limit Telemetry (Oct 27, Nov 05)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#multi-format-export-suite-oct-29">5. 📤 Multi-Format Export Suite (Oct 29)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#web-audio-studio-phonetics-engine-oct-30">6. 🎙️ Web Audio Studio &amp; Phonetics Engine (Oct 30)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#keyboard-shortcuts-accessibility-suite-nov-02">7. ♿ Keyboard Shortcuts &amp; Accessibility Suite (Nov 02)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="changelog.html#ci-cd-automation-sphinx-documentation-quality-assurance-nov-06-nov-07">8. 🤖 CI/CD Automation, Sphinx Documentation &amp; Quality Assurance (Nov 06, Nov 07)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="changelog.html#complete-30-commit-sprint-index">📋 Complete 30-Commit Sprint Index</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#studio-intelligence-upgrade">[1.1.0] — 2026-10-26 — Studio &amp; Intelligence Upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#initial-release">[1.0.0] — 2026-08-23 — Initial Release</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #0f172a" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Decipher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">⚔️ Lexicon Coliseum — Real-Time PvP System</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pvp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lexicon-coliseum-real-time-pvp-system">
+<span id="pvp"></span><h1>⚔️ Lexicon Coliseum — Real-Time PvP System<a class="headerlink" href="#lexicon-coliseum-real-time-pvp-system" title="Link to this heading"></a></h1>
+<p>This chapter documents the <strong>Week 2 PvP networking layer</strong> added to Lexicon Coliseum:
+real-time player-vs-player duels using Server-Sent Events, Chess-style Elo ratings,
+and Firebase Firestore persistence.</p>
+<nav class="contents local" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#architecture-overview" id="id1">Architecture Overview</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sse-event-protocol" id="id2">SSE Event Protocol</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#rest-endpoints" id="id3">REST Endpoints</a></p></li>
+<li><p><a class="reference internal" href="#elo-rating-engine-modules-arena-elo-js" id="id4">Elo Rating Engine (<code class="docutils literal notranslate"><span class="pre">modules/arena/elo.js</span></code>)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#formula" id="id5">Formula</a></p></li>
+<li><p><a class="reference internal" href="#tier-divisions" id="id6">Tier Divisions</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#matchmaking-modules-arena-matchmaking-js" id="id7">Matchmaking (<code class="docutils literal notranslate"><span class="pre">modules/arena/matchmaking.js</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#anti-cheat-validation-modules-arena-anti-cheat-js" id="id8">Anti-Cheat Validation (<code class="docutils literal notranslate"><span class="pre">modules/arena/anti-cheat.js</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#leaderboard-modules-arena-leaderboard-ui-js" id="id9">Leaderboard (<code class="docutils literal notranslate"><span class="pre">modules/arena/leaderboard-ui.js</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#pvp-client-modules-arena-pvp-client-js" id="id10">PvP Client (<code class="docutils literal notranslate"><span class="pre">modules/arena/pvp-client.js</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#data-model-firestore" id="id11">Data Model (Firestore)</a></p></li>
+</ul>
+</nav>
+<p>—</p>
+<section id="architecture-overview">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Architecture Overview</a><a class="headerlink" href="#architecture-overview" title="Link to this heading"></a></h2>
+<p>The PvP system uses <strong>Server-Sent Events (SSE)</strong> for server→client push and
+standard <code class="docutils literal notranslate"><span class="pre">fetch</span></code> POST calls for client→server actions.
+No external WebSocket package is required — the system runs on the existing Express server.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Browser Tab A                 Express Server               Browser Tab B
+─────────────                 ──────────────               ─────────────
+pvp-ui.js                     server.js                    pvp-ui.js
+  │  Quick Match click         /api/arena/queue               │
+  ├──POST /api/arena/queue ──► match pool                      │
+  │                            pair when 2 players             │
+  ◄── { roomCode: "APEX" } ──                                  │
+  │                            SSE channels open:              │
+  ├──GET /api/arena/room/APEX/stream ──────────────────────────┤
+  │  word submitted             validate (anti-cheat)          │
+  │                            broadcast game_state to both   │
+  ◄── game_state event ───────                 ───────────────►┤
+  │                            match_end → Elo update          │
+  ◄── elo_update event ───────  Firestore.set(pvp_ratings)     │
+</pre></div>
+</div>
+<section id="sse-event-protocol">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">SSE Event Protocol</a><a class="headerlink" href="#sse-event-protocol" title="Link to this heading"></a></h3>
+<p>The server broadcasts the following <strong>named SSE events</strong> to all players in a room:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Event</p></th>
+<th class="head"><p>Payload (JSON)</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">room_joined</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">roomId,</span> <span class="pre">role</span> <span class="pre">}</span></code></p></td>
+<td><p>Sent on SSE connect. <code class="docutils literal notranslate"><span class="pre">role</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;host&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;guest&quot;</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">opponent_joined</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">opponentName,</span> <span class="pre">roomId</span> <span class="pre">}</span></code></p></td>
+<td><p>Sent to the host when the second player connects.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">game_state</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">lastWord,</span> <span class="pre">hostHp,</span> <span class="pre">guestHp,</span> <span class="pre">chain,</span> <span class="pre">turnCount</span> <span class="pre">}</span></code></p></td>
+<td><p>Broadcast after every valid word action.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">match_end</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">winner,</span> <span class="pre">hostHp,</span> <span class="pre">guestHp</span> <span class="pre">}</span></code></p></td>
+<td><p>Broadcast when a player reaches 0 HP.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">heartbeat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">ts</span> <span class="pre">}</span></code></p></td>
+<td><p>Sent every 25 s to keep the SSE connection alive.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">reason</span> <span class="pre">}</span></code></p></td>
+<td><p>Sent on room expiry or server-side error.</p></td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+</section>
+</section>
+<section id="rest-endpoints">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">REST Endpoints</a><a class="headerlink" href="#rest-endpoints" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 35.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Path</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>POST</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/room</span></code></p></td>
+<td><p>Create a Private Duel room. Returns <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">roomCode</span> <span class="pre">}</span></code> (4-char code).</p></td>
+</tr>
+<tr class="row-odd"><td><p>POST</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/room/:code/join</span></code></p></td>
+<td><p>Join a room by code. Returns <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">success,</span> <span class="pre">roomCode</span> <span class="pre">}</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>GET</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/room/:code/stream</span></code></p></td>
+<td><p>Open SSE stream. Query param: <code class="docutils literal notranslate"><span class="pre">?uid=&lt;Firebase</span> <span class="pre">UID&gt;</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>POST</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/room/:code/action</span></code></p></td>
+<td><p>Submit a word. Body: <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">word,</span> <span class="pre">uid</span> <span class="pre">}</span></code>. Returns <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">success,</span> <span class="pre">word</span> <span class="pre">}</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>POST</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/queue</span></code></p></td>
+<td><p>Join Quick Match queue. Returns <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">roomCode,</span> <span class="pre">role,</span> <span class="pre">opponentName,</span> <span class="pre">opponentElo</span> <span class="pre">}</span></code>
+if immediately paired, or <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">queued:</span> <span class="pre">true,</span> <span class="pre">position</span> <span class="pre">}</span></code> if waiting.</p></td>
+</tr>
+<tr class="row-odd"><td><p>GET</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/queue/stream</span></code></p></td>
+<td><p>Open SSE waiting stream while queued (<code class="docutils literal notranslate"><span class="pre">?uid=&lt;Firebase</span> <span class="pre">UID&gt;</span></code>); emits
+<code class="docutils literal notranslate"><span class="pre">match_found</span></code> as soon as a compatible opponent joins.</p></td>
+</tr>
+<tr class="row-even"><td><p>POST</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/queue/leave</span></code></p></td>
+<td><p>Leave the Quick Match queue. Body: <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">uid</span> <span class="pre">}</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>GET</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/leaderboard/pvp</span></code></p></td>
+<td><p>Fetch top 50 PvP Elo rankings from Firestore.</p></td>
+</tr>
+<tr class="row-even"><td><p>POST</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/api/arena/match/end</span></code></p></td>
+<td><p>Persist final Elo ratings after a match. Body includes winner/loser UIDs
+and new Elo values computed on the client.</p></td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+</section>
+<section id="elo-rating-engine-modules-arena-elo-js">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Elo Rating Engine (<code class="docutils literal notranslate"><span class="pre">modules/arena/elo.js</span></code>)</a><a class="headerlink" href="#elo-rating-engine-modules-arena-elo-js" title="Link to this heading"></a></h2>
+<p>The PvP ranking system uses a standard <strong>FIDE Elo</strong> formula adapted for vocabulary duels.</p>
+<section id="formula">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Formula</a><a class="headerlink" href="#formula" title="Link to this heading"></a></h3>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}E_A = \frac{1}{1 + 10^{(R_B - R_A) / 400}}\\R'_A = R_A + K \times (S_A - E_A)\end{aligned}\end{align} \]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(E_A\)</span> — expected score for player A (probability of winning)</p></li>
+<li><p><span class="math notranslate nohighlight">\(R_A, R_B\)</span> — current Elo ratings</p></li>
+<li><p><span class="math notranslate nohighlight">\(K\)</span> — K-factor: <code class="docutils literal notranslate"><span class="pre">32</span></code> for ratings below 2100, <code class="docutils literal notranslate"><span class="pre">16</span></code> for ≥ 2100</p></li>
+<li><p><span class="math notranslate nohighlight">\(S_A\)</span> — actual score: <code class="docutils literal notranslate"><span class="pre">1</span></code> (win), <code class="docutils literal notranslate"><span class="pre">0</span></code> (loss), <code class="docutils literal notranslate"><span class="pre">0.5</span></code> (draw)</p></li>
+</ul>
+</section>
+<section id="tier-divisions">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Tier Divisions</a><a class="headerlink" href="#tier-divisions" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Tier</p></th>
+<th class="head"><p>Elo Range</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>🥉 Bronze</p></td>
+<td><p>0 – 1199</p></td>
+<td><p>Starting tier for all new players (default Elo: 1200).</p></td>
+</tr>
+<tr class="row-odd"><td><p>🥈 Silver</p></td>
+<td><p>1200 – 1399</p></td>
+<td><p>Consistently wins against Rookie-level bots.</p></td>
+</tr>
+<tr class="row-even"><td><p>🥇 Gold</p></td>
+<td><p>1400 – 1599</p></td>
+<td><p>Comfortable with B1/B2 CEFR vocabulary duels.</p></td>
+</tr>
+<tr class="row-odd"><td><p>💎 Platinum</p></td>
+<td><p>1600 – 1799</p></td>
+<td><p>Regular C1 usage; defeats Scholar bots consistently.</p></td>
+</tr>
+<tr class="row-even"><td><p>💠 Diamond</p></td>
+<td><p>1800 – 1999</p></td>
+<td><p>Approaches Grand Inquisitor territory.</p></td>
+</tr>
+<tr class="row-odd"><td><p>👑 Grandmaster</p></td>
+<td><p>2000+</p></td>
+<td><p>Elite vocabulary combatant. K-factor drops to 16 for rating stability.</p></td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+</section>
+</section>
+<section id="matchmaking-modules-arena-matchmaking-js">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Matchmaking (<code class="docutils literal notranslate"><span class="pre">modules/arena/matchmaking.js</span></code>)</a><a class="headerlink" href="#matchmaking-modules-arena-matchmaking-js" title="Link to this heading"></a></h2>
+<p><strong>Private Duel</strong></p>
+<ol class="arabic simple">
+<li><p>Player A calls <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/arena/room</span></code> → receives a 4-char room code (e.g. <code class="docutils literal notranslate"><span class="pre">APEX</span></code>).</p></li>
+<li><p>Player A shares the code out-of-band (copy button in the UI).</p></li>
+<li><p>Player B enters the code and calls <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/arena/room/APEX/join</span></code>.</p></li>
+<li><p>Both players open <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/arena/room/APEX/stream</span></code>.</p></li>
+</ol>
+<p><strong>Quick Match</strong></p>
+<ol class="arabic simple">
+<li><p>Player calls <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/arena/queue</span></code> with their <code class="docutils literal notranslate"><span class="pre">uid</span></code> and <code class="docutils literal notranslate"><span class="pre">elo</span></code>.</p></li>
+<li><p>The server checks the queue for a compatible opponent (Elo within ±200).</p></li>
+<li><p>If found → returns <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">roomCode</span> <span class="pre">}</span></code> immediately and both are connected.</p></li>
+<li><p>If not found → returns <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">queued:</span> <span class="pre">true</span> <span class="pre">}</span></code> and the client listens for a
+<code class="docutils literal notranslate"><span class="pre">room_joined</span></code> SSE event (server pushes when a match is made).</p></li>
+<li><p>After 30 seconds of waiting, the Elo constraint is relaxed and the
+longest-waiting player is paired with the next available opponent.</p></li>
+</ol>
+<p>Room codes use an unambiguous character set (no <code class="docutils literal notranslate"><span class="pre">I</span></code>, <code class="docutils literal notranslate"><span class="pre">O</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code>).
+Rooms auto-expire after <strong>5 minutes</strong> if the second player never joins.</p>
+<p>—</p>
+</section>
+<section id="anti-cheat-validation-modules-arena-anti-cheat-js">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Anti-Cheat Validation (<code class="docutils literal notranslate"><span class="pre">modules/arena/anti-cheat.js</span></code>)</a><a class="headerlink" href="#anti-cheat-validation-modules-arena-anti-cheat-js" title="Link to this heading"></a></h2>
+<p>Every word submitted via <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/arena/room/:code/action</span></code> is validated
+server-side before being accepted. The following rules are enforced:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Rule</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RATE_LIMIT</span></code></p></td>
+<td><p>Maximum 1 word per 500 ms per player UID.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TOO_SHORT</span></code></p></td>
+<td><p>Word must be ≥ 3 characters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TOO_LONG</span></code></p></td>
+<td><p>Word must be ≤ 45 characters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">INVALID_CHARS</span></code></p></td>
+<td><p>Only lowercase alphabetic characters (<code class="docutils literal notranslate"><span class="pre">a–z</span></code>) are accepted.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DUPLICATE</span></code></p></td>
+<td><p>A word already played in the current match is rejected.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CHAIN_BREAK</span></code></p></td>
+<td><p>The word’s first letter must match the last letter of the previous word.</p></td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+</section>
+<section id="leaderboard-modules-arena-leaderboard-ui-js">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Leaderboard (<code class="docutils literal notranslate"><span class="pre">modules/arena/leaderboard-ui.js</span></code>)</a><a class="headerlink" href="#leaderboard-modules-arena-leaderboard-ui-js" title="Link to this heading"></a></h2>
+<p>The dual-tab leaderboard panel renders two competitive views side by side
+in the Coliseum lobby:</p>
+<p><strong>vs AI tab</strong> — Fetched from <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/challenge/leaderboard</span></code>.
+Displays the top 10 single-player scores ranked by total iron-chain pull (kg).</p>
+<p><strong>vs Player tab</strong> — Fetched from <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/arena/leaderboard/pvp</span></code>.
+Displays the top 10 PvP Elo rankings. Each row shows:</p>
+<ul class="simple">
+<li><p>Tier icon and name</p></li>
+<li><p>Player display name</p></li>
+<li><p>Current Elo rating</p></li>
+<li><p>Win / Loss record</p></li>
+</ul>
+<p>If the authenticated user is ranked outside the top 10, their personal rank
+is displayed below the main list.</p>
+<p>—</p>
+</section>
+<section id="pvp-client-modules-arena-pvp-client-js">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">PvP Client (<code class="docutils literal notranslate"><span class="pre">modules/arena/pvp-client.js</span></code>)</a><a class="headerlink" href="#pvp-client-modules-arena-pvp-client-js" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">PvPClient</span></code> is the browser-side connection manager for the SSE stream.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">PvPClient</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">uid</span><span class="p">,</span><span class="w"> </span><span class="nx">currentElo</span><span class="p">);</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'game_state'</span><span class="p">,</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">renderPvPHUD</span><span class="p">(</span><span class="nx">arenaRoot</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">myHp</span><span class="o">:</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">guestHp</span><span class="p">,</span><span class="w"> </span><span class="nx">oppHp</span><span class="o">:</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">hostHp</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'match_end'</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Calculate Elo delta client-side, then POST to /api/arena/match/end</span>
+<span class="p">});</span>
+
+<span class="nx">client</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="nx">roomCode</span><span class="p">);</span><span class="w"> </span><span class="c1">// Opens EventSource</span>
+</pre></div>
+</div>
+<p><strong>Reconnection</strong>: exponential backoff starting at 1 s, doubling each attempt up to 30 s.
+<strong>Heartbeat</strong>: if no <code class="docutils literal notranslate"><span class="pre">heartbeat</span></code> event is received within 45 s, the client
+triggers a reconnect automatically.</p>
+<p>—</p>
+</section>
+<section id="data-model-firestore">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Data Model (Firestore)</a><a class="headerlink" href="#data-model-firestore" title="Link to this heading"></a></h2>
+<p>Collection: <code class="docutils literal notranslate"><span class="pre">pvp_ratings</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pvp_ratings/
+  {uid}/
+    displayName:  string
+    elo:          number   (default 1200)
+    wins:         number
+    losses:       number
+    lastMatchAt:  Timestamp
+</pre></div>
+</div>
+<p>Writes use a <strong>batch commit</strong> (winner + loser in one atomic operation) via
+<code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/arena/match/end</span></code> to ensure the leaderboard always reflects
+consistent paired outcomes.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="coliseum.html" class="btn btn-neutral float-left" title="Lexicon Coliseum &amp; The Iron Chain" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="accessibility.html" class="btn btn-neutral float-right" title="Accessibility (a11y) &amp; Keyboard Navigation Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Siva Aditya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
